@@ -1,6 +1,10 @@
 import { Router, Request, Response } from "express";
 import db from "../models/database";
 import { digestMessage } from "../lib/hash";
+import {
+  UserProfileMetaDB,
+  migrateVariableNameForFrontend,
+} from "../models/UserProfileMeta";
 
 export const userAuthRouter = Router();
 
@@ -17,23 +21,21 @@ userAuthRouter.post("/signin", async (req: Request, res: Response) => {
   // ユーザー問い合わせ
   await db
     .query(
-      `select uid from user_auth where email = '${req.body.email}' and password_hash = '${hashedPassword}'`
+      `select * from user_profile_meta where email = '${req.body.email}' and password_hash = '${hashedPassword}'`
     )
-    .then((data: Array<{ uid: number }>) => {
-      console.log(data);
-      if (data.length === 1) {
-        // signin成功したのでprofileを取得する
-        return db.query(
-          `select * from user_profile where uid = ${data[0].uid}`
-        );
+    .then((queryResult: Array<UserProfileMetaDB>) => {
+      if (queryResult.length === 1) {
+        return Promise.resolve(queryResult[0]);
       } else {
         // signin失敗したのでエラーメッセージをクライアントに返す
         return Promise.reject("not found");
       }
     })
-    .then((data: any) => {
-      console.log(data);
-      res.status(200).json(data.user_profile);
+    .then((userProfileMeta: UserProfileMetaDB) => {
+      // frontend用にキャメルケースに変換する
+      res.status(200).json({
+        userProfileMeta: migrateVariableNameForFrontend(userProfileMeta),
+      });
     })
     .catch((err: any) => {
       console.error(err);
@@ -47,14 +49,22 @@ userAuthRouter.post("/signin", async (req: Request, res: Response) => {
 
 // POST /signup
 userAuthRouter.post("/signup", async (req: Request, res: Response) => {
-  if (!("email" in req.body && "password" in req.body && "name" in req.body)) {
+  // パラメータチェック
+  if (
+    !(
+      "email" in req.body &&
+      "password" in req.body &&
+      "name" in req.body &&
+      "userType" in req.body
+    )
+  ) {
     res.status(500).json({ msg: "internal server error" });
     return;
   }
   // ユーザーの存在確認
   await db
     .query(
-      `select exists (select * from user_auth where email = '${req.body.email}') as user_check;`
+      `select exists (select * from user_profile_meta where email = '${req.body.email}') as user_check;`
     )
     .then((queryRes) => {
       console.log(`user check result : ${queryRes[0].user_check}`);
@@ -70,27 +80,38 @@ userAuthRouter.post("/signup", async (req: Request, res: Response) => {
       // パスワードハッシュ化
       const hashedPassword = await digestMessage(req.body.password);
       console.log(hashedPassword);
-      // user_authテーブルにユーザー情報を作成する
+      // ユーザーのメタデータを格納する
       await db.query(
-        `insert into user_auth (email, password_hash) values ('${req.body.email}', '${hashedPassword}');`
+        `insert into user_profile_meta (user_type, display_name, email, password_hash) values (${req.body.userType}, '${req.body.name}', '${req.body.email}', '${hashedPassword}')`
       );
-      // user_authテーブルからuidを取得する
+      // 先ほど格納したユーザーのメタ情報からuidを取得する
       return await db.query(
-        `select uid from user_auth where email = '${req.body.email}' and password_hash = '${hashedPassword}'`
+        `select * from user_profile_meta where email = '${req.body.email}' and password_hash = '${hashedPassword}'`
       );
     })
-    .then(async (queryRes) => {
+    .then((queryRes: Array<UserProfileMetaDB>) => {
       console.log(`target uid: ${queryRes[0].uid}`);
-      // 取得したuidを元にuser_profileテーブルにユーザーを作成する
-      await db.query(
-        `insert into user_profile values (${queryRes[0].uid}, '${req.body.name}', '', '', 1, '', 1, '', 1, '', 1, '', 1, '', '2023-06-30 23:00:00', '2023-06-30 23:00:00')`
-      );
-      return await db.query(
-        `select * from user_profile where uid = ${queryRes[0].uid}`
-      );
-    })
-    .then((queryRes) => {
-      res.status(200).json({ msg: queryRes[0] });
+      console.log(`target user type: ${queryRes[0].user_type}`);
+      // ユーザー種別ごとにテーブルにデータを挿入する
+      if (queryRes[0].user_type === 0) {
+        // 大学生むけ
+        db.query(
+          `insert into student_profile values (${queryRes[0].uid}, '${queryRes[0].display_name}', 0, NULL, 0, NULL, 0, NULL, 0, NULL)`
+        );
+      } else if (queryRes[0].user_type === 1) {
+        // 団体管理者向け
+        db.query(
+          `insert into group_profile values (${queryRes[0].uid}, '${queryRes[0].display_name}', NULL, NULL, NULL, NULL, NULL, NULL)`
+        );
+      } else {
+        // 生徒、保護者向け
+        db.query(
+          `insert into student_parent_profile values (${queryRes[0].uid}, '${queryRes[0].display_name}', 0, NULL, 0, NULL, 0, NULL, 0, NULL)`
+        );
+      }
+      res
+        .status(200)
+        .json({ msg: "successful create user", userProfileMeta: queryRes[0] });
     })
     .catch((err) => {
       console.error(err);
