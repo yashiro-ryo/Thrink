@@ -29,7 +29,7 @@ type StudentProfile = {
 };
 
 export class StudentProfileModel {
-  studentProfileCache: Array<Array<StudentProfileDB>> = [];
+  studentProfileCache: Array<Array<StudentProfile>> = [];
   lastUpdatedTime = 0;
   // 5分後にDBからキャッシュを更新する
   UPDATE_MINUTES = 5 * 60 * 1000;
@@ -41,7 +41,7 @@ export class StudentProfileModel {
     this.updateStudentProfileCache();
   }
 
-  getStudentProfile(pageIndex: number): Array<StudentProfileDB> {
+  getStudentProfile(pageIndex: number): Array<StudentProfile> {
     console.log("get student profile");
     console.log(this.studentProfileCache);
     // 最後にDBからデータをとってきてから5分経過後の場合は更新する
@@ -64,7 +64,10 @@ export class StudentProfileModel {
     db.query(`select * from student_profile`)
       .then((queryRes) => {
         console.log(queryRes);
-        this.studentProfileCache = splitPage(queryRes, 10);
+        this.studentProfileCache = splitPage(
+          this.migrateSnakeCaseToCamelCase(queryRes),
+          10
+        );
       })
       .catch((err) => {
         console.error(err);
@@ -77,5 +80,25 @@ export class StudentProfileModel {
     console.log(`update time : ${this.UPDATE_MINUTES}`);
     console.log(`now time : ${nowTime}`);
     return this.lastUpdatedTime + this.UPDATE_MINUTES < nowTime;
+  }
+
+  // フロントエンド用にスネークケースをキャメルケースに変換する関数
+  migrateSnakeCaseToCamelCase(
+    studentProfilesFromDB: Array<StudentProfileDB>
+  ): Array<StudentProfile> {
+    return studentProfilesFromDB.map((profileFromDB: StudentProfileDB) => {
+      return {
+        uid: profileFromDB.uid,
+        displayName: profileFromDB.display_name,
+        experienceVisibleLevel: profileFromDB.experience_visible_level,
+        experience: profileFromDB.experience,
+        awardsVisibleLevel: profileFromDB.awards_visible_level,
+        awards: profileFromDB.awards,
+        commentVisibleLevel: profileFromDB.comment_visible_level,
+        comment: profileFromDB.comment,
+        linksVisibleLevel: profileFromDB.links_visible_level,
+        links: profileFromDB.links,
+      };
+    });
   }
 }
