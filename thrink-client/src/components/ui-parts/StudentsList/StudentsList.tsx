@@ -1,24 +1,24 @@
 import { Row, Col } from 'react-bootstrap'
 import StudentProfileCard from './StudentProfileCard'
 import styled from 'styled-components'
-import { Student } from '@/values/Students'
+import { StudentDigest } from '@/values/Students'
 
 const StyledCol = styled(Col)`
   margin-top: 20px;
 `
 
 type Props = {
-  students: Array<Student>
+  studentDigests: Array<StudentDigest>
 }
 
 export default function StudentList(props: Props) {
   return (
     <div>
       <Row>
-        {props.students.map((student, index) => {
+        {props.studentDigests.map((studentDigest, index) => {
           return (
             <StyledCol key={`student-card-${index}`}>
-              <StudentProfileCard student={student} />
+              <StudentProfileCard studentDigest={studentDigest} />
             </StyledCol>
           )
         })}

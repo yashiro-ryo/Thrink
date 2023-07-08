@@ -4,7 +4,7 @@ import SearchForm from '../../ui-parts/SearchForm'
 import StudentsList from '../../ui-parts/StudentsList/StudentsList'
 import styled from 'styled-components'
 import axios from 'axios'
-import { Student } from '@/values/Students'
+import { StudentDigest } from '@/values/Students'
 
 const HeaderLabel = styled.div`
   margin-top: 20px;
@@ -12,10 +12,11 @@ const HeaderLabel = styled.div`
 `
 
 export default function SearchStudents() {
-  const [students, setStudents] = useState<Array<Student>>([])
+  const [studentDigests, setStudentDigests] = useState<Array<StudentDigest>>([])
   const getAllStudents = () => {
-    axios.get('http://localhost:3000/v1/students').then((res: any) => {
-      setStudents(res.data)
+    axios.get('http://localhost:3000/v1/digests/student?pageIndex=1').then((res: any) => {
+      console.log(res.data)
+      setStudentDigests(res.data.studentDigests)
     })
   }
   useEffect(() => {
@@ -27,9 +28,9 @@ export default function SearchStudents() {
       <SearchForm searchType='student' />
       {/* カード一覧 */}
       <HeaderLabel>
-        <h5>大学生一覧({students.length}人)</h5>
+        <h5>大学生一覧({studentDigests.length}人)</h5>
       </HeaderLabel>
-      <StudentsList students={students} />
+      <StudentsList studentDigests={studentDigests} />
     </Container>
   )
 }

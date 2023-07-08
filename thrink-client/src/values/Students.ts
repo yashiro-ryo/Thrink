@@ -1,8 +1,8 @@
-export type Student = {
-  id: number
-  name: string
-  organization: string
-  comment: string
+export type StudentDigest = {
+  uid: number
+  displayName: string
+  iconImgUrl: string
+  headerImgUrl: string
 }
 
 export type StudentProfile = {
