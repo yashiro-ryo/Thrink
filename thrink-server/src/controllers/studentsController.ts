@@ -13,3 +13,13 @@ studentsRouter.get("/", (req: Request, res: Response) => {
     ),
   });
 });
+
+// GET /v1/students/:id
+studentsRouter.get("/:id", (req: Request, res: Response) => {
+  console.log(`student id: ${req.params.id}`);
+  res.status(200).json({
+    studentProfile: studentProfileModel.getStudentProfileById(
+      Number(req.params.id)
+    ),
+  });
+});

@@ -55,6 +55,32 @@ export class StudentProfileModel {
     return getTargetPage(this.studentProfileCache, pageIndex);
   }
 
+  getStudentProfileById(uid: number): StudentProfile | null {
+    console.log(`get student profile by id : ${uid}`);
+    // 最後にDBからデータをとってきてから5分経過後の場合は更新する
+    if (this.isOverAnyMinutes(new Date().getTime())) {
+      console.log("Update student profile cache. Because five minutes over");
+      // DBからキャッシュを更新する
+      this.updateStudentProfileCache();
+    }
+    console.log(this.studentProfileCache);
+    // キャッシュを返す
+    return this.getTargetStudentProfileByUid(uid);
+  }
+
+  getTargetStudentProfileByUid(uid: number): StudentProfile | null {
+    let result = null;
+    for (let i = 0; i < this.studentProfileCache.length; i++) {
+      for (let j = 0; j < this.studentProfileCache[i].length; j++) {
+        if (this.studentProfileCache[i][j].uid === uid) {
+          result = this.studentProfileCache[i][j];
+          break;
+        }
+      }
+    }
+    return result;
+  }
+
   /**
    * 大学生のプロフィールをキャッシュとして保持しておくための関数
    * キャッシュに保存後配列を返す
