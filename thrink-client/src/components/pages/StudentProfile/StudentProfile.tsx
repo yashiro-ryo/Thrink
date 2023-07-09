@@ -2,11 +2,12 @@ import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Container, Image, Nav, Button } from 'react-bootstrap'
 import { MdPlace } from 'react-icons/md'
-import Introduction from './Introduction'
-import Career from './Career'
+import Experience from './Experience'
+import Awards from './Awards'
+import Comment from './Comment'
 import Links from './Links'
 import axios from 'axios'
-import { Student, StudentProfile } from '@/values/Students'
+import { StudentProfile } from '@/values/Students'
 
 const HeaderImagePart = styled.div`
   width: 100%;
@@ -45,38 +46,29 @@ const ProfileTextBody = styled.div`
 `
 
 export default function StudentProfile(props: { uidStr: string }) {
-  const [visibleTabInfo, setVisibleTab] = useState<'introduction' | 'career' | 'links'>(
-    'introduction',
+  const [visibleTabInfo, setVisibleTab] = useState<'experience' | 'awards' | 'comment' | 'links'>(
+    'experience',
   )
   const [profile, setProfile] = useState<StudentProfile>({
-    id: 0,
-    introduction: '',
-    career: '',
-    links: {
-      twitter: '',
-      facebook: '',
-      instagram: '',
-    },
-  })
-  const [profileMeta, setProfileMeta] = useState<Student>({
-    id: 0,
-    name: '',
-    organization: '',
+    uid: 0,
+    displayName: '',
+    experienceVisibleLevel: 0,
+    experience: '',
+    awardsVisibleLevel: 0,
+    awards: '',
+    commentVisibleLevel: 0,
     comment: '',
+    linksVisibleLevel: 0,
+    links: '',
   })
   const getStudentProfile = (uid: number) => {
-    axios.get(`http://localhost:3000/v1/students/profile/${uid}`).then((res: any) => {
-      setProfile(res.data[0])
-    })
-  }
-  const getStudentMeta = (uid: number) => {
     axios.get(`http://localhost:3000/v1/students/${uid}`).then((res: any) => {
-      setProfileMeta(res.data[0])
+      console.log(res.data)
+      setProfile(res.data.studentProfile)
     })
   }
   useEffect(() => {
     getStudentProfile(Number(props.uidStr))
-    getStudentMeta(Number(props.uidStr))
   }, [props.uidStr])
 
   const UserProfileNull = () => {
@@ -101,36 +93,38 @@ export default function StudentProfile(props: { uidStr: string }) {
             width={'120px'}
             height={'120px'}
           />
-          <h3>{profileMeta.name}</h3>
-          <AffliationPart>
-            <StyledPlaceIcon />
-            <p>{profileMeta.organization}</p>
-          </AffliationPart>
           {profile === null ? (
             <UserProfileNull />
           ) : (
-            <div>
-              <Nav className='justify-content-start' variant='tabs'>
-                <Nav.Item>
-                  <Nav.Link onClick={() => setVisibleTab('introduction')}>自己紹介</Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link onClick={() => setVisibleTab('career')}>経歴</Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link onClick={() => setVisibleTab('links')}>リンク</Nav.Link>
-                </Nav.Item>
-              </Nav>
-              <ProfileTextBody>
-                {visibleTabInfo === 'introduction' ? (
-                  <Introduction introduction={profile.introduction} />
-                ) : (
-                  ''
-                )}
-                {visibleTabInfo === 'career' ? <Career career={profile.career} /> : ''}
-                {visibleTabInfo === 'links' ? <Links links={profile.links} /> : ''}
-              </ProfileTextBody>
-            </div>
+            <>
+              <h3>{profile.displayName}</h3>
+              <div>
+                <Nav className='justify-content-start' variant='tabs'>
+                  <Nav.Item>
+                    <Nav.Link onClick={() => setVisibleTab('experience')}>経験</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link onClick={() => setVisibleTab('awards')}>受賞歴</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link onClick={() => setVisibleTab('comment')}>コメント</Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link onClick={() => setVisibleTab('links')}>リンク</Nav.Link>
+                  </Nav.Item>
+                </Nav>
+                <ProfileTextBody>
+                  {visibleTabInfo === 'experience' ? (
+                    <Experience experience={profile.experience} />
+                  ) : (
+                    ''
+                  )}
+                  {visibleTabInfo === 'awards' ? <Awards awards={profile.awards} /> : ''}
+                  {visibleTabInfo === 'comment' ? <Comment comment={profile.comment} /> : ''}
+                  {visibleTabInfo === 'links' ? <Links links={profile.links} /> : ''}
+                </ProfileTextBody>
+              </div>
+            </>
           )}
         </UserProfileBody>
       </CustomContainer>

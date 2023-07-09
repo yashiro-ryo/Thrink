@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import { studentsRouter } from "./controllers/studentsController";
 import { groupsRouter } from "./controllers/groupsController";
 import { userAuthRouter } from "./controllers/userAuthController";
+import { stduentsDigestRouter } from "./controllers/studentsDigestController";
 import cors from "cors";
 import morgan from "morgan";
 
@@ -15,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/v1/students", studentsRouter);
 app.use("/v1/groups", groupsRouter);
 app.use("/auth/", userAuthRouter);
+app.use("/v1/digests/student", stduentsDigestRouter);
 
 app.get("/", async (_req: Request, res: Response) => {
   return res.status(200).send({

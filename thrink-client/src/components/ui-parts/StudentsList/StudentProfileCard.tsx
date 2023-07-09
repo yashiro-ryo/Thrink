@@ -2,7 +2,7 @@ import { Card, Button, Image } from 'react-bootstrap'
 import styled from 'styled-components'
 import { MdPlace } from 'react-icons/md'
 import { useRouter } from 'next/navigation'
-import { Student } from '@/values/Students'
+import { StudentDigest } from '@/values/Students'
 
 const FooterButtonGroup = styled.div`
   display: flex;
@@ -36,25 +36,21 @@ const StyledPlaceIcon = styled(MdPlace)`
 `
 
 type Props = {
-  student: Student
+  studentDigest: StudentDigest
 }
 
 export default function StudentCard(props: Props) {
   const router = useRouter()
   const redirectProfileDetailPage = () => {
     // FIXME student typeでリダイレクト先を変更させる
-    router.push(`/student/${props.student.id}`)
+    router.push(`/student/${props.studentDigest.uid}`)
   }
   return (
     <CardStyle onClick={() => redirectProfileDetailPage()}>
       <Card.Body>
         <HeaderGroup>
           <HeaderNameAndAffliation>
-            <h4>{props.student.name}</h4>
-            <AffliationPart>
-              <StyledPlaceIcon />
-              <p>{props.student.organization}</p>
-            </AffliationPart>
+            <h4>{props.studentDigest.displayName}</h4>
           </HeaderNameAndAffliation>
           <Image
             src='/user-blank.png'
@@ -64,12 +60,11 @@ export default function StudentCard(props: Props) {
             height={'60px'}
           />
         </HeaderGroup>
-        <p>{props.student.comment}</p>
         <FooterButtonGroup>
-          <StyledButton variant='primary' href={`/chat/${props.student.id}`}>
+          <StyledButton variant='primary' href={`/chat/${props.studentDigest.uid}`}>
             メッセージを送る
           </StyledButton>
-          <Button variant='secondary' href={`/like/${props.student.id}`}>
+          <Button variant='secondary' href={`/like/${props.studentDigest.uid}`}>
             いいね
           </Button>
         </FooterButtonGroup>
