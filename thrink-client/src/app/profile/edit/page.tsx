@@ -4,6 +4,7 @@ import Footer from '@/components/ui-parts/Footer/Footer'
 import { Container, Form, Button, Card, Image } from 'react-bootstrap'
 import styled from 'styled-components'
 import { useState } from 'react'
+import axios from 'axios'
 
 const StyledContainer = styled(Container)`
   margin-top: 30px;
@@ -30,6 +31,11 @@ const FormGroup = styled(Form.Group)`
 export default function EditProfile() {
   const [iconImageUrl, setIconUrl] = useState('/user-blank.png')
   const [headerImageUrl, setHeaderImageUrl] = useState('/header-blank.png')
+  // input form
+  const [inputExperience, setInputExperience] = useState('')
+  const [inputAwards, setInputAwards] = useState('')
+  const [inputComment, setInputComment] = useState('')
+  const [inputLinks, setInputLinks] = useState('')
   // anyなおす
   const onChangeIconInput = (e: any) => {
     const file = e.target.files[0]
@@ -51,6 +57,43 @@ export default function EditProfile() {
     }
     setHeaderImageUrl(URL.createObjectURL(file))
     URL.revokeObjectURL(file)
+  }
+  // anyなおす
+  const onChangeInputExperience = (e: any) => {
+    setInputExperience(e.target.value)
+  }
+  // anyなおす
+  const onChangeInputAwards = (e: any) => {
+    setInputAwards(e.target.value)
+  }
+  // anyなおす
+  const onChangeInputComment = (e: any) => {
+    setInputComment(e.target.value)
+  }
+  // anyなおす
+  const onChangeInputLinks = (e: any) => {
+    setInputLinks(e.target.value)
+  }
+  const save = () => {
+    console.log(inputExperience)
+    console.log(inputAwards)
+    console.log(inputComment)
+    console.log(inputLinks)
+    // お試しでuidを固定化してプロフィール更新してみる
+    // 固定はuid = 4
+    axios
+      .post('http://localhost:3000/v1/students/profile/4', {
+        experience: inputExperience,
+        awards: inputAwards,
+        comment: inputComment,
+        links: inputLinks,
+      })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
   }
   return (
     <div>
@@ -84,18 +127,44 @@ export default function EditProfile() {
                 />
               </FormGroup>
               <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
-                <Form.Label>自己紹介</Form.Label>
-                <Form.Control as='textarea' rows={3} />
+                <Form.Label>経験</Form.Label>
+                <Form.Control
+                  as='textarea'
+                  rows={3}
+                  value={inputExperience}
+                  onChange={onChangeInputExperience}
+                />
               </Form.Group>
               <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
-                <Form.Label>経歴</Form.Label>
-                <Form.Control as='textarea' rows={3} />
+                <Form.Label>受賞歴</Form.Label>
+                <Form.Control
+                  as='textarea'
+                  rows={3}
+                  value={inputAwards}
+                  onChange={onChangeInputAwards}
+                />
+              </Form.Group>
+              <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+                <Form.Label>コメント</Form.Label>
+                <Form.Control
+                  as='textarea'
+                  rows={3}
+                  value={inputComment}
+                  onChange={onChangeInputComment}
+                />
               </Form.Group>
               <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
                 <Form.Label>リンク一覧</Form.Label>
-                <Form.Control as='textarea' rows={3} />
+                <Form.Control
+                  as='textarea'
+                  rows={3}
+                  value={inputLinks}
+                  onChange={onChangeInputLinks}
+                />
               </Form.Group>
-              <Button variant='primary'>保存する</Button>
+              <Button variant='primary' onClick={() => save()}>
+                保存する
+              </Button>
             </Form>
           </Card.Body>
         </Card>
