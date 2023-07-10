@@ -4,7 +4,7 @@ import { Container, Card, Form, Button, ToggleButtonGroup, ToggleButton } from '
 import styled from 'styled-components'
 import Link from 'next/link'
 import { useState } from 'react'
-import axios from 'axios'
+import apiClient from '@/lib/http-common'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { saveUserProfile } from '@/redux/slices/userProfileSlice'
 import { migrateDbParamToClientParam } from '@/values/UserProfile'
@@ -100,8 +100,8 @@ export default function SignupPage() {
       return
     }
     setErrorText([])
-    axios
-      .post('http://localhost:3000/auth/signup', {
+    apiClient
+      .post('/auth/signup', {
         email: inputEmail,
         password: inputPassword,
         name: inputName,

@@ -6,9 +6,9 @@ import styled from 'styled-components'
 import Link from 'next/link'
 import { useAppDispatch } from '@/redux/hooks'
 import { signin } from '@/redux/slices/signedinStateSlice'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
+import apiClient from '@/lib/http-common'
 
 const CardContainer = styled(Container)`
   display: flex;
@@ -53,14 +53,15 @@ export default function Signin() {
     setPassword(e.target.value)
   }
   const submitForm = () => {
-    axios
-      .post('http://localhost:3000/auth/signin', {
+    apiClient
+      .post('/auth/signin', {
         email,
         password,
       })
       .then((res: any) => {
         // ログイン成功
         console.log(res)
+        signinCheck()
       })
       .catch((errRes) => {
         // ログイン失敗
@@ -68,6 +69,17 @@ export default function Signin() {
         setFormErrorText('ログインできませんでした。emailとpasswordを再度確認してください。')
       })
   }
+  const signinCheck = () => {
+    apiClient
+      .get('/auth/signin')
+      .then((res) => console.log(res))
+      .catch((err) => {
+        console.error(err)
+      })
+  }
+  useEffect(() => {
+    signinCheck()
+  }, [])
   return (
     <div>
       <NavbarComp />

@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap'
 import SearchForm from '@/components/ui-parts/SearchForm'
 import GroupsList from '@/components/ui-parts/GroupsList/GroupsList'
 import styled from 'styled-components'
-import axios from 'axios'
+import apiClient from '@/lib/http-common'
 import { Group } from '@/values/Groups'
 
 const HeaderLabel = styled.div`
@@ -14,7 +14,7 @@ const HeaderLabel = styled.div`
 export default function SearchGroups() {
   const [groups, setGroups] = useState<Array<Group>>([])
   const getGroups = () => {
-    axios.get('http://localhost:3000/v1/groups').then((res: any) => {
+    apiClient.get('/v1/groups').then((res: any) => {
       setGroups(res.data)
     })
   }

@@ -5,7 +5,7 @@ import { MdPlace } from 'react-icons/md'
 import Introduction from './Introduction'
 import Career from './Career'
 import Links from './Links'
-import axios from 'axios'
+import apiClient from '@/lib/http-common'
 import { Group, GroupProfile } from '@/values/Groups'
 
 const HeaderImagePart = styled.div`
@@ -66,13 +66,13 @@ export default function GroupsProfile(props: { gidStr: string }) {
     comment: '',
   })
   const getGroupProfile = (gid: number) => {
-    axios.get(`http://localhost:3000/v1/groups/profile/${gid}`).then((res: any) => {
+    apiClient.get(`/v1/groups/profile/${gid}`).then((res: any) => {
       console.log(res.data)
       setProfile(res.data[0])
     })
   }
   const getGroupMeta = (gid: number) => {
-    axios.get(`http://localhost:3000/v1/groups/${gid}`).then((res: any) => {
+    apiClient.get(`/v1/groups/${gid}`).then((res: any) => {
       console.log(res.data)
       setProfileMeta(res.data[0])
     })
