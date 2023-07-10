@@ -85,9 +85,10 @@ export class StudentProfileModel {
    * 大学生のプロフィールをキャッシュとして保持しておくための関数
    * キャッシュに保存後配列を返す
    */
-  updateStudentProfileCache() {
-    this.lastUpdatedTime = new Date().getTime();
-    db.query(`select * from student_profile`)
+  async updateStudentProfileCache() {
+    this.lastUpdatedTime = await new Date().getTime();
+    await db
+      .query(`select * from student_profile`)
       .then((queryRes) => {
         console.log(queryRes);
         this.studentProfileCache = splitPage(
@@ -126,5 +127,23 @@ export class StudentProfileModel {
         links: profileFromDB.links,
       };
     });
+  }
+
+  // student profileをupdateする関数
+  async updateStudentProfile(
+    uid: number,
+    experience: string,
+    awards: string,
+    comment: string,
+    links: string
+  ) {
+    console.log(uid);
+    console.log(experience);
+    console.log(awards);
+    console.log(comment);
+    console.log(links);
+    await db.query(
+      `update student_profile set experience = '${experience}', awards = '${awards}', comment = '${comment}', links = '${links}' where uid = ${uid};`
+    );
   }
 }
