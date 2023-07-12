@@ -4,9 +4,32 @@ import { digestMessage } from "../lib/hash";
 import {
   UserProfileMetaDB,
   migrateVariableNameForFrontend,
+  removeSecureData,
 } from "../models/UserProfileMeta";
 
 export const userAuthRouter = Router();
+
+// GET /signin
+userAuthRouter.get("/signin", (req: Request, res: Response) => {
+  console.log(`res.session.uid : ${req.session.uid}`);
+  if (req.session.uid === undefined) {
+    res.status(400).json({ msg: "not signed in" });
+    return;
+  } else {
+    db.query(`select * from user_profile_meta where uid = ${req.session.uid}`)
+      .then((userProfileMeta) => {
+        res.status(200).json({
+          userProfileMeta: removeSecureData(
+            migrateVariableNameForFrontend(userProfileMeta[0])
+          ),
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).json({ msg: "internal error" });
+      });
+  }
+});
 
 // POST /signin
 userAuthRouter.post("/signin", async (req: Request, res: Response) => {
@@ -33,8 +56,12 @@ userAuthRouter.post("/signin", async (req: Request, res: Response) => {
     })
     .then((userProfileMeta: UserProfileMetaDB) => {
       // frontend用にキャメルケースに変換する
+      req.session.uid = userProfileMeta.uid;
+      req.session.save();
       res.status(200).json({
-        userProfileMeta: migrateVariableNameForFrontend(userProfileMeta),
+        userProfileMeta: removeSecureData(
+          migrateVariableNameForFrontend(userProfileMeta)
+        ),
       });
     })
     .catch((err: any) => {
