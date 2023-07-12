@@ -6,8 +6,8 @@ import Experience from './Experience'
 import Awards from './Awards'
 import Comment from './Comment'
 import Links from './Links'
-import axios from 'axios'
 import { StudentProfile } from '@/values/Students'
+import apiClient from '@/lib/http-common'
 
 const HeaderImagePart = styled.div`
   width: 100%;
@@ -62,7 +62,7 @@ export default function StudentProfile(props: { uidStr: string }) {
     links: '',
   })
   const getStudentProfile = (uid: number) => {
-    axios.get(`http://localhost:3000/v1/students/${uid}`).then((res: any) => {
+    apiClient.get(`/v1/students/${uid}`).then((res: any) => {
       console.log(res.data)
       setProfile(res.data.studentProfile)
     })

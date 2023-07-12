@@ -6,6 +6,10 @@ import styled from 'styled-components'
 import { useAppSelector } from '@/redux/hooks'
 import { useEffect } from 'react'
 import NavbarSignedin from './NavbarSignedin'
+import apiClient from '@/lib/http-common'
+import { useDispatch } from 'react-redux'
+import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
+import { signin } from '@/redux/slices/signedinStateSlice'
 
 const NavbarStyle = styled(Navbar)`
   background-color: #46ccd7;
@@ -23,11 +27,29 @@ const NavLink = styled(Nav.Link)`
 
 export default function NavbarComp() {
   const isSignedin = useAppSelector((state) => state.signinStateSwitcher.isSignedIn)
-  const userProfile = useAppSelector((state) => state.userProfileReducer.profile)
+  const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
+  const dispatch = useDispatch()
   useEffect(() => {
-    console.log(isSignedin)
-    console.log(userProfile)
-  }, [isSignedin, userProfile])
+    // client側にキャッシュが存在しない場合
+    if (userProfileMeta === null) {
+      console.log('client cache none')
+      // server側へ問い合わせ
+      apiClient
+        .get('/auth/signin')
+        .then((res) => {
+          console.log(res.data.userProfileMeta)
+          dispatch(signin())
+          dispatch(saveUserProfileMeta(res.data.userProfileMeta))
+        })
+        .catch((err) => {
+          // do nothing
+        })
+    } else {
+      // cacheが存在する場合はsinginのAPIを送信しない
+      console.log('client cache exist')
+      console.log(userProfileMeta)
+    }
+  }, [])
   return (
     <div>
       <NavbarStyle collapseOnSelect expand='lg' variant='dark'>

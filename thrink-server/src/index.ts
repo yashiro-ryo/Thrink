@@ -5,12 +5,25 @@ import { userAuthRouter } from "./controllers/userAuthController";
 import { stduentsDigestRouter } from "./controllers/studentsDigestController";
 import cors from "cors";
 import morgan from "morgan";
+import session from "express-session";
 
 const app: Application = express();
 const PORT = 3000;
+// TODO Security Settings
+const SESSION_CONFIG = {
+  secret: "secret",
+  cookie: {},
+};
+declare module "express-session" {
+  interface SessionData {
+    uid: number;
+  }
+}
 
 app.use(morgan("dev"));
-app.use(cors());
+// TODO Security Settings
+app.use(cors({ credentials: true, origin: true }));
+app.use(session(SESSION_CONFIG));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/v1/students", studentsRouter);

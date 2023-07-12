@@ -4,7 +4,7 @@ import Footer from '@/components/ui-parts/Footer/Footer'
 import { Container, Form, Button, Card, Image } from 'react-bootstrap'
 import styled from 'styled-components'
 import { useState } from 'react'
-import axios from 'axios'
+import apiClient from '@/lib/http-common'
 
 const StyledContainer = styled(Container)`
   margin-top: 30px;
@@ -81,8 +81,8 @@ export default function EditProfile() {
     console.log(inputLinks)
     // お試しでuidを固定化してプロフィール更新してみる
     // 固定はuid = 4
-    axios
-      .post('http://localhost:3000/v1/students/profile/4', {
+    apiClient
+      .post('/v1/students/profile/4', {
         experience: inputExperience,
         awards: inputAwards,
         comment: inputComment,

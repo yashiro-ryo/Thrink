@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap'
 import SearchForm from '../../ui-parts/SearchForm'
 import StudentsList from '../../ui-parts/StudentsList/StudentsList'
 import styled from 'styled-components'
-import axios from 'axios'
+import apiClient from '@/lib/http-common'
 import { StudentDigest } from '@/values/Students'
 
 const HeaderLabel = styled.div`
@@ -14,7 +14,7 @@ const HeaderLabel = styled.div`
 export default function SearchStudents() {
   const [studentDigests, setStudentDigests] = useState<Array<StudentDigest>>([])
   const getAllStudents = () => {
-    axios.get('http://localhost:3000/v1/digests/student?pageIndex=1').then((res: any) => {
+    apiClient.get('/v1/digests/student?pageIndex=1').then((res: any) => {
       console.log(res.data)
       setStudentDigests(res.data.studentDigests)
     })

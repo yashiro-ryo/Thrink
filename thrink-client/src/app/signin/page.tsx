@@ -5,10 +5,11 @@ import { Container, Card, Form, Button } from 'react-bootstrap'
 import styled from 'styled-components'
 import Link from 'next/link'
 import { useAppDispatch } from '@/redux/hooks'
+import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
 import { signin } from '@/redux/slices/signedinStateSlice'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
+import apiClient from '@/lib/http-common'
 
 const CardContainer = styled(Container)`
   display: flex;
@@ -53,17 +54,22 @@ export default function Signin() {
     setPassword(e.target.value)
   }
   const submitForm = () => {
-    axios
-      .post('http://localhost:3000/auth/signin', {
+    apiClient
+      .post('/auth/signin', {
         email,
         password,
       })
       .then((res: any) => {
         // ログイン成功
-        console.log(res)
+        console.log('successful signin')
+        console.log(res.data.userProfileMeta)
+        dispatch(saveUserProfileMeta(res.data.userProfileMeta))
+        dispatch(signin())
+        router.push('/')
       })
       .catch((errRes) => {
         // ログイン失敗
+        console.log('failed signin˝')
         console.error(errRes)
         setFormErrorText('ログインできませんでした。emailとpasswordを再度確認してください。')
       })
