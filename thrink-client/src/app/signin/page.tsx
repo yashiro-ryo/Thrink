@@ -5,8 +5,9 @@ import { Container, Card, Form, Button } from 'react-bootstrap'
 import styled from 'styled-components'
 import Link from 'next/link'
 import { useAppDispatch } from '@/redux/hooks'
+import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
 import { signin } from '@/redux/slices/signedinStateSlice'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import apiClient from '@/lib/http-common'
 
@@ -60,26 +61,19 @@ export default function Signin() {
       })
       .then((res: any) => {
         // ログイン成功
-        console.log(res)
-        signinCheck()
+        console.log('successful signin')
+        console.log(res.data.userProfileMeta)
+        dispatch(saveUserProfileMeta(res.data.userProfileMeta))
+        dispatch(signin())
+        router.push('/')
       })
       .catch((errRes) => {
         // ログイン失敗
+        console.log('failed signin˝')
         console.error(errRes)
         setFormErrorText('ログインできませんでした。emailとpasswordを再度確認してください。')
       })
   }
-  const signinCheck = () => {
-    apiClient
-      .get('/auth/signin')
-      .then((res) => console.log(res))
-      .catch((err) => {
-        console.error(err)
-      })
-  }
-  useEffect(() => {
-    signinCheck()
-  }, [])
   return (
     <div>
       <NavbarComp />

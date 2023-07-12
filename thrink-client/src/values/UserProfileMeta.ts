@@ -7,3 +7,11 @@ export type UserProfileMeta = {
   email: string
   password_hash: string
 }
+
+export type UserProfileMetaWithoutSecureData = {
+  uid: number
+  userType: 0 | 1 | 2
+  iconImgUrl: string | null
+  headerImgUrl: string | null
+  displayName: string
+}
