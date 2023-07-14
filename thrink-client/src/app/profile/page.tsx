@@ -45,10 +45,7 @@ export default function UserProfile() {
     }
   }
   useEffect(() => {
-    if (userProfileMeta === null) {
-      // ログイン情報なし
-      router.push('/')
-    } else {
+    if (userProfileMeta !== null) {
       getProfile(userProfileMeta.uid, userProfileMeta.userType)
     }
   }, [userProfileMeta])
@@ -59,7 +56,9 @@ export default function UserProfile() {
         <Card>
           <Card.Header>プロフィール</Card.Header>
           <Card.Body>
-            <Button variant='primary'>編集する</Button>
+            <Button variant='primary' onClick={() => router.push('/profile/edit')}>
+              編集する
+            </Button>
             <Card.Title>経験</Card.Title>
             <Card.Text>{experience}</Card.Text>
             <Card.Title>受賞歴</Card.Title>
