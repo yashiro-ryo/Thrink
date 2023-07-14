@@ -3,6 +3,7 @@ import { studentsRouter } from "./controllers/studentsController";
 import { groupsRouter } from "./controllers/groupsController";
 import { userAuthRouter } from "./controllers/userAuthController";
 import { stduentsDigestRouter } from "./controllers/studentsDigestController";
+import { groupDigestsRouter } from "./controllers/groupsDigestsController";
 import cors from "cors";
 import morgan from "morgan";
 import session from "express-session";
@@ -30,6 +31,7 @@ app.use("/v1/students", studentsRouter);
 app.use("/v1/groups", groupsRouter);
 app.use("/auth/", userAuthRouter);
 app.use("/v1/digests/student", stduentsDigestRouter);
+app.use("/v1/digests/group", groupDigestsRouter);
 
 app.get("/", async (_req: Request, res: Response) => {
   return res.status(200).send({
