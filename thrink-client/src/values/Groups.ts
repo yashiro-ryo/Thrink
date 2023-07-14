@@ -1,3 +1,10 @@
+export type GroupDigest = {
+  uid: number
+  displayName: string
+  iconImgUrl: string
+  headerImgUrl: string
+}
+
 export type Group = {
   id: number
   name: string

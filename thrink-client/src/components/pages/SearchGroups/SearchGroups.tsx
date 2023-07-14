@@ -4,7 +4,7 @@ import SearchForm from '@/components/ui-parts/SearchForm'
 import GroupsList from '@/components/ui-parts/GroupsList/GroupsList'
 import styled from 'styled-components'
 import apiClient from '@/lib/http-common'
-import { Group } from '@/values/Groups'
+import { GroupDigest } from '@/values/Groups'
 
 const HeaderLabel = styled.div`
   margin-top: 20px;
@@ -12,14 +12,14 @@ const HeaderLabel = styled.div`
 `
 
 export default function SearchGroups() {
-  const [groups, setGroups] = useState<Array<Group>>([])
-  const getGroups = () => {
-    apiClient.get('/v1/groups').then((res: any) => {
-      setGroups(res.data)
+  const [groupsDigests, setGroupsDigests] = useState<Array<GroupDigest>>([])
+  const getGroupsDigests = () => {
+    apiClient.get('/v1/digests/group?pageIndex=1').then((res: any) => {
+      setGroupsDigests(res.data.groupDigests)
     })
   }
   useEffect(() => {
-    getGroups()
+    getGroupsDigests()
   }, [])
   return (
     <Container>
@@ -27,9 +27,9 @@ export default function SearchGroups() {
       <SearchForm searchType='group' />
       {/* カード一覧 */}
       <HeaderLabel>
-        <h5>団体一覧({groups.length}件)</h5>
+        <h5>団体一覧({groupsDigests.length}件)</h5>
       </HeaderLabel>
-      <GroupsList groups={groups} />
+      <GroupsList groupsDigests={groupsDigests} />
     </Container>
   )
 }
