@@ -3,8 +3,10 @@ import NavbarComp from '@/components/ui-parts/Navbar/Navbar'
 import Footer from '@/components/ui-parts/Footer/Footer'
 import { Container, Form, Button, Card, Image } from 'react-bootstrap'
 import styled from 'styled-components'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import apiClient from '@/lib/http-common'
+import { useAppSelector } from '@/redux/hooks'
+import { useRouter } from 'next/navigation'
 
 const StyledContainer = styled(Container)`
   margin-top: 30px;
@@ -29,6 +31,8 @@ const FormGroup = styled(Form.Group)`
   flex-direction: column;
 `
 export default function EditProfile() {
+  const router = useRouter()
+  const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const [iconImageUrl, setIconUrl] = useState('/user-blank.png')
   const [headerImageUrl, setHeaderImageUrl] = useState('/header-blank.png')
   // input form
@@ -79,10 +83,12 @@ export default function EditProfile() {
     console.log(inputAwards)
     console.log(inputComment)
     console.log(inputLinks)
-    // お試しでuidを固定化してプロフィール更新してみる
-    // 固定はuid = 4
+    if (userProfileMeta === null) {
+      // プロフィールがそもそも存在しない場合はreturn
+      return
+    }
     apiClient
-      .post('/v1/students/profile/4', {
+      .post(`/v1/students/profile/${userProfileMeta.uid}`, {
         experience: inputExperience,
         awards: inputAwards,
         comment: inputComment,
@@ -90,11 +96,45 @@ export default function EditProfile() {
       })
       .then((res) => {
         console.log(res)
+        router.push('/profile')
       })
       .catch((err) => {
         console.error(err)
       })
   }
+  const getProfile = (uid: number, userType: 0 | 1 | 2) => {
+    console.log(uid)
+    console.log(userType)
+    apiClient.get(`/v1/${getEndPointTarget(userType)}/${uid}`).then((res) => {
+      console.log(res)
+      if (userType === 0) {
+        // TODO null対策
+        setInputExperience(nullCheck(res.data.studentProfile.experience))
+        setInputAwards(nullCheck(res.data.studentProfile.awards))
+        setInputComment(nullCheck(res.data.studentProfile.comment))
+        setInputLinks(nullCheck(res.data.studentProfile.links))
+      }
+    })
+  }
+  const nullCheck = (maybeStr: any) => {
+    return maybeStr === null ? '' : maybeStr
+  }
+  const getEndPointTarget = (userType: 0 | 1 | 2) => {
+    if (userType === 0) {
+      return 'students'
+    } else if (userType === 1) {
+      return 'groups'
+    } else {
+      return ''
+    }
+  }
+  useEffect(() => {
+    if (userProfileMeta === null) {
+      router.push('/profile')
+    } else {
+      getProfile(userProfileMeta.uid, userProfileMeta.userType)
+    }
+  }, [userProfileMeta])
   return (
     <div>
       <NavbarComp />
