@@ -6,7 +6,7 @@ import Introduction from './Introduction'
 import Career from './Career'
 import Links from './Links'
 import apiClient from '@/lib/http-common'
-import { Group, GroupProfile } from '@/values/Groups'
+import { GroupDigest, GroupProfile } from '@/values/Groups'
 
 const HeaderImagePart = styled.div`
   width: 100%;
@@ -49,32 +49,31 @@ export default function GroupsProfile(props: { gidStr: string }) {
     'introduction',
   )
   const [profile, setProfile] = useState<GroupProfile>({
-    id: 0,
-    introduction: '',
-    history: '',
-    links: {
-      web: '',
-      twitter: '',
-      facebook: '',
-      instagram: '',
-    },
-  })
-  const [profileMeta, setProfileMeta] = useState<Group>({
-    id: 0,
-    name: '',
+    uid: 0,
+    displayName: '',
     location: '',
-    comment: '',
+    activityDetail: '',
+    activityDay: '',
+    activityTime: '',
+    memberNum: 0,
+    awards: '',
+  })
+  const [profileMeta, setProfileMeta] = useState<GroupDigest>({
+    uid: 0,
+    displayName: '',
+    iconImgUrl: '',
+    headerImgUrl: '',
   })
   const getGroupProfile = (gid: number) => {
-    apiClient.get(`/v1/groups/profile/${gid}`).then((res: any) => {
+    apiClient.get(`/v1/groups/${gid}`).then((res: any) => {
       console.log(res.data)
-      setProfile(res.data[0])
+      setProfile(res.data.groupProfile)
     })
   }
   const getGroupMeta = (gid: number) => {
-    apiClient.get(`/v1/groups/${gid}`).then((res: any) => {
+    apiClient.get(`/v1/digests/group/${gid}`).then((res: any) => {
       console.log(res.data)
-      setProfileMeta(res.data[0])
+      setProfileMeta(res.data.groupProfileMeta)
     })
   }
   useEffect(() => {
@@ -105,35 +104,23 @@ export default function GroupsProfile(props: { gidStr: string }) {
             width={'120px'}
             height={'120px'}
           />
-          <h3>{profileMeta.name}</h3>
-          <AffliationPart>
-            <StyledPlaceIcon />
-            <p>{profileMeta.location}</p>
-          </AffliationPart>
-          {profile === null ? (
+          {profile === null || profileMeta === null ? (
             <UserProfileNull />
           ) : (
             <div>
-              <Nav className='justify-content-start' variant='tabs'>
-                <Nav.Item>
-                  <Nav.Link onClick={() => setVisibleTab('introduction')}>自己紹介</Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link onClick={() => setVisibleTab('career')}>経歴</Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link onClick={() => setVisibleTab('links')}>リンク</Nav.Link>
-                </Nav.Item>
-              </Nav>
-              <ProfileTextBody>
-                {visibleTabInfo === 'introduction' ? (
-                  <Introduction introduction={profile.introduction} />
-                ) : (
-                  ''
-                )}
-                {visibleTabInfo === 'career' ? <Career history={profile.history} /> : ''}
-                {visibleTabInfo === 'links' ? <Links links={profile.links} /> : ''}
-              </ProfileTextBody>
+              <h3>{profileMeta.displayName}</h3>
+              <h4>場所</h4>
+              <p>{profile.location}</p>
+              <h4>活動詳細</h4>
+              <p>{profile.activityDetail}</p>
+              <h4>活動日</h4>
+              <p>{profile.activityDay}</p>
+              <h4>活動時間</h4>
+              <p>{profile.activityTime}</p>
+              <h4>所属人数</h4>
+              <p>{profile.memberNum}</p>
+              <h4>受賞歴</h4>
+              <p>{profile.awards}</p>
             </div>
           )}
         </UserProfileBody>

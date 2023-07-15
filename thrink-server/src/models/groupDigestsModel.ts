@@ -37,6 +37,31 @@ export class GroupDigestsModel {
     return getTargetPage(this.groupDigestsCache, pageIndex);
   }
 
+  getGroupDigestByUid(uid: number): GroupDigest | null {
+    // 最後にDBからデータをとってきてから5分経過後の場合は更新する
+    if (this.isOverAnyMinutes(new Date().getTime())) {
+      console.log("Update group digets cache. Because five minutes over");
+      // DBからキャッシュを更新する
+      this.updateGroupProfileCache();
+    }
+    console.log(this.groupDigestsCache);
+    // キャッシュからuidを指定して取得する
+    return this.getTargetGroupDigest(uid);
+  }
+
+  getTargetGroupDigest(uid: number): GroupDigest | null {
+    let result = null;
+    for (let i = 0; i < this.groupDigestsCache.length; i++) {
+      for (let j = 0; j < this.groupDigestsCache[i].length; j++) {
+        if (this.groupDigestsCache[i][j].uid === uid) {
+          result = this.groupDigestsCache[i][j];
+          break;
+        }
+      }
+    }
+    return result;
+  }
+
   /**
    * 団体のプロフィールをキャッシュとして保持しておくための関数
    * キャッシュに保存後配列を返す
