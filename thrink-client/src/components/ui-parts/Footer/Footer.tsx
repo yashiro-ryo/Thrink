@@ -54,7 +54,7 @@ export default function Footer() {
               <Link href='/students'>大学生を探す</Link>
             </li>
             <li>
-              <Link href='/search-groups'>学校・団体を探す</Link>
+              <Link href='/groups'>学校・団体を探す</Link>
             </li>
             <li>
               <Link href='#articles'>記事一覧</Link>
