@@ -1,24 +1,24 @@
 import { Row, Col } from 'react-bootstrap'
 import GroupProfileCard from './GroupProfileCard'
 import styled from 'styled-components'
-import { Group } from '@/values/Groups'
+import { GroupDigest } from '@/values/Groups'
 
 const StyledCol = styled(Col)`
   margin-top: 20px;
 `
 
 type Props = {
-  groups: Array<Group>
+  groupsDigests: Array<GroupDigest>
 }
 
 export default function GroupsList(props: Props) {
   return (
     <div>
       <Row>
-        {props.groups.map((group, index) => {
+        {props.groupsDigests.map((groupDigest, index) => {
           return (
             <StyledCol key={`group-card-${index}`}>
-              <GroupProfileCard group={group} />
+              <GroupProfileCard groupDigest={groupDigest} />
             </StyledCol>
           )
         })}
