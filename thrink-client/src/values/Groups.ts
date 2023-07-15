@@ -12,6 +12,8 @@ export type GroupProfile = {
   activityDetail: string
   activityDay: string
   activityTime: string
-  memberNum: number
+  membersNum: number
   awards: string
+  iconImgUrl: string
+  headerImgUrl: string
 }

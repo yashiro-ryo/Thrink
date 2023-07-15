@@ -8,8 +8,10 @@ type GroupProfileDB = {
   activity_detail: string;
   activity_day: string;
   activity_time: string;
-  member_num: number;
+  members_num: number;
   awards: string;
+  icon_img_url: string;
+  header_img_url: string;
 };
 
 type GroupProfile = {
@@ -19,8 +21,10 @@ type GroupProfile = {
   activityDetail: string;
   activityDay: string;
   activityTime: string;
-  memberNum: number;
+  membersNum: number;
   awards: string;
+  iconImgUrl: string;
+  headerImgUrl: string;
 };
 
 export class GroupProfileModel {
@@ -83,7 +87,9 @@ export class GroupProfileModel {
   async updateGroupProfileCache() {
     this.lastUpdatedTime = await new Date().getTime();
     await db
-      .query(`select * from group_profile`)
+      .query(
+        `select group_profile.uid, group_profile.display_name, group_profile.activity_detail, group_profile.activity_day, group_profile.activity_time, group_profile.members_num, group_profile.location, group_profile.awards, user_profile_meta.icon_img_url, user_profile_meta.header_img_url from group_profile inner join user_profile_meta on group_profile.uid = user_profile_meta.uid;`
+      )
       .then((queryRes) => {
         console.log(queryRes);
         this.groupProfileCache = splitPage(
@@ -116,8 +122,10 @@ export class GroupProfileModel {
         activityDetail: profileFromDB.activity_detail,
         activityDay: profileFromDB.activity_day,
         activityTime: profileFromDB.activity_time,
-        memberNum: profileFromDB.member_num,
+        membersNum: profileFromDB.members_num,
         awards: profileFromDB.awards,
+        iconImgUrl: profileFromDB.icon_img_url,
+        headerImgUrl: profileFromDB.header_img_url,
       };
     });
   }

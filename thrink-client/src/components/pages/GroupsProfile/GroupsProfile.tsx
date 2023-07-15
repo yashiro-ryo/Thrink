@@ -2,11 +2,8 @@ import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Container, Image, Nav, Button } from 'react-bootstrap'
 import { MdPlace } from 'react-icons/md'
-import Introduction from './Introduction'
-import Career from './Career'
-import Links from './Links'
 import apiClient from '@/lib/http-common'
-import { GroupDigest, GroupProfile } from '@/values/Groups'
+import { GroupProfile } from '@/values/Groups'
 
 const HeaderImagePart = styled.div`
   width: 100%;
@@ -26,28 +23,12 @@ const CustomContainer = styled(Container)`
   }
 `
 
-const AffliationPart = styled.div`
-  display: flex;
-`
-
-const StyledPlaceIcon = styled(MdPlace)`
-  width: 20px;
-  height: 20px;
-`
-
 const UserProfileBody = styled.div`
   position: relative;
   top: -60px;
 `
 
-const ProfileTextBody = styled.div`
-  margin-top: 20px;
-`
-
 export default function GroupsProfile(props: { gidStr: string }) {
-  const [visibleTabInfo, setVisibleTab] = useState<'introduction' | 'career' | 'links'>(
-    'introduction',
-  )
   const [profile, setProfile] = useState<GroupProfile>({
     uid: 0,
     displayName: '',
@@ -55,14 +36,10 @@ export default function GroupsProfile(props: { gidStr: string }) {
     activityDetail: '',
     activityDay: '',
     activityTime: '',
-    memberNum: 0,
+    membersNum: 0,
     awards: '',
-  })
-  const [profileMeta, setProfileMeta] = useState<GroupDigest>({
-    uid: 0,
-    displayName: '',
     iconImgUrl: '',
-    activityDetail: '',
+    headerImgUrl: '',
   })
   const getGroupProfile = (gid: number) => {
     apiClient.get(`/v1/groups/${gid}`).then((res: any) => {
@@ -70,16 +47,9 @@ export default function GroupsProfile(props: { gidStr: string }) {
       setProfile(res.data.groupProfile)
     })
   }
-  const getGroupMeta = (gid: number) => {
-    apiClient.get(`/v1/digests/group/${gid}`).then((res: any) => {
-      console.log(res.data)
-      setProfileMeta(res.data.groupProfileMeta)
-    })
-  }
   useEffect(() => {
     console.log(`gid: ${props.gidStr}`)
     getGroupProfile(Number(props.gidStr))
-    getGroupMeta(Number(props.gidStr))
   }, [props.gidStr])
 
   const UserProfileNull = () => {
@@ -104,11 +74,11 @@ export default function GroupsProfile(props: { gidStr: string }) {
             width={'120px'}
             height={'120px'}
           />
-          {profile === null || profileMeta === null ? (
+          {profile === null ? (
             <UserProfileNull />
           ) : (
             <div>
-              <h3>{profileMeta.displayName}</h3>
+              <h3>{profile.displayName}</h3>
               <h4>場所</h4>
               <p>{profile.location}</p>
               <h4>活動詳細</h4>
@@ -118,7 +88,7 @@ export default function GroupsProfile(props: { gidStr: string }) {
               <h4>活動時間</h4>
               <p>{profile.activityTime}</p>
               <h4>所属人数</h4>
-              <p>{profile.memberNum}</p>
+              <p>{profile.membersNum}</p>
               <h4>受賞歴</h4>
               <p>{profile.awards}</p>
             </div>
