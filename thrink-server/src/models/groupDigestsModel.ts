@@ -5,14 +5,14 @@ type GroupDigestDB = {
   uid: number;
   display_name: string;
   icon_img_url: string;
-  header_img_url: string;
+  activity_detail: string;
 };
 
 type GroupDigest = {
   uid: number;
   displayName: string;
   iconImgUrl: string;
-  headerImgUrl: string;
+  activityDetail: string;
 };
 
 export class GroupDigestsModel {
@@ -70,7 +70,7 @@ export class GroupDigestsModel {
     this.lastUpdatedTime = new Date().getTime();
     // 団体のuser_typeは1
     db.query(
-      `select uid, icon_img_url, header_img_url, display_name from user_profile_meta where user_type = 1`
+      `select user_profile_meta.uid, user_profile_meta.display_name, user_profile_meta.icon_img_url, group_profile.activity_detail from user_profile_meta inner join group_profile on user_profile_meta.uid = group_profile.uid`
     )
       .then((queryRes) => {
         console.log(queryRes);
@@ -100,8 +100,8 @@ export class GroupDigestsModel {
       return {
         uid: digestFromDB.uid,
         iconImgUrl: digestFromDB.icon_img_url,
-        headerImgUrl: digestFromDB.header_img_url,
         displayName: digestFromDB.display_name,
+        activityDetail: digestFromDB.activity_detail,
       };
     });
   }

@@ -62,7 +62,7 @@ export default function GroupsProfile(props: { gidStr: string }) {
     uid: 0,
     displayName: '',
     iconImgUrl: '',
-    headerImgUrl: '',
+    activityDetail: '',
   })
   const getGroupProfile = (gid: number) => {
     apiClient.get(`/v1/groups/${gid}`).then((res: any) => {

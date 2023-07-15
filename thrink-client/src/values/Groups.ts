@@ -2,7 +2,7 @@ export type GroupDigest = {
   uid: number
   displayName: string
   iconImgUrl: string
-  headerImgUrl: string
+  activityDetail: string
 }
 
 export type GroupProfile = {
