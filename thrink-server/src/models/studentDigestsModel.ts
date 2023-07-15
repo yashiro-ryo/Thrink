@@ -4,15 +4,15 @@ import { getTargetPage, splitPage } from "../lib/pageNation";
 type StudentDigestDB = {
   uid: number;
   icon_img_url: string;
-  header_img_url: string;
   display_name: string;
+  experience: string;
 };
 
 type StudentDigest = {
   uid: number;
   iconImgUrl: string;
-  headerImgUrl: string;
   displayName: string;
+  experience: string;
 };
 
 export class StudentDigestsModel {
@@ -22,7 +22,7 @@ export class StudentDigestsModel {
   studentDigestsCache: Array<Array<StudentDigest>> = [];
   constructor() {
     this.lastUpdatedTime = new Date().getTime();
-    this.updateStudentProfileCache()
+    this.updateStudentProfileCache();
   }
 
   getStudentDigests(pageIndex: number): Array<StudentDigest> {
@@ -45,7 +45,7 @@ export class StudentDigestsModel {
     this.lastUpdatedTime = new Date().getTime();
     // 学生のuser_typeは0
     db.query(
-      `select uid, icon_img_url, header_img_url, display_name from user_profile_meta where user_type = 0`
+      `select user_profile_meta.uid, user_profile_meta.display_name, user_profile_meta.icon_img_url, student_profile.experience from user_profile_meta inner join student_profile on user_profile_meta.uid = student_profile.uid`
     )
       .then((queryRes) => {
         console.log(queryRes);
@@ -75,8 +75,8 @@ export class StudentDigestsModel {
       return {
         uid: digestFromDB.uid,
         iconImgUrl: digestFromDB.icon_img_url,
-        headerImgUrl: digestFromDB.header_img_url,
         displayName: digestFromDB.display_name,
+        experience: digestFromDB.experience,
       };
     });
   }

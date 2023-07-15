@@ -2,7 +2,7 @@ export type StudentDigest = {
   uid: number
   displayName: string
   iconImgUrl: string
-  headerImgUrl: string
+  experience: string
 }
 
 export type StudentProfile = {

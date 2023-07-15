@@ -1,16 +1,8 @@
 import { Card, Button, Image } from 'react-bootstrap'
 import styled from 'styled-components'
-import { MdPlace } from 'react-icons/md'
 import { useRouter } from 'next/navigation'
 import { StudentDigest } from '@/values/Students'
-
-const FooterButtonGroup = styled.div`
-  display: flex;
-`
-
-const StyledButton = styled(Button)`
-  margin-right: 5px;
-`
+import { cutOverStr } from '@/lib/stringHelper'
 
 const CardStyle = styled(Card)`
   width: 350px;
@@ -26,15 +18,6 @@ const HeaderNameAndAffliation = styled.div`
   display: block;
 `
 
-const AffliationPart = styled.div`
-  display: flex;
-`
-
-const StyledPlaceIcon = styled(MdPlace)`
-  width: 20px;
-  height: 20px;
-`
-
 type Props = {
   studentDigest: StudentDigest
 }
@@ -44,6 +27,9 @@ export default function StudentCard(props: Props) {
   const redirectProfileDetailPage = () => {
     // FIXME student typeでリダイレクト先を変更させる
     router.push(`/student/${props.studentDigest.uid}`)
+  }
+  const nullCheck = (maybeStr: string | null): string => {
+    return maybeStr === null ? '' : maybeStr
   }
   return (
     <CardStyle onClick={() => redirectProfileDetailPage()}>
@@ -60,14 +46,7 @@ export default function StudentCard(props: Props) {
             height={'60px'}
           />
         </HeaderGroup>
-        <FooterButtonGroup>
-          <StyledButton variant='primary' href={`/chat/${props.studentDigest.uid}`}>
-            メッセージを送る
-          </StyledButton>
-          <Button variant='secondary' href={`/like/${props.studentDigest.uid}`}>
-            いいね
-          </Button>
-        </FooterButtonGroup>
+        <p>{cutOverStr(nullCheck(props.studentDigest.experience), 30)}</p>
       </Card.Body>
     </CardStyle>
   )
