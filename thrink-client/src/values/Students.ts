@@ -8,12 +8,10 @@ export type StudentDigest = {
 export type StudentProfile = {
   uid: number
   displayName: string
-  experienceVisibleLevel: number
+  iconImgUrl: string
+  headerImgUrl: string
   experience: string
-  awardsVisibleLevel: number
   awards: string
-  commentVisibleLevel: number
   comment: string
-  linksVisibleLevel: number
   links: string
 }

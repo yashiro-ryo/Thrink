@@ -9,3 +9,11 @@ export const cutOverStr = (s: string, n: number): string => {
   }
   return s.substring(0, n)
 }
+
+/**
+ * nullの場合は''を返す関数
+ * @param maybeStr null or string の処理対象
+ */
+export const nullCheck = (maybeStr: string | null): string => {
+  return maybeStr === null ? '' : maybeStr
+}

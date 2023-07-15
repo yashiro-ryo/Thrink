@@ -4,28 +4,24 @@ import { splitPage, getTargetPage } from "../lib/pageNation";
 type StudentProfileDB = {
   uid: number;
   display_name: string;
-  experience_visible_level: number;
   experience: string;
-  awards_visible_level: number;
   awards: string;
-  comment_visible_level: number;
   comment: string;
-  links_visible_level: number;
   links: string;
+  icon_img_url: string;
+  header_img_url: string;
 };
 
 // frontend用の型定義
 type StudentProfile = {
   uid: number;
   displayName: string;
-  experienceVisibleLevel: number;
   experience: string;
-  awardsVisibleLevel: number;
   awards: string;
-  commentVisibleLevel: number;
   comment: string;
-  linksVisibleLevel: number;
   links: string;
+  iconImgUrl: string;
+  headerImgUrl: string;
 };
 
 export class StudentProfileModel {
@@ -88,7 +84,9 @@ export class StudentProfileModel {
   async updateStudentProfileCache() {
     this.lastUpdatedTime = await new Date().getTime();
     await db
-      .query(`select * from student_profile`)
+      .query(
+        `select student_profile.uid, student_profile.display_name, student_profile.experience, student_profile.awards, student_profile.comment, student_profile.links, user_profile_meta.icon_img_url, user_profile_meta.header_img_url from student_profile inner join user_profile_meta on student_profile.uid = user_profile_meta.uid;`
+      )
       .then((queryRes) => {
         console.log(queryRes);
         this.studentProfileCache = splitPage(
@@ -117,14 +115,12 @@ export class StudentProfileModel {
       return {
         uid: profileFromDB.uid,
         displayName: profileFromDB.display_name,
-        experienceVisibleLevel: profileFromDB.experience_visible_level,
         experience: profileFromDB.experience,
-        awardsVisibleLevel: profileFromDB.awards_visible_level,
         awards: profileFromDB.awards,
-        commentVisibleLevel: profileFromDB.comment_visible_level,
         comment: profileFromDB.comment,
-        linksVisibleLevel: profileFromDB.links_visible_level,
         links: profileFromDB.links,
+        iconImgUrl: profileFromDB.icon_img_url,
+        headerImgUrl: profileFromDB.header_img_url,
       };
     });
   }

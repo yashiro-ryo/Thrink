@@ -1,13 +1,9 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Container, Image, Nav, Button } from 'react-bootstrap'
-import { MdPlace } from 'react-icons/md'
-import Experience from './Experience'
-import Awards from './Awards'
-import Comment from './Comment'
-import Links from './Links'
+import { Container, Image, Button } from 'react-bootstrap'
 import { StudentProfile } from '@/values/Students'
 import apiClient from '@/lib/http-common'
+import { nullCheck } from '@/lib/stringHelper'
 
 const HeaderImagePart = styled.div`
   width: 100%;
@@ -27,22 +23,9 @@ const CustomContainer = styled(Container)`
   }
 `
 
-const AffliationPart = styled.div`
-  display: flex;
-`
-
-const StyledPlaceIcon = styled(MdPlace)`
-  width: 20px;
-  height: 20px;
-`
-
 const UserProfileBody = styled.div`
   position: relative;
   top: -60px;
-`
-
-const ProfileTextBody = styled.div`
-  margin-top: 20px;
 `
 
 export default function StudentProfile(props: { uidStr: string }) {
@@ -52,13 +35,11 @@ export default function StudentProfile(props: { uidStr: string }) {
   const [profile, setProfile] = useState<StudentProfile>({
     uid: 0,
     displayName: '',
-    experienceVisibleLevel: 0,
+    iconImgUrl: '',
+    headerImgUrl: '',
     experience: '',
-    awardsVisibleLevel: 0,
     awards: '',
-    commentVisibleLevel: 0,
     comment: '',
-    linksVisibleLevel: 0,
     links: '',
   })
   const getStudentProfile = (uid: number) => {
@@ -98,32 +79,14 @@ export default function StudentProfile(props: { uidStr: string }) {
           ) : (
             <>
               <h3>{profile.displayName}</h3>
-              <div>
-                <Nav className='justify-content-start' variant='tabs'>
-                  <Nav.Item>
-                    <Nav.Link onClick={() => setVisibleTab('experience')}>経験</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link onClick={() => setVisibleTab('awards')}>受賞歴</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link onClick={() => setVisibleTab('comment')}>コメント</Nav.Link>
-                  </Nav.Item>
-                  <Nav.Item>
-                    <Nav.Link onClick={() => setVisibleTab('links')}>リンク</Nav.Link>
-                  </Nav.Item>
-                </Nav>
-                <ProfileTextBody>
-                  {visibleTabInfo === 'experience' ? (
-                    <Experience experience={profile.experience} />
-                  ) : (
-                    ''
-                  )}
-                  {visibleTabInfo === 'awards' ? <Awards awards={profile.awards} /> : ''}
-                  {visibleTabInfo === 'comment' ? <Comment comment={profile.comment} /> : ''}
-                  {visibleTabInfo === 'links' ? <Links links={profile.links} /> : ''}
-                </ProfileTextBody>
-              </div>
+              <h4>経験</h4>
+              <p>{nullCheck(profile.experience)}</p>
+              <h4>受賞歴</h4>
+              <p>{nullCheck(profile.awards)}</p>
+              <h4>コメント</h4>
+              <p>{nullCheck(profile.comment)}</p>
+              <h4>リンク</h4>
+              <p>{nullCheck(profile.links)}</p>
             </>
           )}
         </UserProfileBody>
