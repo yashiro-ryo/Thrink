@@ -41,10 +41,10 @@ groupsRouter.post("/profile/:uid", async (req: Request, res: Response) => {
   }
   await groupProfileModel.updateGroupProfile(
     Number(req.params.uid),
+    req.body.location,
     req.body.activityDetail,
     req.body.activityDay,
     req.body.activityTime,
-    req.body.location,
     req.body.membersNum,
     req.body.awards
   );
