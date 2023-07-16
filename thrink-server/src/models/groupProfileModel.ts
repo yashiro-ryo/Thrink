@@ -148,7 +148,7 @@ export class GroupProfileModel {
     console.log(memberNum);
     console.log(awards);
     await db.query(
-      `update group_profile set location = '${location}', activity_detail = '${activityDetail}', activity_day = '${activityDay}', activity_time = '${activityTime}', member_num = ${memberNum}, awards = ${awards} where uid = ${uid};`
+      `update group_profile set location = '${location}', activity_detail = '${activityDetail}', activity_day = '${activityDay}', activity_time = '${activityTime}', members_num = ${memberNum}, awards = '${awards}' where uid = ${uid};`
     );
   }
 }

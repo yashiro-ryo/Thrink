@@ -23,3 +23,31 @@ groupsRouter.get("/:uid", (req: Request, res: Response) => {
 groupsRouter.get("/profile/:id", (req: Request, res: Response) => {
   res.status(200).json(groupsRepo.getGroupProfile(Number(req.params.id)));
 });
+
+// POST /v1/groups/profile/:uid
+groupsRouter.post("/profile/:uid", async (req: Request, res: Response) => {
+  console.log("update group profile");
+  if (
+    !(
+      "activityDetail" in req.body &&
+      "activityDay" in req.body &&
+      "activityTime" in req.body &&
+      "location" in req.body &&
+      "membersNum" in req.body &&
+      "awards" in req.body
+    )
+  ) {
+    res.status(500).json({ msg: "internal server error" });
+  }
+  await groupProfileModel.updateGroupProfile(
+    Number(req.params.uid),
+    req.body.activityDetail,
+    req.body.activityDay,
+    req.body.activityTime,
+    req.body.location,
+    req.body.membersNum,
+    req.body.awards
+  );
+  await groupProfileModel.updateGroupProfileCache();
+  await res.status(200).json({ msg: "ok" });
+});

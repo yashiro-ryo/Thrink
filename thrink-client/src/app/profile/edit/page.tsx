@@ -35,11 +35,18 @@ export default function EditProfile() {
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const [iconImageUrl, setIconUrl] = useState('/user-blank.png')
   const [headerImageUrl, setHeaderImageUrl] = useState('/header-blank.png')
-  // input form
+  // input form student
   const [inputExperience, setInputExperience] = useState('')
   const [inputAwards, setInputAwards] = useState('')
   const [inputComment, setInputComment] = useState('')
   const [inputLinks, setInputLinks] = useState('')
+  // input form group
+  const [inputActivityDetail, setInputActivityDetail] = useState('')
+  const [inputActivityDay, setInputActivityDay] = useState('')
+  const [inputActivityTime, setInputActivityTime] = useState('')
+  const [inputLocation, setInputLocation] = useState('')
+  const [inputGroupAwards, setInputGroupAwards] = useState('')
+  const [inputMembersNum, setInputMembersNum] = useState('')
   // anyなおす
   const onChangeIconInput = (e: any) => {
     const file = e.target.files[0]
@@ -78,6 +85,25 @@ export default function EditProfile() {
   const onChangeInputLinks = (e: any) => {
     setInputLinks(e.target.value)
   }
+  // anyなおす
+  const onChangeInputActivityDetail = (e: any) => {
+    setInputActivityDetail(e.target.value)
+  }
+  const onChangeInputActivityDay = (e: any) => {
+    setInputActivityDay(e.target.value)
+  }
+  const onChangeInputActivityTime = (e: any) => {
+    setInputActivityTime(e.target.value)
+  }
+  const onChangeInputLocation = (e: any) => {
+    setInputLocation(e.target.value)
+  }
+  const onChangeInputGroupAwards = (e: any) => {
+    setInputGroupAwards(e.target.value)
+  }
+  const onChangeInputMembersNum = (e: any) => {
+    setInputMembersNum(e.target.value)
+  }
   const save = () => {
     console.log(inputExperience)
     console.log(inputAwards)
@@ -87,20 +113,39 @@ export default function EditProfile() {
       // プロフィールがそもそも存在しない場合はreturn
       return
     }
-    apiClient
-      .post(`/v1/students/profile/${userProfileMeta.uid}`, {
-        experience: inputExperience,
-        awards: inputAwards,
-        comment: inputComment,
-        links: inputLinks,
-      })
-      .then((res) => {
-        console.log(res)
-        router.push('/profile')
-      })
-      .catch((err) => {
-        console.error(err)
-      })
+    if (userProfileMeta.userType === 0) {
+      apiClient
+        .post(`/v1/students/profile/${userProfileMeta.uid}`, {
+          experience: inputExperience,
+          awards: inputAwards,
+          comment: inputComment,
+          links: inputLinks,
+        })
+        .then((res) => {
+          console.log(res)
+          router.push('/profile')
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    } else if (userProfileMeta.userType === 1) {
+      apiClient
+        .post(`/v1/groups/profile/${userProfileMeta.uid}`, {
+          activityDetail: inputActivityDetail,
+          activityDay: inputActivityDay,
+          activityTime: inputActivityTime,
+          location: inputLocation,
+          awards: inputGroupAwards,
+          membersNum: inputMembersNum,
+        })
+        .then((res) => {
+          console.log(res)
+          router.push('/profile')
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    }
   }
   const getProfile = (uid: number, userType: 0 | 1 | 2) => {
     console.log(uid)
@@ -113,6 +158,13 @@ export default function EditProfile() {
         setInputAwards(nullCheck(res.data.studentProfile.awards))
         setInputComment(nullCheck(res.data.studentProfile.comment))
         setInputLinks(nullCheck(res.data.studentProfile.links))
+      } else if (userType === 1) {
+        setInputActivityDetail(nullCheck(res.data.groupProfile.activityDetail))
+        setInputActivityDay(nullCheck(res.data.groupProfile.activityDay))
+        setInputActivityTime(nullCheck(res.data.groupProfile.activityTime))
+        setInputGroupAwards(nullCheck(res.data.groupProfile.awards))
+        setInputLocation(nullCheck(res.data.groupProfile.location))
+        setInputMembersNum(nullCheck(res.data.groupProfile.membersNum))
       }
     })
   }
@@ -135,6 +187,109 @@ export default function EditProfile() {
       getProfile(userProfileMeta.uid, userProfileMeta.userType)
     }
   }, [userProfileMeta])
+  const StudentProfileEditor = () => {
+    return (
+      <>
+        <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Label>経験</Form.Label>
+          <Form.Control
+            as='textarea'
+            rows={3}
+            value={inputExperience}
+            onChange={onChangeInputExperience}
+          />
+        </Form.Group>
+        <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Label>受賞歴</Form.Label>
+          <Form.Control as='textarea' rows={3} value={inputAwards} onChange={onChangeInputAwards} />
+        </Form.Group>
+        <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Label>コメント</Form.Label>
+          <Form.Control
+            as='textarea'
+            rows={3}
+            value={inputComment}
+            onChange={onChangeInputComment}
+          />
+        </Form.Group>
+        <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Label>リンク一覧</Form.Label>
+          <Form.Control as='textarea' rows={3} value={inputLinks} onChange={onChangeInputLinks} />
+        </Form.Group>
+      </>
+    )
+  }
+  const GroupProfileEditor = () => {
+    return (
+      <>
+        <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Label>場所</Form.Label>
+          <Form.Control
+            as='textarea'
+            rows={3}
+            value={inputLocation}
+            onChange={onChangeInputLocation}
+          />
+        </Form.Group>
+        <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Label>活動詳細</Form.Label>
+          <Form.Control
+            as='textarea'
+            rows={3}
+            value={inputActivityDetail}
+            onChange={onChangeInputActivityDetail}
+          />
+        </Form.Group>
+        <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Label>活動日</Form.Label>
+          <Form.Control
+            as='textarea'
+            rows={3}
+            value={inputActivityDay}
+            onChange={onChangeInputActivityDay}
+          />
+        </Form.Group>
+        <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Label>活動時間</Form.Label>
+          <Form.Control
+            as='textarea'
+            rows={3}
+            value={inputActivityTime}
+            onChange={onChangeInputActivityTime}
+          />
+        </Form.Group>
+        <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Label>所属人数</Form.Label>
+          <Form.Control
+            as='textarea'
+            rows={3}
+            value={inputMembersNum}
+            onChange={onChangeInputMembersNum}
+          />
+        </Form.Group>
+        <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Label>受賞歴</Form.Label>
+          <Form.Control
+            as='textarea'
+            rows={3}
+            value={inputGroupAwards}
+            onChange={onChangeInputGroupAwards}
+          />
+        </Form.Group>
+      </>
+    )
+  }
+  const ProfileEditorSwitcher = () => {
+    if (userProfileMeta === null) {
+      return ''
+    } else if (userProfileMeta.userType === 0) {
+      return StudentProfileEditor()
+    } else if (userProfileMeta.userType === 1) {
+      return GroupProfileEditor()
+    } else {
+      return ''
+    }
+  }
   return (
     <div>
       <NavbarComp />
@@ -166,42 +321,7 @@ export default function EditProfile() {
                   onChange={onChangeIconInput}
                 />
               </FormGroup>
-              <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
-                <Form.Label>経験</Form.Label>
-                <Form.Control
-                  as='textarea'
-                  rows={3}
-                  value={inputExperience}
-                  onChange={onChangeInputExperience}
-                />
-              </Form.Group>
-              <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
-                <Form.Label>受賞歴</Form.Label>
-                <Form.Control
-                  as='textarea'
-                  rows={3}
-                  value={inputAwards}
-                  onChange={onChangeInputAwards}
-                />
-              </Form.Group>
-              <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
-                <Form.Label>コメント</Form.Label>
-                <Form.Control
-                  as='textarea'
-                  rows={3}
-                  value={inputComment}
-                  onChange={onChangeInputComment}
-                />
-              </Form.Group>
-              <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
-                <Form.Label>リンク一覧</Form.Label>
-                <Form.Control
-                  as='textarea'
-                  rows={3}
-                  value={inputLinks}
-                  onChange={onChangeInputLinks}
-                />
-              </Form.Group>
+              {ProfileEditorSwitcher()}
               <Button variant='primary' onClick={() => save()}>
                 保存する
               </Button>
