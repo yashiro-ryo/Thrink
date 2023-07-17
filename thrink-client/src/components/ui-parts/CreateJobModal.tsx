@@ -1,0 +1,99 @@
+import { useState } from 'react'
+import { Modal, Form, Button } from 'react-bootstrap'
+
+type Props = {
+  isVisible: boolean
+  setVisible: (isVisible: boolean) => void
+}
+
+export default function CreateJobModal(props: Props) {
+  const [inputDetail, setInputDetail] = useState('')
+  const [inputReward, setInputReward] = useState('')
+  const [inputCondition, setInputCondition] = useState('')
+  const [inputTime, setInputTime] = useState('')
+  const [inputPlace, setInputPlace] = useState('')
+  const handleClose = () => {
+    props.setVisible(false)
+  }
+  const onChangeInputDetail = (e: any) => {
+    setInputDetail(e.target.value)
+  }
+  const onChangeInputReward = (e: any) => {
+    setInputReward(e.target.value)
+  }
+  const onChangeInputCondition = (e: any) => {
+    setInputCondition(e.target.value)
+  }
+  const onChangeInputTime = (e: any) => {
+    setInputTime(e.target.value)
+  }
+  const onChnageInputPlace = (e: any) => {
+    setInputPlace(e.target.value)
+  }
+  const createJob = () => {
+    console.log(inputDetail, inputCondition, inputPlace, inputReward, inputTime)
+    handleClose()
+    clearEditor()
+  }
+  const clearEditor = () => {
+    setInputCondition('')
+    setInputDetail('')
+    setInputPlace('')
+    setInputReward('')
+    setInputTime('')
+  }
+  return (
+    <Modal show={props.isVisible} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>求人作成</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form>
+          <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+            <Form.Label>求人内容</Form.Label>
+            <Form.Control
+              as='textarea'
+              rows={3}
+              value={inputDetail}
+              onChange={onChangeInputDetail}
+            />
+          </Form.Group>
+          <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+            <Form.Label>時給</Form.Label>
+            <Form.Control
+              as='textarea'
+              rows={3}
+              value={inputReward}
+              onChange={onChangeInputReward}
+            />
+          </Form.Group>
+          <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+            <Form.Label>応募条件</Form.Label>
+            <Form.Control
+              as='textarea'
+              rows={3}
+              value={inputCondition}
+              onChange={onChangeInputCondition}
+            />
+          </Form.Group>
+          <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+            <Form.Label>勤務時間</Form.Label>
+            <Form.Control as='textarea' rows={3} value={inputTime} onChange={onChangeInputTime} />
+          </Form.Group>
+          <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+            <Form.Label>勤務地</Form.Label>
+            <Form.Control as='textarea' rows={3} value={inputPlace} onChange={onChnageInputPlace} />
+          </Form.Group>
+        </Form>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant='secondary' onClick={handleClose}>
+          閉じる
+        </Button>
+        <Button variant='primary' onClick={() => createJob()}>
+          作成する
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  )
+}
