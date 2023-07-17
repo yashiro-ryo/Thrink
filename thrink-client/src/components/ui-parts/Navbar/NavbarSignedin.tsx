@@ -26,7 +26,7 @@ const NavDropdownStyle = styled(NavDropdown)`
   }
 `
 
-export default function NavbarSignedin() {
+export default function NavbarSignedin(props: { userType: 0 | 1 | 2 }) {
   // FIXME next/linkのLinkを使用するように修正する
   // FIXME iconの配置が微妙
   const router = useRouter()
@@ -56,6 +56,13 @@ export default function NavbarSignedin() {
           <NavDropdown.Item as={Link} href='/profile'>
             プロフィール
           </NavDropdown.Item>
+          {props.userType === 1 ? (
+            <NavDropdown.Item as={Link} href='/manage/job'>
+              求人管理
+            </NavDropdown.Item>
+          ) : (
+            ''
+          )}
           <NavDropdown.Item as={Link} href='/settings'>
             設定
           </NavDropdown.Item>

@@ -70,7 +70,13 @@ export default function NavbarComp() {
                 記事一覧
               </NavLink>
             </Nav>
-            <Nav>{isSignedin ? <NavbarSignedin /> : <NavbarNotSignedIn />}</Nav>
+            <Nav>
+              {isSignedin && userProfileMeta ? (
+                <NavbarSignedin userType={userProfileMeta.userType} />
+              ) : (
+                <NavbarNotSignedIn />
+              )}
+            </Nav>
           </Navbar.Collapse>
         </Container>
       </NavbarStyle>

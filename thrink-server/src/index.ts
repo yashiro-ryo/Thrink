@@ -7,6 +7,7 @@ import { groupDigestsRouter } from "./controllers/groupsDigestsController";
 import cors from "cors";
 import morgan from "morgan";
 import session from "express-session";
+import { jobRouter } from "./controllers/jobController";
 
 const app: Application = express();
 const PORT = 3000;
@@ -32,6 +33,7 @@ app.use("/v1/groups", groupsRouter);
 app.use("/auth/", userAuthRouter);
 app.use("/v1/digests/student", stduentsDigestRouter);
 app.use("/v1/digests/group", groupDigestsRouter);
+app.use("/v1/", jobRouter);
 
 app.get("/", async (_req: Request, res: Response) => {
   return res.status(200).send({
