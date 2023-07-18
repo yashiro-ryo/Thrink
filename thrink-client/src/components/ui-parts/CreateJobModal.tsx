@@ -1,3 +1,5 @@
+import apiClient from '@/lib/http-common'
+import { useAppSelector } from '@/redux/hooks'
 import { useState } from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
 
@@ -7,6 +9,7 @@ type Props = {
 }
 
 export default function CreateJobModal(props: Props) {
+  const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const [inputDetail, setInputDetail] = useState('')
   const [inputReward, setInputReward] = useState('')
   const [inputCondition, setInputCondition] = useState('')
@@ -31,7 +34,22 @@ export default function CreateJobModal(props: Props) {
     setInputPlace(e.target.value)
   }
   const createJob = () => {
-    console.log(inputDetail, inputCondition, inputPlace, inputReward, inputTime)
+    console.log(
+      userProfileMeta?.uid,
+      inputDetail,
+      inputCondition,
+      inputPlace,
+      inputReward,
+      inputTime,
+    )
+    apiClient.post('/v1/manage/create', {
+      uid: userProfileMeta?.uid,
+      detail: inputDetail,
+      condition: inputCondition,
+      place: inputPlace,
+      reward: inputReward,
+      workingTime: inputTime,
+    })
     handleClose()
     clearEditor()
   }

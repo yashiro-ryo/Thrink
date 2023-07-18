@@ -15,3 +15,37 @@ jobRouter.get("/manage/jobs/:uid", (req: Request, res: Response) => {
       res.status(200).json({ jobs: jobsForFrontend });
     });
 });
+
+// POST /v1/manage/create
+jobRouter.post(`/manage/create`, async (req: Request, res: Response) => {
+  console.log(req.body);
+  if (
+    !(
+      "uid" in req.body &&
+      "detail" in req.body &&
+      "reward" in req.body &&
+      "condition" in req.body &&
+      "workingTime" in req.body &&
+      "place" in req.body
+    )
+  ) {
+    res.status(500).json({ msg: "Internal server error" });
+    return;
+  }
+  await jobModels.createJob(
+    Number(req.body.uid),
+    req.body.detail,
+    req.body.reward,
+    req.body.condition,
+    req.body.workingTime,
+    req.body.place
+  );
+  await jobModels
+    .getCreatedJobByUid(Number(req.body.uid))
+    .then((queryRes: Array<JobDB>) => {
+      const jobsForFrontend = queryRes.map((job: JobDB) => {
+        return jobModels.migrateSnakeCaseToCamelCase(job);
+      });
+      res.status(200).json({ jobs: jobsForFrontend });
+    });
+});

@@ -31,6 +31,19 @@ export class JobModels {
     return db.query(`select * from job where uid = ${uid}`);
   }
 
+  createJob(
+    uid: number,
+    detail: string,
+    reward: string,
+    condition: string,
+    workingTime: string,
+    place: string
+  ) {
+    db.query(
+      `insert into job (uid, detail, reward, application_requirements, working_time, place, start_at, end_at) values (${uid}, '${detail}', '${reward}', '${condition}', '${workingTime}', '${place}', '2022/09/22 12:00:00', '2022/09/30 12:00:00');`
+    );
+  }
+
   migrateSnakeCaseToCamelCase(job: JobDB): Job {
     return {
       jobId: job.job_id,
