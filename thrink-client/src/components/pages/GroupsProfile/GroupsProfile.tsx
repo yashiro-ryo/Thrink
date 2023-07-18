@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Container, Image, Nav, Button } from 'react-bootstrap'
-import { MdPlace } from 'react-icons/md'
+import { Container, Image, Button, Card } from 'react-bootstrap'
 import apiClient from '@/lib/http-common'
 import { GroupProfile } from '@/values/Groups'
+import { Job } from '@/values/Jobs'
 
 const HeaderImagePart = styled.div`
   width: 100%;
@@ -41,15 +41,23 @@ export default function GroupsProfile(props: { gidStr: string }) {
     iconImgUrl: '',
     headerImgUrl: '',
   })
+  const [jobs, setJobs] = useState<Array<Job>>([])
   const getGroupProfile = (gid: number) => {
     apiClient.get(`/v1/groups/${gid}`).then((res: any) => {
       console.log(res.data)
       setProfile(res.data.groupProfile)
     })
   }
+  const getGroupJob = (gid: number) => {
+    apiClient.get(`/v1/manage/jobs/${gid}`).then((res) => {
+      console.log(res)
+      setJobs(res.data.jobs)
+    })
+  }
   useEffect(() => {
     console.log(`gid: ${props.gidStr}`)
     getGroupProfile(Number(props.gidStr))
+    getGroupJob(Number(props.gidStr))
   }, [props.gidStr])
 
   const UserProfileNull = () => {
@@ -91,6 +99,24 @@ export default function GroupsProfile(props: { gidStr: string }) {
               <p>{profile.membersNum}</p>
               <h4>受賞歴</h4>
               <p>{profile.awards}</p>
+              <h4>募集中の求人({jobs.length}件)</h4>
+              {jobs.map((job: Job, index: number) => {
+                return (
+                  <Card key={`joblist-${job.jobId}-${index}`}>
+                    <h6>募集詳細</h6>
+                    <p>{job.detail}</p>
+                    <h6>募集条件</h6>
+                    <p>{job.applicationRequirements}</p>
+                    <h6>勤務時間</h6>
+                    <p>{job.workingTime}</p>
+                    <h6>勤務地</h6>
+                    <p>{job.place}</p>
+                    <h6>報酬</h6>
+                    <p>{job.reward}</p>
+                    <Button>応募する</Button>
+                  </Card>
+                )
+              })}
             </div>
           )}
         </UserProfileBody>
