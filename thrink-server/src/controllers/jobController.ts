@@ -50,6 +50,7 @@ jobRouter.post(`/manage/create`, async (req: Request, res: Response) => {
     });
 });
 
+// POST /v1/manage/update
 jobRouter.post("/manage/update", async (req: Request, res: Response) => {
   console.log(req.body);
   if (
@@ -74,6 +75,23 @@ jobRouter.post("/manage/update", async (req: Request, res: Response) => {
     req.body.workingTime,
     req.body.place
   );
+  await jobModels
+    .getCreatedJobByUid(Number(req.body.uid))
+    .then((queryRes: Array<JobDB>) => {
+      const jobsForFrontend = queryRes.map((job: JobDB) => {
+        return jobModels.migrateSnakeCaseToCamelCase(job);
+      });
+      res.status(200).json({ jobs: jobsForFrontend });
+    });
+});
+
+// POST /v1/manage/delete
+jobRouter.post("/manage/delete", async (req: Request, res: Response) => {
+  if (!("jobId" in req.body && "uid" in req.body)) {
+    res.status(500).json({ msg: "Internal server error" });
+    return;
+  }
+  await jobModels.deleteJob(req.body.jobId);
   await jobModels
     .getCreatedJobByUid(Number(req.body.uid))
     .then((queryRes: Array<JobDB>) => {

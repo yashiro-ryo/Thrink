@@ -57,6 +57,10 @@ export class JobModels {
     );
   }
 
+  async deleteJob(jobId: number) {
+    await db.query(`delete from job where job_id = ${jobId}`);
+  }
+
   migrateSnakeCaseToCamelCase(job: JobDB): Job {
     return {
       jobId: job.job_id,

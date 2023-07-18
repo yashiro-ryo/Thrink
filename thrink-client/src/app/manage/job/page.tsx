@@ -8,12 +8,15 @@ import apiClient from '@/lib/http-common'
 import { Job } from '@/values/Jobs'
 import CreateJobModal from '@/components/ui-parts/Job/CreateJobModal'
 import UpdateJobModal from '@/components/ui-parts/Job/UpdateJobEditor'
+import DeleteJobModal from '@/components/ui-parts/Job/DeleteJobModal'
 
 export default function JobManagePage() {
   const [isCreateaJobModalVisible, setCreateJobModalVisible] = useState(false)
   const [isUpdateJobModalVisible, setUpdateJobModalVisible] = useState(false)
+  const [isDeleteJobModalVisible, setDeleteModalVisible] = useState(false)
   const [createdJobs, setCreatedJobs] = useState<Array<Job>>([])
   const [updateTargetJob, setUpdateTargetJob] = useState<Job | null>(null)
+  const [deleteTargetJobId, setDeleteTargetJobId] = useState<number | null>(null)
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const getCreatedJobs = (uid: number) => {
     apiClient.get(`/v1/manage/jobs/${uid}`).then((res) => {
@@ -47,7 +50,16 @@ export default function JobManagePage() {
               >
                 求人内容を更新する
               </Button>
-              <Button variant='danger'>求人を削除する</Button>
+              <Button
+                variant='danger'
+                onClick={() => {
+                  setDeleteModalVisible(true)
+                  setDeleteTargetJobId(createdJob.jobId)
+                  console.log(createdJob)
+                }}
+              >
+                求人を削除する
+              </Button>
             </div>
           )
         })}
@@ -76,6 +88,12 @@ export default function JobManagePage() {
         isVisible={isUpdateJobModalVisible}
         setVisible={setUpdateJobModalVisible}
         updateTargetJob={updateTargetJob}
+        setCreatedJobs={setCreatedJobs}
+      />
+      <DeleteJobModal
+        isVisible={isDeleteJobModalVisible}
+        setVisible={setDeleteModalVisible}
+        jobId={deleteTargetJobId}
         setCreatedJobs={setCreatedJobs}
       />
     </>
