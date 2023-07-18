@@ -44,6 +44,19 @@ export class JobModels {
     );
   }
 
+  updateJob(
+    jobId: number,
+    detail: string,
+    reward: string,
+    condition: string,
+    workingTime: string,
+    place: string
+  ) {
+    db.query(
+      `update job set detail = '${detail}', reward = '${reward}', application_requirements = '${condition}', working_time = '${workingTime}', place = '${place}' where job_id = ${jobId}`
+    );
+  }
+
   migrateSnakeCaseToCamelCase(job: JobDB): Job {
     return {
       jobId: job.job_id,

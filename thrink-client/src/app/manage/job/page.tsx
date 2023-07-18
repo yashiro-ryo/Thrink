@@ -6,11 +6,14 @@ import { useState, useEffect } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import apiClient from '@/lib/http-common'
 import { Job } from '@/values/Jobs'
-import CreateJobModal from '@/components/ui-parts/CreateJobModal'
+import CreateJobModal from '@/components/ui-parts/Job/CreateJobModal'
+import UpdateJobModal from '@/components/ui-parts/Job/UpdateJobEditor'
 
 export default function JobManagePage() {
   const [isCreateaJobModalVisible, setCreateJobModalVisible] = useState(false)
+  const [isUpdateJobModalVisible, setUpdateJobModalVisible] = useState(false)
   const [createdJobs, setCreatedJobs] = useState<Array<Job>>([])
+  const [updateTargetJob, setUpdateTargetJob] = useState<Job | null>(null)
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const getCreatedJobs = (uid: number) => {
     apiClient.get(`/v1/manage/jobs/${uid}`).then((res) => {
@@ -34,6 +37,17 @@ export default function JobManagePage() {
             <div key={`created-joblist-${index}`}>
               <p>{createdJob.jobId}</p>
               <p>{createdJob.detail}</p>
+              <Button
+                variant='primary'
+                onClick={() => {
+                  setUpdateJobModalVisible(true)
+                  setUpdateTargetJob(createdJob)
+                  console.log(createdJob)
+                }}
+              >
+                求人内容を更新する
+              </Button>
+              <Button variant='danger'>求人を削除する</Button>
             </div>
           )
         })}
@@ -54,6 +68,11 @@ export default function JobManagePage() {
       </Container>
       <Footer />
       <CreateJobModal isVisible={isCreateaJobModalVisible} setVisible={setCreateJobModalVisible} />
+      <UpdateJobModal
+        isVisible={isUpdateJobModalVisible}
+        setVisible={setUpdateJobModalVisible}
+        updateTargetJob={updateTargetJob}
+      />
     </>
   )
 }
