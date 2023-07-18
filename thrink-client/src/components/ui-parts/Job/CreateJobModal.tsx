@@ -2,10 +2,12 @@ import apiClient from '@/lib/http-common'
 import { useAppSelector } from '@/redux/hooks'
 import { useState } from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
+import { Job } from '@/values/Jobs'
 
 type Props = {
   isVisible: boolean
   setVisible: (isVisible: boolean) => void
+  setCreatedJobs: (jobs: Array<Job>) => void
 }
 
 export default function CreateJobModal(props: Props) {
@@ -42,14 +44,19 @@ export default function CreateJobModal(props: Props) {
       inputReward,
       inputTime,
     )
-    apiClient.post('/v1/manage/create', {
-      uid: userProfileMeta?.uid,
-      detail: inputDetail,
-      condition: inputCondition,
-      place: inputPlace,
-      reward: inputReward,
-      workingTime: inputTime,
-    })
+    apiClient
+      .post('/v1/manage/create', {
+        uid: userProfileMeta?.uid,
+        detail: inputDetail,
+        condition: inputCondition,
+        place: inputPlace,
+        reward: inputReward,
+        workingTime: inputTime,
+      })
+      .then((res) => {
+        console.log(res.data.jobs)
+        props.setCreatedJobs(res.data.jobs)
+      })
     handleClose()
     clearEditor()
   }

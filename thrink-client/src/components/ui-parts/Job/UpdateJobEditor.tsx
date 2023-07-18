@@ -8,6 +8,7 @@ type Props = {
   isVisible: boolean
   setVisible: (isVisible: boolean) => void
   updateTargetJob: Job | null
+  setCreatedJobs: (jobs: Array<Job>) => void
 }
 
 export default function UpdateJobModal(props: Props) {
@@ -49,7 +50,8 @@ export default function UpdateJobModal(props: Props) {
           place: inputPlace,
         })
         .then((res) => {
-          console.log(res)
+          console.log(res.data.jobs)
+          props.setCreatedJobs(res.data.jobs)
         })
     }
     handleClose()
@@ -121,7 +123,7 @@ export default function UpdateJobModal(props: Props) {
           閉じる
         </Button>
         <Button variant='primary' onClick={() => updateJob()}>
-          作成する
+          更新する
         </Button>
       </Modal.Footer>
     </Modal>

@@ -27,11 +27,11 @@ export type Job = {
 export class JobModels {
   constructor() {}
 
-  getCreatedJobByUid(uid: number) {
-    return db.query(`select * from job where uid = ${uid}`);
+  async getCreatedJobByUid(uid: number) {
+    return await db.query(`select * from job where uid = ${uid}`);
   }
 
-  createJob(
+  async createJob(
     uid: number,
     detail: string,
     reward: string,
@@ -39,12 +39,12 @@ export class JobModels {
     workingTime: string,
     place: string
   ) {
-    db.query(
+    await db.query(
       `insert into job (uid, detail, reward, application_requirements, working_time, place, start_at, end_at) values (${uid}, '${detail}', '${reward}', '${condition}', '${workingTime}', '${place}', '2022/09/22 12:00:00', '2022/09/30 12:00:00');`
     );
   }
 
-  updateJob(
+  async updateJob(
     jobId: number,
     detail: string,
     reward: string,
@@ -52,7 +52,7 @@ export class JobModels {
     workingTime: string,
     place: string
   ) {
-    db.query(
+    await db.query(
       `update job set detail = '${detail}', reward = '${reward}', application_requirements = '${condition}', working_time = '${workingTime}', place = '${place}' where job_id = ${jobId}`
     );
   }

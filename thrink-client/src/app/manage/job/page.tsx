@@ -67,11 +67,16 @@ export default function JobManagePage() {
         <div>{createdJobs.length > 0 ? <CreatedJobList /> : '作成された求人はありません。'}</div>
       </Container>
       <Footer />
-      <CreateJobModal isVisible={isCreateaJobModalVisible} setVisible={setCreateJobModalVisible} />
+      <CreateJobModal
+        isVisible={isCreateaJobModalVisible}
+        setVisible={setCreateJobModalVisible}
+        setCreatedJobs={setCreatedJobs}
+      />
       <UpdateJobModal
         isVisible={isUpdateJobModalVisible}
         setVisible={setUpdateJobModalVisible}
         updateTargetJob={updateTargetJob}
+        setCreatedJobs={setCreatedJobs}
       />
     </>
   )
