@@ -8,6 +8,8 @@ import cors from "cors";
 import morgan from "morgan";
 import session from "express-session";
 import { jobRouter } from "./controllers/jobController";
+import http from "http";
+import { Server, Socket } from "socket.io";
 
 const app: Application = express();
 const PORT = 3000;
@@ -41,10 +43,24 @@ app.get("/", async (_req: Request, res: Response) => {
   });
 });
 
-try {
-  app.listen(PORT, () => {
-    console.log(`dev server running at: http://localhost:${PORT}/`);
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:3001"],
+    credentials: true,
+  },
+});
+
+io.on("connection", (socket: Socket) => {
+  console.log("connection");
+  console.log(socket);
+  socket.on("receive-message", (data) => {
+    console.log(data);
   });
+});
+
+try {
+  server.listen(PORT, () => console.log("app listening on port " + PORT));
 } catch (e) {
   if (e instanceof Error) {
     console.error(e.message);
