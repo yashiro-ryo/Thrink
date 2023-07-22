@@ -1,4 +1,6 @@
 import styled from 'styled-components'
+import { Chatroom } from '@/values/Chat'
+import { createChatroomLabel } from '@/lib/chatroomHelper'
 const LeftPane = styled.div`
   width: 300px;
   height: calc(100vh - 56px - 50px);
@@ -19,19 +21,24 @@ const ListItem = styled.button`
   }
 `
 
-export default function ChatPageLeftPane() {
+type Props = {
+  chatrooms: Array<Chatroom>
+  myUid: number
+}
+
+export default function ChatPageLeftPane(props: Props) {
+  const chatroomLabels = createChatroomLabel(props.chatrooms, props.myUid)
   return (
     <LeftPane>
       <Lists>
-        <ListItem>
-          <p>チャットルーム1</p>
-        </ListItem>
-        <ListItem>
-          <p>チャットルーム2</p>
-        </ListItem>
-        <ListItem>
-          <p>チャットルーム3</p>
-        </ListItem>
+        {chatroomLabels.map((chatrromLabel, index) => {
+          return (
+            <ListItem key={`chatroom-label-${index}`}>
+              <p>{chatrromLabel.chatroomLabel}</p>
+              <span>{chatrromLabel.chatPartnerIconImgUrl}</span>
+            </ListItem>
+          )
+        })}
       </Lists>
     </LeftPane>
   )

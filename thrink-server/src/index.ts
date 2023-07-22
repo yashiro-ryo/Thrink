@@ -10,6 +10,7 @@ import session from "express-session";
 import { jobRouter } from "./controllers/jobController";
 import http from "http";
 import { Server, Socket } from "socket.io";
+import { setupChatSocketRouter } from "./controllers/chatSokcetController";
 
 const app: Application = express();
 const PORT = 3000;
@@ -51,13 +52,7 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket: Socket) => {
-  console.log("connection");
-  console.log(socket);
-  socket.on("receive-message", (data) => {
-    console.log(data);
-  });
-});
+setupChatSocketRouter(io);
 
 try {
   server.listen(PORT, () => console.log("app listening on port " + PORT));
