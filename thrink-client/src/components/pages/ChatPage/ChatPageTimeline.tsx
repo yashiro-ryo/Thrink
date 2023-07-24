@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import styled from 'styled-components'
+import TimelineBody from './TimelineBody'
+import { Chat, ChatInfo } from '@/values/Chat'
 
 const Timeline = styled.div`
   width: 100%;
@@ -8,7 +10,7 @@ const Timeline = styled.div`
   flex-direction: column;
 `
 
-const TimelineBody = styled.div`
+const StyledTimelineBody = styled(TimelineBody)`
   height: calc(100vh - 80px - 56px - 50px);
   overflow-y: scroll;
 `
@@ -23,11 +25,24 @@ const SendBtn = styled(Button)`
   margin-left: 10px;
 `
 
-export default function ChatPageTimeline() {
+type Props = {
+  chat: Array<Chat>
+  myUid: number
+  sendMessage: (
+    chatroomId: number,
+    u1Uid: number,
+    u2Uid: number,
+    messageBody: string,
+    messageType: string,
+  ) => void
+  selectedChatroomInfo: ChatInfo
+}
+
+export default function ChatPageTimeline(props: Props) {
   const [inputText, setInputText] = useState<string>('')
   return (
     <Timeline>
-      <TimelineBody></TimelineBody>
+      <StyledTimelineBody chat={props.chat} myUid={props.myUid} />
       <TimelineFooter>
         <Form.Control
           type='text'
@@ -37,7 +52,21 @@ export default function ChatPageTimeline() {
             setInputText(e.target.value)
           }}
         />
-        <SendBtn variant='primary'>送信</SendBtn>
+        <SendBtn
+          variant='primary'
+          onClick={() => {
+            props.sendMessage(
+              props.selectedChatroomInfo.chatroomId,
+              props.selectedChatroomInfo.u1Uid,
+              props.selectedChatroomInfo.u2Uid,
+              inputText,
+              'message',
+            )
+            setInputText('')
+          }}
+        >
+          送信
+        </SendBtn>
       </TimelineFooter>
     </Timeline>
   )

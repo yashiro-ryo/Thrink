@@ -5,9 +5,8 @@ import ChatPageHeader from './ChatPageHeader'
 import ChatPageTimeline from './ChatPageTimeline'
 import { Socket, io } from 'socket.io-client'
 import { useEffect, useState } from 'react'
-import { Button } from 'react-bootstrap'
 import { useAppSelector } from '@/redux/hooks'
-import { Chatroom } from '@/values/Chat'
+import { Chatroom, Chat, ChatInfo } from '@/values/Chat'
 const ChatPageComp = styled.div`
   width: 100%;
   height: calc(100vh - 56px);
@@ -19,6 +18,12 @@ const ChatPageBody = styled.div`
 export default function ChatPage() {
   const [socket, setSocket] = useState<Socket>()
   const [chatrooms, setChatrooms] = useState<Array<Chatroom>>([])
+  const [chat, setChat] = useState<Array<Chat>>([])
+  const [selectedChatroomInfo, setSelectedChatroomInfo] = useState<ChatInfo>({
+    chatroomId: 0,
+    u1Uid: 0,
+    u2Uid: 0,
+  })
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const connectToServer = () => {
     const socketInstance = io('http://localhost:3000')
@@ -50,14 +55,55 @@ export default function ChatPage() {
         // サーバーから取得したchatの内容の取得を検知するイベント
         console.log('update-chat')
         console.log(data)
+        setChat(data.chat)
       })
     setSocket(socketInstance)
   }
-  const sendMessage = () => {
-    if (socket !== undefined) {
-      console.log('send message')
-      socket.emit('receive-message', 'message test')
+  const sendMessage = (
+    chatroomId: number,
+    u1Uid: number,
+    u2Uid: number,
+    messageBody: string,
+    messageType: string,
+  ) => {
+    if (socket === undefined || userProfileMeta === null) {
+      return
     }
+    if (messageBody.length === 0 || messageType.length === 0) {
+      return
+    }
+    console.log(`send messaage msgBody: ${messageBody}, msgType: ${messageType}`)
+    if (userProfileMeta.uid === u1Uid) {
+      socket.emit('send-message', {
+        uid: userProfileMeta.uid,
+        chatroomId,
+        senderUid: u1Uid,
+        receiverUid: u2Uid,
+        contentBody: messageBody,
+        contentType: messageType,
+      })
+    } else {
+      socket.emit('send-message', {
+        uid: userProfileMeta.uid,
+        chatroomId,
+        senderUid: u2Uid,
+        receiverUid: u1Uid,
+        contentBody: messageBody,
+        contentType: messageType,
+      })
+    }
+  }
+  const selectChatroom = (selectedChatroomInfo: ChatInfo) => {
+    console.log(`get chat chatroomId: ${selectedChatroomInfo.chatroomId}`)
+    if (socket === undefined || userProfileMeta === null) {
+      return
+    }
+    setSelectedChatroomInfo(selectedChatroomInfo)
+    console.log('get chat')
+    socket.emit('get-chat', {
+      uid: userProfileMeta.uid,
+      chatroomId: selectedChatroomInfo.chatroomId,
+    })
   }
   useEffect(() => {
     connectToServer()
@@ -71,11 +117,14 @@ export default function ChatPage() {
           <ChatPageLeftPane
             chatrooms={chatrooms}
             myUid={userProfileMeta === null ? 0 : userProfileMeta.uid}
+            selectChatroom={selectChatroom}
           />
-          <ChatPageTimeline />
-          <Button variant='primary' onClick={() => sendMessage()}>
-            sokcetテスト
-          </Button>
+          <ChatPageTimeline
+            selectedChatroomInfo={selectedChatroomInfo}
+            chat={chat}
+            myUid={userProfileMeta ? userProfileMeta?.uid : 0}
+            sendMessage={sendMessage}
+          />
         </ChatPageBody>
       </ChatPageComp>
     </div>

@@ -7,3 +7,21 @@ export type Chatroom = {
   u2DisplayName: string
   u2IconImgUrl: string
 }
+
+export type Chat = {
+  chatroomId: number
+  senderUid: number
+  senderDisplayName: string
+  receiverUid: number
+  receiverDisplayName: string
+  contentBody: string
+  contentType: string
+  sentAt: string
+  isDeleted: boolean
+}
+
+export type ChatInfo = {
+  chatroomId: number
+  u1Uid: number
+  u2Uid: number
+}
