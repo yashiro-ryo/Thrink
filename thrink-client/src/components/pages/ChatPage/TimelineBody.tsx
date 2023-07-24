@@ -2,7 +2,8 @@ import { Chat } from '@/values/Chat'
 import styled from 'styled-components'
 const StyledTimelineBody = styled.div`
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 80px - 56px - 50px);
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
 `
@@ -25,11 +26,15 @@ export default function TimelineBody(props: Props) {
         console.log(c)
         if (c.senderUid === props.myUid) {
           return (
-            <StyledMyMsg key={`chat-message-${c.chatroomId}-${i}`}>{c.contentBody}</StyledMyMsg>
+            <StyledMyMsg key={`chat-message-${c.chatroomId}-${i}`}>
+              <p>{c.contentBody}</p>
+            </StyledMyMsg>
           )
         } else {
           return (
-            <StyledYourMsg key={`chat-message-${c.chatroomId}-${i}`}>{c.contentBody}</StyledYourMsg>
+            <StyledYourMsg key={`chat-message-${c.chatroomId}-${i}`}>
+              <p>{c.contentBody}</p>
+            </StyledYourMsg>
           )
         }
       })}
