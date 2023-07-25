@@ -4,6 +4,7 @@ import { Container, Image, Button, Card } from 'react-bootstrap'
 import apiClient from '@/lib/http-common'
 import { GroupProfile } from '@/values/Groups'
 import { Job } from '@/values/Jobs'
+import { nullCheck } from '@/lib/stringHelper'
 
 const HeaderImagePart = styled.div`
   width: 100%;
@@ -26,6 +27,22 @@ const CustomContainer = styled(Container)`
 const UserProfileBody = styled.div`
   position: relative;
   top: -60px;
+`
+
+const StyledGroupProfileLabel = styled.h5`
+  font-weight: bold;
+`
+
+const StyledGroupJobInfoLabel = styled.h6`
+  font-weight: bold;
+`
+const StyledGroupDisplayName = styled.h3`
+  margin-top: 20px;
+  margin-bottom: 30px;
+`
+const JobCard = styled(Card)`
+  padding: 10px;
+  margin-bottom: 20px;
 `
 
 export default function GroupsProfile(props: { gidStr: string }) {
@@ -70,6 +87,22 @@ export default function GroupsProfile(props: { gidStr: string }) {
       </div>
     )
   }
+  const GroupListItem = (props: { titleText: string; bodyText: string | null }) => {
+    return (
+      <>
+        <StyledGroupProfileLabel>{props.titleText}</StyledGroupProfileLabel>
+        <p>{nullCheck(props.bodyText)}</p>
+      </>
+    )
+  }
+  const GroupJobListItem = (props: { title: string; body: string | null }) => {
+    return (
+      <>
+        <StyledGroupJobInfoLabel>{props.title}</StyledGroupJobInfoLabel>
+        <p>{nullCheck(props.body)}</p>
+      </>
+    )
+  }
   return (
     <div>
       <HeaderImagePart></HeaderImagePart>
@@ -86,35 +119,24 @@ export default function GroupsProfile(props: { gidStr: string }) {
             <UserProfileNull />
           ) : (
             <div>
-              <h3>{profile.displayName}</h3>
-              <h4>場所</h4>
-              <p>{profile.location}</p>
-              <h4>活動詳細</h4>
-              <p>{profile.activityDetail}</p>
-              <h4>活動日</h4>
-              <p>{profile.activityDay}</p>
-              <h4>活動時間</h4>
-              <p>{profile.activityTime}</p>
-              <h4>所属人数</h4>
-              <p>{profile.membersNum}</p>
-              <h4>受賞歴</h4>
-              <p>{profile.awards}</p>
-              <h4>募集中の求人({jobs.length}件)</h4>
+              <StyledGroupDisplayName>{profile.displayName}</StyledGroupDisplayName>
+              <GroupListItem titleText='活動詳細' bodyText={profile.activityDetail} />
+              <GroupListItem titleText='活動日' bodyText={profile.activityDay} />
+              <GroupListItem titleText='活動時間' bodyText={profile.activityTime} />
+              <GroupListItem titleText='活動場所' bodyText={profile.location} />
+              <GroupListItem titleText='所属人数' bodyText={String(profile.membersNum)} />
+              <GroupListItem titleText='受賞歴' bodyText={profile.awards} />
+              <StyledGroupProfileLabel>募集中の求人({jobs.length}件)</StyledGroupProfileLabel>
               {jobs.map((job: Job, index: number) => {
                 return (
-                  <Card key={`joblist-${job.jobId}-${index}`}>
-                    <h6>募集詳細</h6>
-                    <p>{job.detail}</p>
-                    <h6>募集条件</h6>
-                    <p>{job.applicationRequirements}</p>
-                    <h6>勤務時間</h6>
-                    <p>{job.workingTime}</p>
-                    <h6>勤務地</h6>
-                    <p>{job.place}</p>
-                    <h6>報酬</h6>
-                    <p>{job.reward}</p>
+                  <JobCard key={`joblist-${job.jobId}-${index}`}>
+                    <GroupJobListItem title='募集詳細' body={job.detail} />
+                    <GroupJobListItem title='募集条件' body={job.applicationRequirements} />
+                    <GroupJobListItem title='勤務時間' body={job.workingTime} />
+                    <GroupJobListItem title='勤務地' body={job.place} />
+                    <GroupJobListItem title='報酬' body={job.reward} />
                     <Button>応募する</Button>
-                  </Card>
+                  </JobCard>
                 )
               })}
             </div>
