@@ -4,11 +4,11 @@ import { Container, Image, Button } from 'react-bootstrap'
 import { StudentProfile } from '@/values/Students'
 import apiClient from '@/lib/http-common'
 import { nullCheck } from '@/lib/stringHelper'
+import { filterIconImgUrl, filterHeaderImgUrl } from '@/lib/imgUrlHelper'
 
 const HeaderImagePart = styled.div`
   width: 100%;
   height: 300px;
-  background-color: #636363;
 `
 
 const UserIconPart = styled(Image)`
@@ -64,11 +64,18 @@ export default function StudentProfile(props: { uidStr: string }) {
   }
   return (
     <div>
-      <HeaderImagePart></HeaderImagePart>
+      <HeaderImagePart>
+        <Image
+          src={filterHeaderImgUrl(profile)}
+          alt='ヘッダー画像'
+          width={'100%'}
+          height={'100%'}
+        />
+      </HeaderImagePart>
       <CustomContainer>
         <UserProfileBody>
           <UserIconPart
-            src='/user-blank.png'
+            src={filterIconImgUrl(profile)}
             roundedCircle
             alt='〇〇さんのプロフィール画像'
             width={'120px'}

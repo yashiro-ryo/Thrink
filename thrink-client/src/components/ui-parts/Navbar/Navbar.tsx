@@ -10,6 +10,7 @@ import apiClient from '@/lib/http-common'
 import { useDispatch } from 'react-redux'
 import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
 import { signin } from '@/redux/slices/signedinStateSlice'
+import { UserProfileMetaWithoutSecureData } from '@/values/UserProfileMeta'
 
 const NavbarStyle = styled(Navbar)`
   background-color: #46ccd7;
@@ -50,6 +51,19 @@ export default function NavbarComp() {
       console.log(userProfileMeta)
     }
   }, [])
+  const filterIconImgUrl = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
+    if (userProfileMeta === null) {
+      return '/user-blank.png'
+    }
+    if (userProfileMeta.iconImgUrl === null) {
+      return '/user-blank.png'
+    }
+    if (userProfileMeta.iconImgUrl.length === 0) {
+      return '/user-blank.png'
+    } else {
+      return userProfileMeta.iconImgUrl
+    }
+  }
   return (
     <div>
       <NavbarStyle collapseOnSelect expand='lg' variant='dark'>
@@ -72,7 +86,10 @@ export default function NavbarComp() {
             </Nav>
             <Nav>
               {isSignedin && userProfileMeta ? (
-                <NavbarSignedin userType={userProfileMeta.userType} />
+                <NavbarSignedin
+                  userType={userProfileMeta.userType}
+                  iconImgUrl={filterIconImgUrl(userProfileMeta)}
+                />
               ) : (
                 <NavbarNotSignedIn />
               )}

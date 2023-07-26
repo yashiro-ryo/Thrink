@@ -10,7 +10,7 @@ export const store = configureStore({
     counter: counterReducer,
     signinStateSwitcher: signedinStateReducer,
     userProfileReducer,
-    userProfileMetaReducer
+    userProfileMetaReducer,
   },
 })
 

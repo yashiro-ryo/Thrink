@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { useRouter } from 'next/navigation'
 import { GroupDigest } from '@/values/Groups'
 import { cutOverStr } from '@/lib/stringHelper'
+import { nullCheck } from '@/lib/stringHelper'
+import { filterIconImgUrl } from '@/lib/imgUrlHelper'
 
 const CardStyle = styled(Card)`
   width: 350px;
@@ -28,9 +30,6 @@ export default function StudentCard(props: Props) {
     // FIXME user typeでリダイレクト先を変更させる
     router.push(`/group/${props.groupDigest.uid}`)
   }
-  const nullCheck = (maybeStr: string | null): string => {
-    return maybeStr === null ? '' : maybeStr
-  }
   return (
     <CardStyle onClick={() => redirectProfileDetailPage()}>
       <Card.Body>
@@ -39,7 +38,7 @@ export default function StudentCard(props: Props) {
             <h4>{props.groupDigest.displayName}</h4>
           </HeaderNameAndAffliation>
           <Image
-            src='/user-blank.png'
+            src={filterIconImgUrl(props.groupDigest)}
             roundedCircle
             alt='ユーザーのプロフィール画像'
             width={'60px'}

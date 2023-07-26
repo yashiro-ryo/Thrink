@@ -1,2 +1,5 @@
 node_modules
 .env
+
+# ユーザー作成のデータの保管場所
+src/userContent

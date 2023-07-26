@@ -26,7 +26,12 @@ const NavDropdownStyle = styled(NavDropdown)`
   }
 `
 
-export default function NavbarSignedin(props: { userType: 0 | 1 | 2 }) {
+type Props = {
+  userType: 0 | 1 | 2
+  iconImgUrl: string
+}
+
+export default function NavbarSignedin(props: Props) {
   // FIXME next/linkのLinkを使用するように修正する
   // FIXME iconの配置が微妙
   const router = useRouter()
@@ -45,7 +50,7 @@ export default function NavbarSignedin(props: { userType: 0 | 1 | 2 }) {
         <NavDropdownStyle
           title={
             <Image
-              src='/user-blank.png'
+              src={props.iconImgUrl}
               roundedCircle
               alt='ユーザーのプロフィール画像'
               width={'30px'}

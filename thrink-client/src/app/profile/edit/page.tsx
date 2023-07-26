@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import apiClient from '@/lib/http-common'
 import { useAppSelector } from '@/redux/hooks'
 import { useRouter } from 'next/navigation'
+import { filterHeaderImgUrl, filterIconImgUrl } from '@/lib/imgUrlHelper'
 
 const StyledContainer = styled(Container)`
   margin-top: 30px;
@@ -47,6 +48,9 @@ export default function EditProfile() {
   const [inputLocation, setInputLocation] = useState('')
   const [inputGroupAwards, setInputGroupAwards] = useState('')
   const [inputMembersNum, setInputMembersNum] = useState('')
+  // file object
+  const [headerImgBase64, setHeaderImgBase64] = useState('')
+  const [iconImgBase64, setIconImgBase64] = useState('')
   // anyなおす
   const onChangeIconInput = (e: any) => {
     const file = e.target.files[0]
@@ -56,6 +60,12 @@ export default function EditProfile() {
       return
     }
     setIconUrl(URL.createObjectURL(file))
+    const fr = new FileReader()
+    fr.onload = (e) => {
+      console.log(`blob: ${e.target?.result}`)
+      setIconImgBase64(String(e.target?.result))
+    }
+    fr.readAsDataURL(file)
     URL.revokeObjectURL(file)
   }
   // anyなおす
@@ -67,6 +77,12 @@ export default function EditProfile() {
       return
     }
     setHeaderImageUrl(URL.createObjectURL(file))
+    const fr = new FileReader()
+    fr.onload = (e) => {
+      console.log(`blob: ${e.target?.result}`)
+      setHeaderImgBase64(String(e.target?.result))
+    }
+    fr.readAsDataURL(file)
     URL.revokeObjectURL(file)
   }
   // anyなおす
@@ -109,6 +125,8 @@ export default function EditProfile() {
     console.log(inputAwards)
     console.log(inputComment)
     console.log(inputLinks)
+    console.log(headerImgBase64)
+    console.log(iconImgBase64)
     if (userProfileMeta === null) {
       // プロフィールがそもそも存在しない場合はreturn
       return
@@ -116,6 +134,8 @@ export default function EditProfile() {
     if (userProfileMeta.userType === 0) {
       apiClient
         .post(`/v1/students/profile/${userProfileMeta.uid}`, {
+          headerImgBase64,
+          iconImgBase64,
           experience: inputExperience,
           awards: inputAwards,
           comment: inputComment,
@@ -131,6 +151,8 @@ export default function EditProfile() {
     } else if (userProfileMeta.userType === 1) {
       apiClient
         .post(`/v1/groups/profile/${userProfileMeta.uid}`, {
+          headerImgBase64,
+          iconImgBase64,
           activityDetail: inputActivityDetail,
           activityDay: inputActivityDay,
           activityTime: inputActivityTime,
@@ -185,6 +207,8 @@ export default function EditProfile() {
       router.push('/profile')
     } else {
       getProfile(userProfileMeta.uid, userProfileMeta.userType)
+      setHeaderImageUrl(filterHeaderImgUrl(userProfileMeta))
+      setIconUrl(filterIconImgUrl(userProfileMeta))
     }
   }, [userProfileMeta])
   const StudentProfileEditor = () => {

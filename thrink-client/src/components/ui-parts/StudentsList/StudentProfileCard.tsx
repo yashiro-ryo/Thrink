@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { useRouter } from 'next/navigation'
 import { StudentDigest } from '@/values/Students'
 import { cutOverStr } from '@/lib/stringHelper'
+import { filterIconImgUrl } from '@/lib/imgUrlHelper'
 
 const CardStyle = styled(Card)`
   width: 350px;
@@ -39,7 +40,7 @@ export default function StudentCard(props: Props) {
             <h4>{props.studentDigest.displayName}</h4>
           </HeaderNameAndAffliation>
           <Image
-            src='/user-blank.png'
+            src={filterIconImgUrl(props.studentDigest)}
             roundedCircle
             alt='ユーザーのプロフィール画像'
             width={'60px'}
