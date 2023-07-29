@@ -7,8 +7,9 @@ import Link from 'next/link'
 import { useAppDispatch } from '@/redux/hooks'
 import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
 import { signin } from '@/redux/slices/signedinStateSlice'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { getUrlQuery } from '@/lib/urlQueryHelper'
 import apiClient from '@/lib/http-common'
 
 const CardContainer = styled(Container)`
@@ -43,10 +44,12 @@ const FormErrorText = styled.p`
 
 export default function Signin() {
   const router = useRouter()
+  const searchParam = useSearchParams()
   const dispatch = useAppDispatch()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [formErrorText, setFormErrorText] = useState('')
+  const [redirectTo, setRedirectTo] = useState('')
   const onChangeEmail = (e: any) => {
     setEmail(e.target.value)
   }
@@ -65,7 +68,7 @@ export default function Signin() {
         console.log(res.data.userProfileMeta)
         dispatch(saveUserProfileMeta(res.data.userProfileMeta))
         dispatch(signin())
-        router.push('/')
+        router.push(redirectTo)
       })
       .catch((errRes) => {
         // ログイン失敗
@@ -74,6 +77,9 @@ export default function Signin() {
         setFormErrorText('ログインできませんでした。emailとpasswordを再度確認してください。')
       })
   }
+  useEffect(() => {
+    setRedirectTo(getUrlQuery(searchParam.get('redirect')))
+  }, [])
   return (
     <div>
       <NavbarComp />

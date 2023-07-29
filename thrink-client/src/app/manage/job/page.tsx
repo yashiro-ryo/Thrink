@@ -9,6 +9,7 @@ import { Job } from '@/values/Jobs'
 import CreateJobModal from '@/components/ui-parts/Job/CreateJobModal'
 import UpdateJobModal from '@/components/ui-parts/Job/UpdateJobEditor'
 import DeleteJobModal from '@/components/ui-parts/Job/DeleteJobModal'
+import { useRouter } from 'next/navigation'
 
 export default function JobManagePage() {
   const [isCreateaJobModalVisible, setCreateJobModalVisible] = useState(false)
@@ -18,6 +19,7 @@ export default function JobManagePage() {
   const [updateTargetJob, setUpdateTargetJob] = useState<Job | null>(null)
   const [deleteTargetJobId, setDeleteTargetJobId] = useState<number | null>(null)
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
+  const router = useRouter()
   const getCreatedJobs = (uid: number) => {
     apiClient.get(`/v1/manage/jobs/${uid}`).then((res) => {
       console.log(res.data.jobs)
@@ -27,6 +29,9 @@ export default function JobManagePage() {
 
   useEffect(() => {
     console.log(userProfileMeta)
+    if (userProfileMeta === null) {
+      router.push('/signin?redirect=manage-job')
+    }
     if (userProfileMeta !== null) {
       getCreatedJobs(userProfileMeta.uid)
     }

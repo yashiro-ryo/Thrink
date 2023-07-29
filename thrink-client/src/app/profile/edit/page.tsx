@@ -204,7 +204,7 @@ export default function EditProfile() {
   }
   useEffect(() => {
     if (userProfileMeta === null) {
-      router.push('/profile')
+      router.push('/signin?redirect=profile-edit')
     } else {
       getProfile(userProfileMeta.uid, userProfileMeta.userType)
       setHeaderImageUrl(filterHeaderImgUrl(userProfileMeta))

@@ -58,6 +58,9 @@ export default function UserProfile() {
     }
   }
   useEffect(() => {
+    if (userProfileMeta === null) {
+      router.push('/signin?redirect=profile')
+    }
     if (userProfileMeta !== null) {
       getProfile(userProfileMeta.uid, userProfileMeta.userType)
     }

@@ -7,6 +7,7 @@ import { Socket, io } from 'socket.io-client'
 import { useEffect, useState } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import { Chatroom, Chat, ChatInfo } from '@/values/Chat'
+import { useRouter } from 'next/navigation'
 const ChatPageComp = styled.div`
   width: 100%;
   height: calc(100vh - 56px);
@@ -25,6 +26,7 @@ export default function ChatPage() {
     u2Uid: 0,
   })
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
+  const router = useRouter()
   const connectToServer = () => {
     const socketInstance = io('http://localhost:3000')
     socketInstance
@@ -108,6 +110,12 @@ export default function ChatPage() {
   useEffect(() => {
     connectToServer()
   }, [])
+  useEffect(() => {
+    console.log(userProfileMeta)
+    if (userProfileMeta === null) {
+      router.push(`/signin?redirect=chat`)
+    }
+  }, [userProfileMeta])
   return (
     <div>
       <NavbarComp />
