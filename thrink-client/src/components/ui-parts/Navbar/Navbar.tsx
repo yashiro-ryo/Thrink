@@ -74,11 +74,11 @@ export default function NavbarComp() {
           <Navbar.Toggle aria-controls='responsive-navbar-nav' />
           <Navbar.Collapse id='responsive-navbar-nav'>
             <Nav className='me-auto'>
-              <NavLink as={Link} href='/students'>
-                大学生を探す
-              </NavLink>
               <NavLink as={Link} href='/groups'>
                 学校・団体を探す
+              </NavLink>
+              <NavLink as={Link} href='/students'>
+                大学生を探す
               </NavLink>
               <NavLink as={Link} href='/articles'>
                 記事一覧
