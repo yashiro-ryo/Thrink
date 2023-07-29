@@ -24,8 +24,6 @@ export default function SearchStudents() {
   }, [])
   return (
     <Container>
-      {/* 検索ふぉーむ */}
-      <SearchForm searchType='student' />
       {/* カード一覧 */}
       <HeaderLabel>
         <h5>大学生一覧({studentDigests.length}人)</h5>

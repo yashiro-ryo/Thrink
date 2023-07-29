@@ -105,4 +105,11 @@ export class GroupDigestsModel {
       };
     });
   }
+
+  // 検索結果を返す
+  async searchGroupDigest(q: string) {
+    return await db.query(
+      `select user_profile_meta.uid, user_profile_meta.display_name as displayName, user_profile_meta.icon_img_url as iconImgUrl, group_profile.activity_detail as activityDetail from user_profile_meta inner join group_profile on user_profile_meta.uid = group_profile.uid and group_profile.activity_detail like '%${q}%'`
+    );
+  }
 }

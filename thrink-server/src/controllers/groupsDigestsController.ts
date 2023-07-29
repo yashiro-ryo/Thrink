@@ -28,3 +28,14 @@ groupDigestsRouter.get("/:uid", (req: Request, res: Response) => {
     ),
   });
 });
+
+// GET /v1/digests/group/search?query=
+// グループダイジェストを検索する関数
+// FIXME GET queryに変更する
+groupDigestsRouter.post("/search", (req: Request, res: Response) => {
+  console.log("search group digest");
+  console.log(`query: ${req.body.query}`);
+  groupDigestsModel.searchGroupDigest(req.body.query).then((queryRes) => {
+    res.status(200).json({ groupDigests: queryRes });
+  });
+});

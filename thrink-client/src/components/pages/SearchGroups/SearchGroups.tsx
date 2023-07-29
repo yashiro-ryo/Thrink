@@ -18,13 +18,27 @@ export default function SearchGroups() {
       setGroupsDigests(res.data.groupDigests)
     })
   }
+  const searchGroup = (query: string) => {
+    console.log(query)
+    if (query.length === 0) {
+      return
+    }
+    apiClient
+      .post(`/v1/digests/group/search`, {
+        query,
+      })
+      .then((res) => {
+        console.log(res.data)
+        setGroupsDigests(res.data.groupDigests)
+      })
+  }
   useEffect(() => {
     getGroupsDigests()
   }, [])
   return (
     <Container>
       {/* 検索ふぉーむ */}
-      <SearchForm searchType='group' />
+      <SearchForm searchType='group' searchCb={searchGroup} />
       {/* カード一覧 */}
       <HeaderLabel>
         <h5>団体一覧({groupsDigests.length}件)</h5>
