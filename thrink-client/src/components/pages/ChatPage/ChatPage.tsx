@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import { Chatroom, Chat, ChatInfo } from '@/values/Chat'
 import { useRouter } from 'next/navigation'
+import ChatLoadingPage from './ChatLoadingPage'
 const ChatPageComp = styled.div`
   width: 100%;
   height: calc(100vh - 56px);
@@ -25,6 +26,7 @@ export default function ChatPage() {
     u1Uid: 0,
     u2Uid: 0,
   })
+  const [isLoading, setLoading] = useState(true)
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const router = useRouter()
   const connectToServer = () => {
@@ -52,6 +54,7 @@ export default function ChatPage() {
         console.log('update-chatrooms')
         console.log(data)
         setChatrooms(data.chatrooms)
+        setLoading(false)
       })
       .on('update-chat', (data) => {
         // サーバーから取得したchatの内容の取得を検知するイベント
@@ -119,22 +122,26 @@ export default function ChatPage() {
   return (
     <div>
       <NavbarComp />
-      <ChatPageComp>
-        <ChatPageHeader />
-        <ChatPageBody>
-          <ChatPageLeftPane
-            chatrooms={chatrooms}
-            myUid={userProfileMeta === null ? 0 : userProfileMeta.uid}
-            selectChatroom={selectChatroom}
-          />
-          <ChatPageTimeline
-            selectedChatroomInfo={selectedChatroomInfo}
-            chat={chat}
-            myUid={userProfileMeta ? userProfileMeta?.uid : 0}
-            sendMessage={sendMessage}
-          />
-        </ChatPageBody>
-      </ChatPageComp>
+      {isLoading ? (
+        <ChatLoadingPage />
+      ) : (
+        <ChatPageComp>
+          <ChatPageHeader />
+          <ChatPageBody>
+            <ChatPageLeftPane
+              chatrooms={chatrooms}
+              myUid={userProfileMeta === null ? 0 : userProfileMeta.uid}
+              selectChatroom={selectChatroom}
+            />
+            <ChatPageTimeline
+              selectedChatroomInfo={selectedChatroomInfo}
+              chat={chat}
+              myUid={userProfileMeta ? userProfileMeta?.uid : 0}
+              sendMessage={sendMessage}
+            />
+          </ChatPageBody>
+        </ChatPageComp>
+      )}
     </div>
   )
 }
