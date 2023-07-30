@@ -24,4 +24,5 @@ export type ChatInfo = {
   chatroomId: number
   u1Uid: number
   u2Uid: number
+  displayName: string
 }

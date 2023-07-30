@@ -25,6 +25,7 @@ export default function ChatPage() {
     chatroomId: 0,
     u1Uid: 0,
     u2Uid: 0,
+    displayName: '',
   })
   const [isLoading, setLoading] = useState(true)
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
@@ -126,7 +127,10 @@ export default function ChatPage() {
         <ChatLoadingPage />
       ) : (
         <ChatPageComp>
-          <ChatPageHeader />
+          <ChatPageHeader
+            myUid={userProfileMeta === null ? 0 : userProfileMeta.uid}
+            selectedChatroomInfo={selectedChatroomInfo}
+          />
           <ChatPageBody>
             <ChatPageLeftPane
               chatrooms={chatrooms}

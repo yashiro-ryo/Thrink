@@ -40,6 +40,10 @@ export default function ChatPageLeftPane(props: Props) {
                   chatroomId: chatroom.chatroomId,
                   u1Uid: chatroom.u1Uid,
                   u2Uid: chatroom.u2Uid,
+                  displayName:
+                    props.myUid === chatroom.u1Uid
+                      ? chatroom.u2DisplayName
+                      : chatroom.u1DisplayName,
                 })
               }
             >
