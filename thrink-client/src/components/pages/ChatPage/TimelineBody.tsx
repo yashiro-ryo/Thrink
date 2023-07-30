@@ -8,10 +8,32 @@ const StyledTimelineBody = styled.div`
   flex-direction: column;
 `
 const StyledYourMsg = styled.div`
-  text-align: left;
+  width: 100%;
 `
 const StyledMyMsg = styled.div`
-  text-align: right;
+  width: 100%;
+`
+const MyMsgWrapper = styled.div`
+  width: fit-content;
+  background-color: #00f7ff;
+  float: right;
+  padding: 10px;
+  margin: 0 10px 10px 0;
+  border-radius: 10px;
+  > p {
+    margin: 0;
+  }
+`
+const YourMsgWrapper = styled.div`
+  background-color: #ffffff;
+  width: fit-content;
+  float: left;
+  padding: 10px;
+  margin: 0 0 10px 10px;
+  border-radius: 10px;
+  > p {
+    margin: 0;
+  }
 `
 
 type Props = {
@@ -23,17 +45,20 @@ export default function TimelineBody(props: Props) {
   return (
     <StyledTimelineBody>
       {props.chat.map((c, i) => {
-        console.log(c)
         if (c.senderUid === props.myUid) {
           return (
             <StyledMyMsg key={`chat-message-${c.chatroomId}-${i}`}>
-              <p>{c.contentBody}</p>
+              <MyMsgWrapper>
+                <p>{c.contentBody}</p>
+              </MyMsgWrapper>
             </StyledMyMsg>
           )
         } else {
           return (
             <StyledYourMsg key={`chat-message-${c.chatroomId}-${i}`}>
-              <p>{c.contentBody}</p>
+              <YourMsgWrapper>
+                <p>{c.contentBody}</p>
+              </YourMsgWrapper>
             </StyledYourMsg>
           )
         }
