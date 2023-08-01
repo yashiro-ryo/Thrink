@@ -2,7 +2,7 @@ import { Image } from 'react-bootstrap'
 import styled from 'styled-components'
 
 const AppealPointsWrapper = styled.div`
-  margin: 50px 0;
+  margin-top: 150px;
 `
 const AppealPointsTopStyle = styled.div`
   > p {

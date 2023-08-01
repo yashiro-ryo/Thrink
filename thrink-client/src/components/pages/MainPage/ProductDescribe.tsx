@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { Image } from 'react-bootstrap'
 
 const ProductDescribeWrapper = styled.div`
+  margin-top: 150px;
   @media (max-width: 700px) {
     display: block;
   }
@@ -30,12 +31,29 @@ const DescribeFigureWrapper = styled.div`
     width: 50%;
   }
 `
+const TeamText = styled.p`
+  width: fit-content;
+  margin: 0 auto;
+  background: linear-gradient(transparent 70%, #ffcc66 0%);
+`
+const StudentText = styled.p`
+  width: fit-content;
+  margin: 0 auto;
+  background: linear-gradient(transparent 70%, #6699cc 0%);
+`
+const ChildrenText = styled.p`
+  width: fit-content;
+  margin: 0 auto;
+  background: linear-gradient(transparent 70%, #99cc33 0%);
+`
 
 export default function ProductDescribe() {
   return (
     <ProductDescribeWrapper>
       <DescribeTextWrapper>
-        「部活動・地域クラブ」<br></br>「学生コーチ」<br></br>「こども・保護者」<br></br>
+        <TeamText>「部活動・地域クラブ」</TeamText>
+        <StudentText>「学生コーチ」</StudentText>
+        <ChildrenText>「こども・保護者」</ChildrenText>
         3者をつなぐマッチングスペース
       </DescribeTextWrapper>
       <DescribeFigureWrapper>

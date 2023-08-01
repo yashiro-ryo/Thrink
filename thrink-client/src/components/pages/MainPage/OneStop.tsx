@@ -1,8 +1,20 @@
 import styled from 'styled-components'
+import { Image } from 'react-bootstrap'
 
+const OneStopWrapper = styled.div`
+  margin-top: 150px;
+`
 const OneStopTop = styled.div`
+  text-align: center;
   > p {
-    text-align: center;
+    font-weight: bold;
+    font-size: 25px;
+  }
+
+  > img {
+    position: relative;
+    right: 155px;
+    top: 25px;
   }
 `
 const UIImages = styled.div`
@@ -14,8 +26,6 @@ const UIImages = styled.div`
   }
 `
 const ImageCard = styled.div`
-  // for debug
-  border: 2px solid #636363;
   @media (max-width: 700px) {
     width: 100%;
   }
@@ -23,21 +33,25 @@ const ImageCard = styled.div`
     width: 50%;
   }
 `
+const ImageElem = styled(Image)`
+  width: 100%;
+`
 
 export default function OneStop() {
   return (
-    <div>
+    <OneStopWrapper>
       <OneStopTop>
+        <Image src={'/text_decorator.png'} alt='' width={'100px'} height={'70px'} />
         <p>全てがワンストップで</p>
       </OneStopTop>
       <UIImages>
         <ImageCard>
-          <p>chatページの画像(UI未完成)</p>
+          <ImageElem src={'/chat_screen_shot.png'} alt='' />
         </ImageCard>
         <ImageCard>
-          <p>バロメータの画像(UI未実装)</p>
+          <ImageElem src={'/group_profile_screen_shot.png'} alt='' />
         </ImageCard>
       </UIImages>
-    </div>
+    </OneStopWrapper>
   )
 }

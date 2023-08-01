@@ -6,7 +6,7 @@ const StyledTopLogo = styled.div`
 `
 const SubTitleWrapper = styled.div`
   text-align: center;
-  margin-top: 50px;
+  margin-top: 100px;
   > p {
     font-size: 30px;
     font-weight: bold;

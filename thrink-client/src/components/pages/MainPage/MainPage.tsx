@@ -3,6 +3,7 @@ import TopLogo from './TopLogo'
 import ProductDescribe from './ProductDescribe'
 import AppealPoints from './AppealPoints'
 import OneStop from './OneStop'
+import Problems from './Problems'
 
 export default function MainPage() {
   return (
@@ -11,6 +12,7 @@ export default function MainPage() {
       <ProductDescribe />
       <AppealPoints />
       <OneStop />
+      <Problems />
     </Container>
   )
 }
