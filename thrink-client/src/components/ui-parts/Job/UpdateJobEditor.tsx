@@ -38,7 +38,6 @@ export default function UpdateJobModal(props: Props) {
     setInputPlace(e.target.value)
   }
   const updateJob = () => {
-    Log.v(inputDetail, inputCondition, inputPlace, inputReward, inputTime)
     if (userProfileMeta !== null && props.updateTargetJob !== null) {
       apiClient
         .post(`/v1/manage/update`, {

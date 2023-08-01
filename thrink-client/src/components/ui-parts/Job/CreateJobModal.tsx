@@ -37,14 +37,6 @@ export default function CreateJobModal(props: Props) {
     setInputPlace(e.target.value)
   }
   const createJob = () => {
-    Log.v(
-      userProfileMeta?.uid,
-      inputDetail,
-      inputCondition,
-      inputPlace,
-      inputReward,
-      inputTime,
-    )
     apiClient
       .post('/v1/manage/create', {
         uid: userProfileMeta?.uid,
