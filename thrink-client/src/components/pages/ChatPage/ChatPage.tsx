@@ -9,6 +9,8 @@ import { useAppSelector } from '@/redux/hooks'
 import { Chatroom, Chat, ChatInfo } from '@/values/Chat'
 import { useRouter } from 'next/navigation'
 import ChatLoadingPage from './ChatLoadingPage'
+import Log from '@/lib/logger'
+
 const ChatPageComp = styled.div`
   width: 100%;
   height: calc(100vh - 56px);
@@ -43,7 +45,7 @@ export default function ChatPage() {
       })
       .on('success-join', () => {
         // サーバーとの個別接続が確立したのを検知するイベント
-        console.log('success join room')
+        Log.v('success join room')
         if (userProfileMeta === null) {
           return
         }
@@ -52,15 +54,15 @@ export default function ChatPage() {
       })
       .on('update-chatrooms', (data) => {
         // サーバーから取得したchatroomsの取得を検知するイベント
-        console.log('update-chatrooms')
-        console.log(data)
+        Log.v('update-chatrooms')
+        Log.v(data)
         setChatrooms(data.chatrooms)
         setLoading(false)
       })
       .on('update-chat', (data) => {
         // サーバーから取得したchatの内容の取得を検知するイベント
-        console.log('update-chat')
-        console.log(data)
+        Log.v('update-chat')
+        Log.v(data)
         setChat(data.chat)
       })
     setSocket(socketInstance)
@@ -78,7 +80,7 @@ export default function ChatPage() {
     if (messageBody.length === 0 || messageType.length === 0) {
       return
     }
-    console.log(`send messaage msgBody: ${messageBody}, msgType: ${messageType}`)
+    Log.v(`send messaage msgBody: ${messageBody}, msgType: ${messageType}`)
     if (userProfileMeta.uid === u1Uid) {
       socket.emit('send-message', {
         uid: userProfileMeta.uid,
@@ -100,12 +102,12 @@ export default function ChatPage() {
     }
   }
   const selectChatroom = (selectedChatroomInfo: ChatInfo) => {
-    console.log(`get chat chatroomId: ${selectedChatroomInfo.chatroomId}`)
+    Log.v(`get chat chatroomId: ${selectedChatroomInfo.chatroomId}`)
     if (socket === undefined || userProfileMeta === null) {
       return
     }
     setSelectedChatroomInfo(selectedChatroomInfo)
-    console.log('get chat')
+    Log.v('get chat')
     socket.emit('get-chat', {
       uid: userProfileMeta.uid,
       chatroomId: selectedChatroomInfo.chatroomId,
@@ -115,7 +117,7 @@ export default function ChatPage() {
     connectToServer()
   }, [])
   useEffect(() => {
-    console.log(userProfileMeta)
+    Log.v(userProfileMeta)
     if (userProfileMeta === null) {
       router.push(`/signin?redirect=chat`)
     }

@@ -8,6 +8,7 @@ import apiClient from '@/lib/http-common'
 import { useAppSelector } from '@/redux/hooks'
 import { useRouter } from 'next/navigation'
 import { filterHeaderImgUrl, filterIconImgUrl } from '@/lib/imgUrlHelper'
+import Log from '@/lib/logger'
 
 const StyledContainer = styled(Container)`
   margin-top: 30px;
@@ -54,15 +55,15 @@ export default function EditProfile() {
   // anyなおす
   const onChangeIconInput = (e: any) => {
     const file = e.target.files[0]
-    console.log(file)
+    Log.v(file)
     if (file === undefined) {
-      console.log('cannnot load file info')
+      Log.v('cannnot load file info')
       return
     }
     setIconUrl(URL.createObjectURL(file))
     const fr = new FileReader()
     fr.onload = (e) => {
-      console.log(`blob: ${e.target?.result}`)
+      Log.v(`blob: ${e.target?.result}`)
       setIconImgBase64(String(e.target?.result))
     }
     fr.readAsDataURL(file)
@@ -71,15 +72,15 @@ export default function EditProfile() {
   // anyなおす
   const onChangeHeaderImageInput = (e: any) => {
     const file = e.target.files[0]
-    console.log(file)
+    Log.v(file)
     if (file === undefined) {
-      console.log('cannnot load file info')
+      Log.v('cannnot load file info')
       return
     }
     setHeaderImageUrl(URL.createObjectURL(file))
     const fr = new FileReader()
     fr.onload = (e) => {
-      console.log(`blob: ${e.target?.result}`)
+      Log.v(`blob: ${e.target?.result}`)
       setHeaderImgBase64(String(e.target?.result))
     }
     fr.readAsDataURL(file)
@@ -121,12 +122,12 @@ export default function EditProfile() {
     setInputMembersNum(e.target.value)
   }
   const save = () => {
-    console.log(inputExperience)
-    console.log(inputAwards)
-    console.log(inputComment)
-    console.log(inputLinks)
-    console.log(headerImgBase64)
-    console.log(iconImgBase64)
+    Log.v(inputExperience)
+    Log.v(inputAwards)
+    Log.v(inputComment)
+    Log.v(inputLinks)
+    Log.v(headerImgBase64)
+    Log.v(iconImgBase64)
     if (userProfileMeta === null) {
       // プロフィールがそもそも存在しない場合はreturn
       return
@@ -142,7 +143,7 @@ export default function EditProfile() {
           links: inputLinks,
         })
         .then((res) => {
-          console.log(res)
+          Log.v(res)
           router.push('/profile')
         })
         .catch((err) => {
@@ -161,7 +162,7 @@ export default function EditProfile() {
           membersNum: inputMembersNum,
         })
         .then((res) => {
-          console.log(res)
+          Log.v(res)
           router.push('/profile')
         })
         .catch((err) => {
@@ -170,10 +171,10 @@ export default function EditProfile() {
     }
   }
   const getProfile = (uid: number, userType: 0 | 1 | 2) => {
-    console.log(uid)
-    console.log(userType)
+    Log.v(uid)
+    Log.v(userType)
     apiClient.get(`/v1/${getEndPointTarget(userType)}/${uid}`).then((res) => {
-      console.log(res)
+      Log.v(res)
       if (userType === 0) {
         // TODO null対策
         setInputExperience(nullCheck(res.data.studentProfile.experience))

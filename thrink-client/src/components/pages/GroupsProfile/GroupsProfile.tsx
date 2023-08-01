@@ -6,6 +6,7 @@ import { GroupProfile } from '@/values/Groups'
 import { Job } from '@/values/Jobs'
 import { nullCheck } from '@/lib/stringHelper'
 import { filterIconImgUrl, filterHeaderImgUrl } from '@/lib/imgUrlHelper'
+import Log from '@/lib/logger'
 
 const HeaderImagePart = styled.div`
   width: 100%;
@@ -61,18 +62,18 @@ export default function GroupsProfile(props: { gidStr: string }) {
   const [jobs, setJobs] = useState<Array<Job>>([])
   const getGroupProfile = (gid: number) => {
     apiClient.get(`/v1/groups/${gid}`).then((res: any) => {
-      console.log(res.data)
+      Log.v(res.data)
       setProfile(res.data.groupProfile)
     })
   }
   const getGroupJob = (gid: number) => {
     apiClient.get(`/v1/manage/jobs/${gid}`).then((res) => {
-      console.log(res)
+      Log.v(res)
       setJobs(res.data.jobs)
     })
   }
   useEffect(() => {
-    console.log(`gid: ${props.gidStr}`)
+    Log.v(`gid: ${props.gidStr}`)
     getGroupProfile(Number(props.gidStr))
     getGroupJob(Number(props.gidStr))
   }, [props.gidStr])

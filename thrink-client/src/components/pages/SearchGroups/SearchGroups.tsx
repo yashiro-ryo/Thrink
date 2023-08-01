@@ -5,6 +5,7 @@ import GroupsList from '@/components/ui-parts/GroupsList/GroupsList'
 import styled from 'styled-components'
 import apiClient from '@/lib/http-common'
 import { GroupDigest } from '@/values/Groups'
+import Log from '@/lib/logger'
 
 const HeaderLabel = styled.div`
   margin-top: 20px;
@@ -19,7 +20,7 @@ export default function SearchGroups() {
     })
   }
   const searchGroup = (query: string) => {
-    console.log(query)
+    Log.v(query)
     if (query.length === 0) {
       return
     }
@@ -28,7 +29,7 @@ export default function SearchGroups() {
         query,
       })
       .then((res) => {
-        console.log(res.data)
+        Log.v(res.data)
         setGroupsDigests(res.data.groupDigests)
       })
   }

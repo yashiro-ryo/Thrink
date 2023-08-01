@@ -10,6 +10,7 @@ import CreateJobModal from '@/components/ui-parts/Job/CreateJobModal'
 import UpdateJobModal from '@/components/ui-parts/Job/UpdateJobEditor'
 import DeleteJobModal from '@/components/ui-parts/Job/DeleteJobModal'
 import { useRouter } from 'next/navigation'
+import Log from '@/lib/logger'
 
 export default function JobManagePage() {
   const [isCreateaJobModalVisible, setCreateJobModalVisible] = useState(false)
@@ -22,13 +23,13 @@ export default function JobManagePage() {
   const router = useRouter()
   const getCreatedJobs = (uid: number) => {
     apiClient.get(`/v1/manage/jobs/${uid}`).then((res) => {
-      console.log(res.data.jobs)
+      Log.v(res.data.jobs)
       setCreatedJobs(res.data.jobs)
     })
   }
 
   useEffect(() => {
-    console.log(userProfileMeta)
+    Log.v(userProfileMeta)
     if (userProfileMeta === null) {
       router.push('/signin?redirect=manage-job')
     }
@@ -50,7 +51,7 @@ export default function JobManagePage() {
                 onClick={() => {
                   setUpdateJobModalVisible(true)
                   setUpdateTargetJob(createdJob)
-                  console.log(createdJob)
+                  Log.v(createdJob)
                 }}
               >
                 求人内容を更新する
@@ -60,7 +61,7 @@ export default function JobManagePage() {
                 onClick={() => {
                   setDeleteModalVisible(true)
                   setDeleteTargetJobId(createdJob.jobId)
-                  console.log(createdJob)
+                  Log.v(createdJob)
                 }}
               >
                 求人を削除する

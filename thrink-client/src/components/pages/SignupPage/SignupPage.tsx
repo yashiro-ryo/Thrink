@@ -6,8 +6,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import apiClient from '@/lib/http-common'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { saveUserProfile } from '@/redux/slices/userProfileSlice'
-import { migrateDbParamToClientParam } from '@/values/UserProfile'
+import Log from '@/lib/logger'
 
 const CardContainer = styled(Container)`
   display: flex;
@@ -51,7 +50,7 @@ export default function SignupPage() {
     setInputName(e.target.value)
   }
   const onChangeInputUserType = (e: number) => {
-    console.log(e)
+    Log.v(e)
     setInputUserType(e)
   }
   const onChangeInputEmail = (e: any) => {
@@ -70,11 +69,11 @@ export default function SignupPage() {
   const dispatch = useAppDispatch()
   const userProfile = useAppSelector((state) => state.userProfileReducer)
   const submit = () => {
-    console.log('submit')
-    console.log(inputEmail)
-    console.log(inputPassword)
-    console.log(inputPasswordConfirm)
-    console.log(isTermsChecked)
+    Log.v('submit')
+    Log.v(inputEmail)
+    Log.v(inputPassword)
+    Log.v(inputPasswordConfirm)
+    Log.v(isTermsChecked)
     let errorText: Array<string> = []
     let hasError = false
     if (
@@ -108,11 +107,11 @@ export default function SignupPage() {
         userType: inputUserType,
       })
       .then((res) => {
-        console.log(res)
+        Log.v(res)
         // save user info
         //dispatch(saveUserProfile(migrateDbParamToClientParam(res.data.msg)))
         // redirect
-        //console.log(userProfile)
+        //Log.v(userProfile)
       })
       .catch((error) => {
         setErrorText([error])

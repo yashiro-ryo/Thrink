@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getUrlQuery } from '@/lib/urlQueryHelper'
 import apiClient from '@/lib/http-common'
+import Log from '@/lib/logger'
 
 const CardContainer = styled(Container)`
   display: flex;
@@ -64,15 +65,15 @@ export default function Signin() {
       })
       .then((res: any) => {
         // ログイン成功
-        console.log('successful signin')
-        console.log(res.data.userProfileMeta)
+        Log.v('successful signin')
+        Log.v(res.data.userProfileMeta)
         dispatch(saveUserProfileMeta(res.data.userProfileMeta))
         dispatch(signin())
         router.push(redirectTo)
       })
       .catch((errRes) => {
         // ログイン失敗
-        console.log('failed signin˝')
+        Log.v('failed signin˝')
         console.error(errRes)
         setFormErrorText('ログインできませんでした。emailとpasswordを再度確認してください。')
       })

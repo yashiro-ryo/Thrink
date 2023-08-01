@@ -5,6 +5,7 @@ import { StudentProfile } from '@/values/Students'
 import apiClient from '@/lib/http-common'
 import { nullCheck } from '@/lib/stringHelper'
 import { filterIconImgUrl, filterHeaderImgUrl } from '@/lib/imgUrlHelper'
+import Log from '@/lib/logger'
 
 const HeaderImagePart = styled.div`
   width: 100%;
@@ -44,7 +45,7 @@ export default function StudentProfile(props: { uidStr: string }) {
   })
   const getStudentProfile = (uid: number) => {
     apiClient.get(`/v1/students/${uid}`).then((res: any) => {
-      console.log(res.data)
+      Log.v(res.data)
       setProfile(res.data.studentProfile)
     })
   }

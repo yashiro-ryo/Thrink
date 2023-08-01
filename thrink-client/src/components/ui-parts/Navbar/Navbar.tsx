@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux'
 import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
 import { signin } from '@/redux/slices/signedinStateSlice'
 import { UserProfileMetaWithoutSecureData } from '@/values/UserProfileMeta'
+import Log from '@/lib/logger'
 
 const NavbarStyle = styled(Navbar)`
   background-color: #46ccd7;
@@ -33,12 +34,12 @@ export default function NavbarComp() {
   useEffect(() => {
     // client側にキャッシュが存在しない場合
     if (userProfileMeta === null) {
-      console.log('client cache none')
+      Log.v('client cache none')
       // server側へ問い合わせ
       apiClient
         .get('/auth/signin')
         .then((res) => {
-          console.log(res.data.userProfileMeta)
+          Log.v(res.data.userProfileMeta)
           dispatch(signin())
           dispatch(saveUserProfileMeta(res.data.userProfileMeta))
         })
@@ -47,8 +48,8 @@ export default function NavbarComp() {
         })
     } else {
       // cacheが存在する場合はsinginのAPIを送信しない
-      console.log('client cache exist')
-      console.log(userProfileMeta)
+      Log.v('client cache exist')
+      Log.v(userProfileMeta)
     }
   }, [])
   const filterIconImgUrl = (userProfileMeta: UserProfileMetaWithoutSecureData) => {

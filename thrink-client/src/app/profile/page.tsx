@@ -8,6 +8,7 @@ import { useAppSelector } from '@/redux/hooks'
 import { useRouter } from 'next/navigation'
 import { nullCheck } from '@/lib/stringHelper'
 import apiClient from '@/lib/http-common'
+import Log from '@/lib/logger'
 
 const ContainerStyle = styled(Container)`
   margin-top: 50px;
@@ -30,10 +31,10 @@ export default function UserProfile() {
   const [groupAwards, setGroupAwards] = useState('')
   // method
   const getProfile = (uid: number, userType: 0 | 1 | 2) => {
-    console.log(uid)
-    console.log(userType)
+    Log.v(uid)
+    Log.v(userType)
     apiClient.get(`/v1/${getEndPointTarget(userType)}/${uid}`).then((res) => {
-      console.log(res)
+      Log.v(res)
       if (userType === 0) {
         setExperience(res.data.studentProfile.experience)
         setAwards(res.data.studentProfile.awards)

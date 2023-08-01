@@ -3,6 +3,7 @@ import { Job } from '@/values/Jobs'
 import { useEffect, useState } from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
 import { useAppSelector } from '@/redux/hooks'
+import Log from '@/lib/logger'
 
 type Props = {
   isVisible: boolean
@@ -37,7 +38,7 @@ export default function UpdateJobModal(props: Props) {
     setInputPlace(e.target.value)
   }
   const updateJob = () => {
-    console.log(inputDetail, inputCondition, inputPlace, inputReward, inputTime)
+    Log.v(inputDetail, inputCondition, inputPlace, inputReward, inputTime)
     if (userProfileMeta !== null && props.updateTargetJob !== null) {
       apiClient
         .post(`/v1/manage/update`, {
@@ -50,7 +51,7 @@ export default function UpdateJobModal(props: Props) {
           place: inputPlace,
         })
         .then((res) => {
-          console.log(res.data.jobs)
+          Log.v(res.data.jobs)
           props.setCreatedJobs(res.data.jobs)
         })
     }
@@ -65,7 +66,7 @@ export default function UpdateJobModal(props: Props) {
     setInputTime('')
   }
   useEffect(() => {
-    console.log(props.updateTargetJob)
+    Log.v(props.updateTargetJob)
     if (props.updateTargetJob !== undefined && props.updateTargetJob !== null) {
       setInputDetail(props.updateTargetJob.detail)
       setInputCondition(props.updateTargetJob.applicationRequirements)

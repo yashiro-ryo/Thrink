@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Container } from 'react-bootstrap'
-import SearchForm from '../../ui-parts/SearchForm'
 import StudentsList from '../../ui-parts/StudentsList/StudentsList'
 import styled from 'styled-components'
 import apiClient from '@/lib/http-common'
 import { StudentDigest } from '@/values/Students'
+import Log from '@/lib/logger'
 
 const HeaderLabel = styled.div`
   margin-top: 20px;
@@ -15,7 +15,7 @@ export default function SearchStudents() {
   const [studentDigests, setStudentDigests] = useState<Array<StudentDigest>>([])
   const getAllStudents = () => {
     apiClient.get('/v1/digests/student?pageIndex=1').then((res: any) => {
-      console.log(res.data)
+      Log.v(res.data)
       setStudentDigests(res.data.studentDigests)
     })
   }
