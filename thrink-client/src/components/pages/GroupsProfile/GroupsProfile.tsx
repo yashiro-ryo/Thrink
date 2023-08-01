@@ -7,6 +7,8 @@ import { Job } from '@/values/Jobs'
 import { nullCheck } from '@/lib/stringHelper'
 import { filterIconImgUrl, filterHeaderImgUrl } from '@/lib/imgUrlHelper'
 import Log from '@/lib/logger'
+import { useSelector } from '@/redux/store'
+import { useRouter } from 'next/navigation'
 
 const HeaderImagePart = styled.div`
   width: 100%;
@@ -47,6 +49,8 @@ const JobCard = styled(Card)`
 `
 
 export default function GroupsProfile(props: { gidStr: string }) {
+  const userProfileMeta = useSelector((state) => state.userProfileMetaReducer.profileMeta)
+  const router = useRouter()
   const [profile, setProfile] = useState<GroupProfile>({
     uid: 0,
     displayName: '',
@@ -104,6 +108,23 @@ export default function GroupsProfile(props: { gidStr: string }) {
       </>
     )
   }
+  const applyJob = (jobId: number, jobUid: number) => {
+    if (userProfileMeta === null) {
+      return
+    }
+    if (userProfileMeta.uid === jobUid) {
+      alert('求人作成者は求人に応募できません.')
+      return
+    }
+    Log.v(
+      `求人応募, 求人ID: ${jobId}, ユーザーID: ${userProfileMeta.uid}, 求人ユーザーID: ${jobUid}`,
+    )
+    apiClient.post('/v1/job/apply', { jobId, uid: userProfileMeta.uid, jobUid }).then((res) => {
+      Log.v(res)
+      // chatページへ移動
+      router.push('/chat')
+    })
+  }
   return (
     <div>
       <HeaderImagePart>
@@ -143,7 +164,7 @@ export default function GroupsProfile(props: { gidStr: string }) {
                     <GroupJobListItem title='勤務時間' body={job.workingTime} />
                     <GroupJobListItem title='勤務地' body={job.place} />
                     <GroupJobListItem title='報酬' body={job.reward} />
-                    <Button>応募する</Button>
+                    <Button onClick={() => applyJob(job.jobId, job.uid)}>応募する</Button>
                   </JobCard>
                 )
               })}

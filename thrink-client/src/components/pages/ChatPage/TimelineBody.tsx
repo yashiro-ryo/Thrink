@@ -40,6 +40,23 @@ type Props = {
   chat: Array<Chat>
   myUid: number
 }
+const MsgWrapper = (contentBody: string, contentType: string) => {
+  return (
+    <>{contentType === 'job-apply' ? jobApplyText(contentBody) : defaultMsgText(contentBody)}</>
+  )
+}
+
+const defaultMsgText = (text: string) => {
+  return <p>{text}</p>
+}
+
+const jobApplyText = (content: string) => {
+  return (
+    <div>
+      <p>求人ID: {content}の求人に応募しました！</p>
+    </div>
+  )
+}
 
 export default function TimelineBody(props: Props) {
   return (
@@ -48,17 +65,13 @@ export default function TimelineBody(props: Props) {
         if (c.senderUid === props.myUid) {
           return (
             <StyledMyMsg key={`chat-message-${c.chatroomId}-${i}`}>
-              <MyMsgWrapper>
-                <p>{c.contentBody}</p>
-              </MyMsgWrapper>
+              <MyMsgWrapper>{MsgWrapper(c.contentBody, c.contentType)}</MyMsgWrapper>
             </StyledMyMsg>
           )
         } else {
           return (
             <StyledYourMsg key={`chat-message-${c.chatroomId}-${i}`}>
-              <YourMsgWrapper>
-                <p>{c.contentBody}</p>
-              </YourMsgWrapper>
+              <YourMsgWrapper>{MsgWrapper(c.contentBody, c.contentType)}</YourMsgWrapper>
             </StyledYourMsg>
           )
         }

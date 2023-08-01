@@ -29,6 +29,18 @@ type Chat = {
 export class ChatModel {
   constructor() {}
 
+  async createChatroom(u1Uid: number, u2Uid: number) {
+    await db.query(
+      `insert into chatroom (user1_uid, user2_uid) select * from (select ${u1Uid}, ${u2Uid}) as tmp where not exists (select * from chatroom where (user1_uid = ${u1Uid} and user2_uid = ${u2Uid}) or (user1_uid = ${u2Uid} and user2_uid = ${u1Uid}))`
+    );
+  }
+
+  async chatroomIdByUsersId(u1Uid: number, u2Uid: number) {
+    return await db.query(
+      `select chatroom_id as chatroomId from chatroom where (user1_uid = ${u1Uid} and user2_uid = ${u2Uid}) or (user1_uid = ${u2Uid} and user2_uid = ${u1Uid})`
+    );
+  }
+
   async getChat(chatroomId: number) {
     return await db.query(
       `select c.chat_message_id as chatMessageId, c.chatroom_id as chatroomId, c.sender_uid as senderUid, u1.display_name as senderDisplayName, c.receiver_uid as receiverUid, u2.display_name as receiverDisplayName, c.content_body as contentBody, c.content_type as contentType, c.sent_at as sentAt, c.is_deleted as isDeleted from chat as c inner join user_profile_meta as u1 on c.sender_uid = u1.uid inner join user_profile_meta as u2 on c.receiver_uid = u2.uid where c.chatroom_id = ${chatroomId};`
