@@ -30,28 +30,6 @@ const NavLink = styled(Nav.Link)`
 export default function NavbarComp() {
   const isSignedin = useAppSelector((state) => state.signinStateSwitcher.isSignedIn)
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
-  const dispatch = useDispatch()
-  useEffect(() => {
-    // client側にキャッシュが存在しない場合
-    if (userProfileMeta === null) {
-      Log.v('client cache none')
-      // server側へ問い合わせ
-      apiClient
-        .get('/auth/signin')
-        .then((res) => {
-          Log.v(res.data.userProfileMeta)
-          dispatch(signin())
-          dispatch(saveUserProfileMeta(res.data.userProfileMeta))
-        })
-        .catch((err) => {
-          // do nothing
-        })
-    } else {
-      // cacheが存在する場合はsinginのAPIを送信しない
-      Log.v('client cache exist')
-      Log.v(userProfileMeta)
-    }
-  }, [])
   const filterIconImgUrl = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
     if (userProfileMeta === null) {
       return '/user-blank.png'

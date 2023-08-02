@@ -9,6 +9,11 @@ import { useAppSelector } from '@/redux/hooks'
 import { useRouter } from 'next/navigation'
 import { filterHeaderImgUrl, filterIconImgUrl } from '@/lib/imgUrlHelper'
 import Log from '@/lib/logger'
+import { checkUserSession } from '@/lib/auth'
+import { useDispatch } from 'react-redux'
+import { signin } from '@/redux/slices/signedinStateSlice'
+import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
+import { UserProfileMetaWithoutSecureData } from '@/values/UserProfileMeta'
 
 const StyledContainer = styled(Container)`
   margin-top: 30px;
@@ -52,6 +57,8 @@ export default function EditProfile() {
   // file object
   const [headerImgBase64, setHeaderImgBase64] = useState('')
   const [iconImgBase64, setIconImgBase64] = useState('')
+  // redux
+  const dispatch = useDispatch()
   // anyなおす
   const onChangeIconInput = (e: any) => {
     const file = e.target.files[0]
@@ -204,14 +211,19 @@ export default function EditProfile() {
     }
   }
   useEffect(() => {
-    if (userProfileMeta === null) {
-      router.push('/signin?redirect=profile-edit')
-    } else {
+    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
+      dispatch(signin())
+      dispatch(saveUserProfileMeta(userProfileMeta))
+    }
+    const onErrorCheckSession = () => router.push('/signin?redirect=profile-edit')
+    if (userProfileMeta !== null) {
       getProfile(userProfileMeta.uid, userProfileMeta.userType)
       setHeaderImageUrl(filterHeaderImgUrl(userProfileMeta))
       setIconUrl(filterIconImgUrl(userProfileMeta))
+    } else {
+      checkUserSession(onSuccessCheckSession, onErrorCheckSession)
     }
-  }, [userProfileMeta])
+  }, [userProfileMeta]) // eslint-disable-line
   const StudentProfileEditor = () => {
     return (
       <>

@@ -4,7 +4,7 @@ import Footer from '@/components/ui-parts/Footer/Footer'
 import { Container, Card, Form, Button } from 'react-bootstrap'
 import styled from 'styled-components'
 import Link from 'next/link'
-import { useAppDispatch } from '@/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
 import { signin } from '@/redux/slices/signedinStateSlice'
 import { useEffect, useState } from 'react'
@@ -12,6 +12,8 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { getUrlQuery } from '@/lib/urlQueryHelper'
 import apiClient from '@/lib/http-common'
 import Log from '@/lib/logger'
+import { checkUserSession } from '@/lib/auth'
+import { UserProfileMetaWithoutSecureData } from '@/values/UserProfileMeta'
 
 const CardContainer = styled(Container)`
   display: flex;
@@ -46,7 +48,9 @@ const FormErrorText = styled.p`
 export default function Signin() {
   const router = useRouter()
   const searchParam = useSearchParams()
+  // redux
   const dispatch = useAppDispatch()
+  const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [formErrorText, setFormErrorText] = useState('')
@@ -79,8 +83,21 @@ export default function Signin() {
       })
   }
   useEffect(() => {
-    setRedirectTo(getUrlQuery(searchParam.get('redirect')))
-  }, [])
+    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
+      dispatch(signin())
+      dispatch(saveUserProfileMeta(userProfileMeta))
+    }
+    const onErrorCheckSession = () => {
+      // do nothing
+    }
+    // ログイン済みかどうか
+    if (userProfileMeta !== null) {
+      // ログイン済み
+      router.push(getUrlQuery(searchParam.get('redirect')))
+    } else {
+      checkUserSession(onSuccessCheckSession, onErrorCheckSession)
+    }
+  }, [userProfileMeta]) // eslint-disable-line
   return (
     <div>
       <NavbarComp />

@@ -11,6 +11,11 @@ import UpdateJobModal from '@/components/ui-parts/Job/UpdateJobEditor'
 import DeleteJobModal from '@/components/ui-parts/Job/DeleteJobModal'
 import { useRouter } from 'next/navigation'
 import Log from '@/lib/logger'
+import { checkUserSession } from '@/lib/auth'
+import { useDispatch } from 'react-redux'
+import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
+import { signin } from '@/redux/slices/signedinStateSlice'
+import { UserProfileMetaWithoutSecureData } from '@/values/UserProfileMeta'
 
 export default function JobManagePage() {
   const [isCreateaJobModalVisible, setCreateJobModalVisible] = useState(false)
@@ -19,24 +24,28 @@ export default function JobManagePage() {
   const [createdJobs, setCreatedJobs] = useState<Array<Job>>([])
   const [updateTargetJob, setUpdateTargetJob] = useState<Job | null>(null)
   const [deleteTargetJobId, setDeleteTargetJobId] = useState<number | null>(null)
-  const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const router = useRouter()
+  // redux
+  const dispatch = useDispatch()
+  const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const getCreatedJobs = (uid: number) => {
     apiClient.get(`/v1/manage/jobs/${uid}`).then((res) => {
       Log.v(res.data.jobs)
       setCreatedJobs(res.data.jobs)
     })
   }
-
   useEffect(() => {
-    Log.v(userProfileMeta)
-    if (userProfileMeta === null) {
-      router.push('/signin?redirect=manage-job')
+    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
+      dispatch(signin())
+      dispatch(saveUserProfileMeta(userProfileMeta))
     }
+    const onErrorCheckSession = () => router.push('/signin?redirect=manage-job')
     if (userProfileMeta !== null) {
       getCreatedJobs(userProfileMeta.uid)
+    } else {
+      checkUserSession(onSuccessCheckSession, onErrorCheckSession)
     }
-  }, [userProfileMeta])
+  }, [userProfileMeta]) // eslint-disable-line
 
   const CreatedJobList = () => {
     return (

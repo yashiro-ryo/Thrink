@@ -9,6 +9,11 @@ import { useRouter } from 'next/navigation'
 import { nullCheck } from '@/lib/stringHelper'
 import apiClient from '@/lib/http-common'
 import Log from '@/lib/logger'
+import { checkUserSession } from '@/lib/auth'
+import { useDispatch } from 'react-redux'
+import { signin } from '@/redux/slices/signedinStateSlice'
+import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
+import { UserProfileMetaWithoutSecureData } from '@/values/UserProfileMeta'
 
 const ContainerStyle = styled(Container)`
   margin-top: 50px;
@@ -29,6 +34,8 @@ export default function UserProfile() {
   const [activityTime, setActivityTime] = useState('')
   const [location, setLocation] = useState('')
   const [groupAwards, setGroupAwards] = useState('')
+  // redux
+  const dispatch = useDispatch()
   // method
   const getProfile = (uid: number, userType: 0 | 1 | 2) => {
     Log.v(uid)
@@ -59,13 +66,17 @@ export default function UserProfile() {
     }
   }
   useEffect(() => {
-    if (userProfileMeta === null) {
-      router.push('/signin?redirect=profile')
+    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
+      dispatch(signin())
+      dispatch(saveUserProfileMeta(userProfileMeta))
     }
+    const onErrorCheckSession = () => router.push('/signin?redirect=profile')
     if (userProfileMeta !== null) {
       getProfile(userProfileMeta.uid, userProfileMeta.userType)
+    } else {
+      checkUserSession(onSuccessCheckSession, onErrorCheckSession)
     }
-  }, [userProfileMeta])
+  }, [userProfileMeta]) // eslint-disable-line
   const StudentProfileList = () => {
     return (
       <>

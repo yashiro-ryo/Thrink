@@ -10,6 +10,11 @@ import { Chatroom, Chat, ChatInfo } from '@/values/Chat'
 import { useRouter } from 'next/navigation'
 import ChatLoadingPage from './ChatLoadingPage'
 import Log from '@/lib/logger'
+import { checkUserSession } from '@/lib/auth'
+import { useDispatch } from 'react-redux'
+import { signin } from '@/redux/slices/signedinStateSlice'
+import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
+import { UserProfileMetaWithoutSecureData } from '@/values/UserProfileMeta'
 
 const ChatPageComp = styled.div`
   width: 100%;
@@ -32,6 +37,7 @@ export default function ChatPage() {
   const [isLoading, setLoading] = useState(true)
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const router = useRouter()
+  const dispatch = useDispatch()
   const connectToServer = () => {
     const socketInstance = io('http://localhost:3000')
     socketInstance
@@ -114,14 +120,21 @@ export default function ChatPage() {
     })
   }
   useEffect(() => {
-    connectToServer()
-  }, [])
-  useEffect(() => {
     Log.v(userProfileMeta)
-    if (userProfileMeta === null) {
+    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
+      dispatch(signin())
+      dispatch(saveUserProfileMeta(userProfileMeta))
+      connectToServer()
+    }
+    const onErrorCheckSession = () => {
       router.push(`/signin?redirect=chat`)
     }
-  }, [userProfileMeta])
+    if (userProfileMeta !== null) {
+      connectToServer()
+      return
+    }
+    checkUserSession(onSuccessCheckSession, onErrorCheckSession)
+  }, [userProfileMeta]) // eslint-disable-line
   return (
     <div>
       <NavbarComp />
