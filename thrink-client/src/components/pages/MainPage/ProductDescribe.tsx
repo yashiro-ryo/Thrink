@@ -57,7 +57,7 @@ export default function ProductDescribe() {
         3者をつなぐマッチングスペース
       </DescribeTextWrapper>
       <DescribeFigureWrapper>
-        <Image src={'/describe_figure.png'} alt='' width={'300px'} />
+        <Image src={'/describe_figure.webp'} alt='' width={'300px'} />
       </DescribeFigureWrapper>
     </ProductDescribeWrapper>
   )

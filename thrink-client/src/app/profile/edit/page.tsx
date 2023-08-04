@@ -40,8 +40,8 @@ const FormGroup = styled(Form.Group)`
 export default function EditProfile() {
   const router = useRouter()
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
-  const [iconImageUrl, setIconUrl] = useState('/user-blank.png')
-  const [headerImageUrl, setHeaderImageUrl] = useState('/header-blank.png')
+  const [iconImageUrl, setIconUrl] = useState('/user-blank.webp')
+  const [headerImageUrl, setHeaderImageUrl] = useState('/header-blank.webp')
   // input form student
   const [inputExperience, setInputExperience] = useState('')
   const [inputAwards, setInputAwards] = useState('')

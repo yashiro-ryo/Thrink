@@ -74,7 +74,7 @@ export default function AppealPoints() {
           </CardTopWrapper>
           <Card1BodyWrapper>
             <ImageWrapper>
-              <StyledCardImage src={'/for_team.png'} alt='' />
+              <StyledCardImage src={'/for_team.webp'} alt='' />
             </ImageWrapper>
             <div>
               <p>チームのＰＲ、近況報告の投稿、子ども・保護者や学生コーチとの やりとりができる。</p>
@@ -87,7 +87,7 @@ export default function AppealPoints() {
           </CardTopWrapper>
           <Card2BodyWrapper>
             <ImageWrapper>
-              <StyledCardImage src={'/for_kids.png'} alt='' />
+              <StyledCardImage src={'/for_kids.webp'} alt='' />
             </ImageWrapper>
             <div>
               <p>入りたいチームの検索、 チームの比較、チームに 対する相談が容易にできる。</p>
@@ -100,7 +100,7 @@ export default function AppealPoints() {
           </CardTopWrapper>
           <Card3BodyWrapper>
             <ImageWrapper>
-              <StyledCardImage src={'/for_students.png'} alt='' />
+              <StyledCardImage src={'/for_students.webp'} alt='' />
             </ImageWrapper>
             <div>
               <p>自分のニーズに合ったチームを 探すことができ、チーム側と やりとりもできる。</p>

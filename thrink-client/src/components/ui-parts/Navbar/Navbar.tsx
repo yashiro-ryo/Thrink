@@ -32,13 +32,13 @@ export default function NavbarComp() {
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const filterIconImgUrl = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
     if (userProfileMeta === null) {
-      return '/user-blank.png'
+      return '/user-blank.webp'
     }
     if (userProfileMeta.iconImgUrl === null) {
-      return '/user-blank.png'
+      return '/user-blank.webp'
     }
     if (userProfileMeta.iconImgUrl.length === 0) {
-      return '/user-blank.png'
+      return '/user-blank.webp'
     } else {
       return userProfileMeta.iconImgUrl
     }

@@ -41,15 +41,15 @@ export default function OneStop() {
   return (
     <OneStopWrapper>
       <OneStopTop>
-        <Image src={'/text_decorator.png'} alt='' width={'100px'} height={'70px'} />
+        <Image src={'/text_decorator.webp'} alt='' width={'100px'} height={'70px'} />
         <p>全てがワンストップで</p>
       </OneStopTop>
       <UIImages>
         <ImageCard>
-          <ImageElem src={'/chat_screen_shot.png'} alt='' />
+          <ImageElem src={'/chat_screen_shot.webp'} alt='' />
         </ImageCard>
         <ImageCard>
-          <ImageElem src={'/group_profile_screen_shot.png'} alt='' />
+          <ImageElem src={'/group_profile_screen_shot.webp'} alt='' />
         </ImageCard>
       </UIImages>
     </OneStopWrapper>
