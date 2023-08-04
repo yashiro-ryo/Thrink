@@ -39,7 +39,7 @@ export default function ChatPage() {
   const router = useRouter()
   const dispatch = useDispatch()
   const connectToServer = () => {
-    const socketInstance = io('http://13.115.168.136:3000')
+    const socketInstance = io('http://api.thrink.net')
     socketInstance
       .on('connect', () => {
         // サーバーに接続成功時のイベント

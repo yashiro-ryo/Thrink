@@ -13,7 +13,7 @@ export const convertBase64ToPngFile = async (
   }
   const path = `./src/userContent/${uid}-${fileType}.png`;
   // TODO 環境でURLを変更する
-  const urlPath = `http://localhost:3000/user-content/${uid}-${fileType}.png`;
+  const urlPath = `http://api.thrink.net/user-content/${uid}-${fileType}.png`;
   const base64Data = imgData.replace(/^data:([A-Za-z-+/]+);base64,/, "");
   fs.writeFileSync(path, base64Data, { encoding: "base64" });
   return urlPath;
