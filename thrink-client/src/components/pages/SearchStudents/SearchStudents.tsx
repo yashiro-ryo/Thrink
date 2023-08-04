@@ -16,6 +16,10 @@ export default function SearchStudents() {
   const getAllStudents = () => {
     apiClient.get('/v1/digests/student?pageIndex=1').then((res: any) => {
       Log.v(res.data)
+      if (res.data) {
+        setStudentDigests([])
+        return
+      }
       setStudentDigests(res.data.studentDigests)
     })
   }
