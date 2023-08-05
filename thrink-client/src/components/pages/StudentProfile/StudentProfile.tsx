@@ -28,6 +28,11 @@ const UserProfileBody = styled.div`
   position: relative;
   top: -60px;
 `
+const UserProfileTop = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+`
 
 export default function StudentProfile(props: { uidStr: string }) {
   const [visibleTabInfo, setVisibleTab] = useState<'experience' | 'awards' | 'comment' | 'links'>(
@@ -86,7 +91,10 @@ export default function StudentProfile(props: { uidStr: string }) {
             <UserProfileNull />
           ) : (
             <>
-              <h3>{profile.displayName}</h3>
+              <UserProfileTop>
+                <h3>{profile.displayName}</h3>
+                <Button variant='secondary'>メッセージを送る</Button>
+              </UserProfileTop>
               <h4>経験</h4>
               <p>{nullCheck(profile.experience)}</p>
               <h4>受賞歴</h4>
