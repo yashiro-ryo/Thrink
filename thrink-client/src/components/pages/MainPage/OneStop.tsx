@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Image } from 'react-bootstrap'
 
 const OneStopWrapper = styled.div`
-  margin-top: 150px;
+  margin-top: 100px;
 `
 const OneStopTop = styled.div`
   text-align: center;
