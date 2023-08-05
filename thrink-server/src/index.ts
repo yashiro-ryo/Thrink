@@ -14,6 +14,9 @@ import { Server, Socket } from "socket.io";
 import { setupChatSocketRouter } from "./controllers/chatSokcetController";
 import * as bodyParser from "body-parser";
 
+require("dotenv").config();
+console.log(`APP MODE : ${process.env.APP_MODE}`);
+
 const app: Application = express();
 const PORT = 3000;
 // TODO Security Settings
@@ -51,7 +54,11 @@ app.get("/", async (_req: Request, res: Response) => {
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:3001"],
+    origin: [
+      process.env.APP_MODE === "development"
+        ? "http://localhost:3001"
+        : "https://thrink.net",
+    ],
     credentials: true,
   },
 });
