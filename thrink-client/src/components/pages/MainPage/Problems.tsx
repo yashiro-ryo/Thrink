@@ -45,6 +45,9 @@ const Right = styled.div`
     }
   }
 `
+const BottomImgWrapper = styled.div`
+  margin-bottom: 50px;
+`
 
 export default function Problems() {
   return (
@@ -68,6 +71,9 @@ export default function Problems() {
             <br></br>する機会を提供します。
           </p>
         </ProblemParagraphBottom>
+        <BottomImgWrapper>
+          <Image src={'/thrink_logo.webp'} alt='thrinkのロゴ' width={'120px'} />
+        </BottomImgWrapper>
       </Center>
       <Right>
         <Image src={`/right-bar.webp`} alt='' />
