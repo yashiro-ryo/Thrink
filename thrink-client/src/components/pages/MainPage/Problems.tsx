@@ -3,7 +3,7 @@ import { Image } from 'react-bootstrap'
 
 const ProblemsWrapper = styled.div`
   text-align: center;
-  margin: 150px 0;
+  margin-top: 150px;
   font-size: 25px;
   display: flex;
   width: calc(100wh);
