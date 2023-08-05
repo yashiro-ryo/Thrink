@@ -12,36 +12,36 @@ const ProblemParagraphBottom = styled.div`
   margin-top: 50px;
 `
 const Left = styled.div`
-  @media (max-width: 700px) {
+  @media (max-width: 1014px) {
     display: none;
   }
-  @media (min-width: 701px) {
+  @media (min-width: 1015px) {
     width: 15%;
     > img {
       width: 100%;
-      max-width: 150px;
+      max-width: 170px;
     }
   }
 `
 const Center = styled.div`
-  @media (max-width: 700px) {
+  @media (max-width: 1014px) {
     width: 80%;
     margin: 0 auto;
   }
-  @media (min-width: 701px) {
+  @media (min-width: 1015px) {
     width: 70%;
     margin-top: 50px;
   }
 `
 const Right = styled.div`
-  @media (max-width: 700px) {
+  @media (max-width: 1014px) {
     display: none;
   }
-  @media (min-width: 701px) {
+  @media (min-width: 1015px) {
     width: 15%;
     > img {
       width: 100%;
-      max-width: 150px;
+      max-width: 170px;
     }
   }
 `
