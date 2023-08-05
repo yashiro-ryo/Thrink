@@ -5,6 +5,7 @@ import { Image, NavDropdown } from 'react-bootstrap'
 import { styled } from 'styled-components'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import apiClient from '@/lib/http-common'
 
 const DivWrapper = styled.div`
   display: flex;
@@ -37,6 +38,17 @@ export default function NavbarSignedin(props: Props) {
   const router = useRouter()
   const redirect = (to: string) => {
     router.push(`${to}`)
+  }
+  const signout = () => {
+    apiClient.get('/auth/signout').then((res) => {
+      console.log(res.data)
+      if (res.data.status === 'done') {
+        window.location.href =
+          process.env.NEXT_PUBLIC_APP_MODE === 'dev'
+            ? 'http://localhost:3001'
+            : 'https://thrink.net'
+      }
+    })
   }
   return (
     <DivWrapper>
@@ -72,9 +84,7 @@ export default function NavbarSignedin(props: Props) {
             設定
           </NavDropdown.Item>
           <NavDropdown.Divider />
-          <NavDropdown.Item as={Link} href='/signout'>
-            ログアウト
-          </NavDropdown.Item>
+          <NavDropdown.Item onClick={() => signout()}>ログアウト</NavDropdown.Item>
         </NavDropdownStyle>
       </IconContext.Provider>
     </DivWrapper>

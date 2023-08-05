@@ -145,3 +145,10 @@ userAuthRouter.post("/signup", async (req: Request, res: Response) => {
       res.status(500).json({ msg: `server error : ${err}` });
     });
 });
+
+// GET /auth/signout
+userAuthRouter.get("/signout", (req: Request, res: Response) => {
+  console.log("signout");
+  req.session.destroy(() => {});
+  res.status(200).json({ status: "done" });
+});
