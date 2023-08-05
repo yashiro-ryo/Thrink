@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import Log from '@/lib/logger'
 
-const DEV_SERVER_URL = 'https://api.thrink.net'
+const DEV_SERVER_URL = 'http://localhost:3000'
 const PROD_SERVER_URL = 'https://api.thrink.net'
 
 Log.v(

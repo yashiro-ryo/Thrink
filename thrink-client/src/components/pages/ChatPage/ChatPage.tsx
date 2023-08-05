@@ -39,7 +39,12 @@ export default function ChatPage() {
   const router = useRouter()
   const dispatch = useDispatch()
   const connectToServer = () => {
-    const socketInstance = io('http://api.thrink.net')
+    // TODO 設定別モジュール化
+    const serverURL =
+      process.env.NEXT_PUBLIC_APP_MODE === 'dev'
+        ? 'http://localhost:3000'
+        : 'https://api.thrink.net'
+    const socketInstance = io(serverURL)
     socketInstance
       .on('connect', () => {
         // サーバーに接続成功時のイベント
