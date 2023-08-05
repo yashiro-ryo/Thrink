@@ -2,12 +2,12 @@ import { Image } from 'react-bootstrap'
 import styled from 'styled-components'
 
 const AppealPointsWrapper = styled.div`
-  margin-top: 150px;
+  margin-top: 200px;
 `
 const AppealPointsTopStyle = styled.div`
   > p {
     text-align: center;
-    font-size: 25px;
+    font-size: 30px;
     font-weight: bold;
   }
 `

@@ -19,7 +19,7 @@ const LogoWrapper = styled.div`
   margin-bottom: 100px;
 `
 const StyledLogo = styled(Image)`
-  max-width: 700px;
+  max-width: 900px;
   width: 100%;
 `
 

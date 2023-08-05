@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Image } from 'react-bootstrap'
 
 const ProductDescribeWrapper = styled.div`
-  margin-top: 150px;
+  margin-top: 200px;
   @media (max-width: 700px) {
     display: block;
   }
@@ -12,8 +12,8 @@ const ProductDescribeWrapper = styled.div`
 `
 const DescribeTextWrapper = styled.div`
   text-align: center;
-  margin-top: 50px;
-  font-size: 25px;
+  margin-top: 70px;
+  font-size: 30px;
   @media (max-width: 700px) {
     width: 100%;
   }
@@ -30,6 +30,10 @@ const DescribeFigureWrapper = styled.div`
   @media (min-width: 701px) {
     width: 50%;
   }
+`
+const StyledImage = styled(Image)`
+  width: 100%;
+  max-width: 400px;
 `
 const TeamText = styled.p`
   width: fit-content;
@@ -57,7 +61,7 @@ export default function ProductDescribe() {
         3者をつなぐマッチングスペース
       </DescribeTextWrapper>
       <DescribeFigureWrapper>
-        <Image src={'/describe_figure.webp'} alt='' width={'300px'} />
+        <StyledImage src={'/describe_figure.webp'} alt='' />
       </DescribeFigureWrapper>
     </ProductDescribeWrapper>
   )
