@@ -1,5 +1,4 @@
 import { useAppSelector } from '@/redux/hooks'
-import { useEffect } from 'react'
 import styled from 'styled-components'
 const Header = styled.div`
   width: 100%;
