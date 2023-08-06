@@ -7,13 +7,14 @@ import { Socket, io } from 'socket.io-client'
 import { useEffect, useState } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import { Chatroom, Chat, ChatInfo } from '@/values/Chat'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import ChatLoadingPage from './ChatLoadingPage'
 import Log from '@/lib/logger'
 import { checkUserSession } from '@/lib/auth'
 import { useDispatch } from 'react-redux'
 import { signin } from '@/redux/slices/signedinStateSlice'
 import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
+import { setSelectedChatroomInfo } from '@/redux/slices/selectedChatroomInfoSlice'
 import { UserProfileMetaWithoutSecureData } from '@/values/UserProfileMeta'
 
 const ChatPageComp = styled.div`
@@ -28,14 +29,11 @@ export default function ChatPage() {
   const [socket, setSocket] = useState<Socket>()
   const [chatrooms, setChatrooms] = useState<Array<Chatroom>>([])
   const [chat, setChat] = useState<Array<Chat>>([])
-  const [selectedChatroomInfo, setSelectedChatroomInfo] = useState<ChatInfo>({
-    chatroomId: 0,
-    u1Uid: 0,
-    u2Uid: 0,
-    displayName: '',
-  })
   const [isLoading, setLoading] = useState(true)
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
+  const selectedChatroomInfo = useAppSelector(
+    (state) => state.selectedChatroomInfoReducer.selectedChatroomInfo,
+  )
   const router = useRouter()
   const dispatch = useDispatch()
   const connectToServer = () => {
@@ -112,16 +110,23 @@ export default function ChatPage() {
       })
     }
   }
-  const selectChatroom = (selectedChatroomInfo: ChatInfo) => {
-    Log.v(`get chat chatroomId: ${selectedChatroomInfo.chatroomId}`)
+  const selectChatroom = (chatroomInfo: ChatInfo) => {
+    Log.v(`get chat chatroomId: ${chatroomInfo.chatroomId}`)
     if (socket === undefined || userProfileMeta === null) {
       return
     }
-    setSelectedChatroomInfo(selectedChatroomInfo)
+    if (
+      selectedChatroomInfo !== null &&
+      selectedChatroomInfo.chatroomId === chatroomInfo.chatroomId
+    ) {
+      dispatch(setSelectedChatroomInfo(null))
+      return
+    }
+    dispatch(setSelectedChatroomInfo(chatroomInfo))
     Log.v('get chat')
     socket.emit('get-chat', {
       uid: userProfileMeta.uid,
-      chatroomId: selectedChatroomInfo.chatroomId,
+      chatroomId: chatroomInfo.chatroomId,
     })
   }
   useEffect(() => {
@@ -147,10 +152,7 @@ export default function ChatPage() {
         <ChatLoadingPage />
       ) : (
         <ChatPageComp>
-          <ChatPageHeader
-            myUid={userProfileMeta === null ? 0 : userProfileMeta.uid}
-            selectedChatroomInfo={selectedChatroomInfo}
-          />
+          <ChatPageHeader myUid={userProfileMeta === null ? 0 : userProfileMeta.uid} />
           <ChatPageBody>
             <ChatPageLeftPane
               chatrooms={chatrooms}
@@ -158,7 +160,6 @@ export default function ChatPage() {
               selectChatroom={selectChatroom}
             />
             <ChatPageTimeline
-              selectedChatroomInfo={selectedChatroomInfo}
               chat={chat}
               myUid={userProfileMeta ? userProfileMeta?.uid : 0}
               sendMessage={sendMessage}

@@ -1,4 +1,5 @@
-import { ChatInfo } from '@/values/Chat'
+import { useAppSelector } from '@/redux/hooks'
+import { useEffect } from 'react'
 import styled from 'styled-components'
 const Header = styled.div`
   width: 100%;
@@ -21,20 +22,18 @@ const ChatRoomTitle = styled.div`
 
 type Props = {
   myUid: number
-  selectedChatroomInfo: ChatInfo
 }
 
 export default function ChatPageHeader(props: Props) {
+  const selectedChatroomInfo = useAppSelector(
+    (state) => state.selectedChatroomInfoReducer.selectedChatroomInfo,
+  )
   const ChatroomName = () => {
     // 初期値
-    if (
-      props.myUid === 0 ||
-      props.selectedChatroomInfo.chatroomId === 0 ||
-      props.selectedChatroomInfo.displayName.length === 0
-    ) {
+    if (selectedChatroomInfo === null) {
       return 'チャットルーム名'
     } else {
-      return props.selectedChatroomInfo.displayName
+      return selectedChatroomInfo.displayName
     }
   }
   return (

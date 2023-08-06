@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import styled from 'styled-components'
 import TimelineBody from './TimelineBody'
-import { Chat, ChatInfo } from '@/values/Chat'
+import { Chat } from '@/values/Chat'
+import { useAppSelector } from '@/redux/hooks'
 
 const Timeline = styled.div`
   width: 100%;
@@ -30,11 +31,13 @@ type Props = {
     messageBody: string,
     messageType: string,
   ) => void
-  selectedChatroomInfo: ChatInfo
 }
 
 export default function ChatPageTimeline(props: Props) {
   const [inputText, setInputText] = useState<string>('')
+  const selectedChatroomInfo = useAppSelector(
+    (state) => state.selectedChatroomInfoReducer.selectedChatroomInfo,
+  )
   return (
     <Timeline>
       <TimelineBody chat={props.chat} myUid={props.myUid} />
@@ -50,10 +53,14 @@ export default function ChatPageTimeline(props: Props) {
         <SendBtn
           variant='primary'
           onClick={() => {
+            if (selectedChatroomInfo === null) {
+              // chatroomが選択されていない
+              return
+            }
             props.sendMessage(
-              props.selectedChatroomInfo.chatroomId,
-              props.selectedChatroomInfo.u1Uid,
-              props.selectedChatroomInfo.u2Uid,
+              selectedChatroomInfo.chatroomId,
+              selectedChatroomInfo.u1Uid,
+              selectedChatroomInfo.u2Uid,
               inputText,
               'message',
             )

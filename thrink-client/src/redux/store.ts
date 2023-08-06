@@ -3,12 +3,14 @@ import { useSelector as rawUseSelector, TypedUseSelectorHook } from 'react-redux
 import signedinStateReducer from './slices/signedinStateSlice'
 import userProfileReducer from './slices/userProfileSlice'
 import userProfileMetaReducer from './slices/userProfileMetaSlice'
+import selectedChatroomInfoReducer from './slices/selectedChatroomInfoSlice'
 
 export const store = configureStore({
   reducer: {
     signinStateSwitcher: signedinStateReducer,
     userProfileReducer,
     userProfileMetaReducer,
+    selectedChatroomInfoReducer,
   },
 })
 
