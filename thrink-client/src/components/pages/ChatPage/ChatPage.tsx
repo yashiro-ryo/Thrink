@@ -7,7 +7,7 @@ import { Socket, io } from 'socket.io-client'
 import { useEffect, useState } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import { Chatroom, Chat, ChatInfo } from '@/values/Chat'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import ChatLoadingPage from './ChatLoadingPage'
 import Log from '@/lib/logger'
 import { checkUserSession } from '@/lib/auth'
@@ -16,6 +16,7 @@ import { signin } from '@/redux/slices/signedinStateSlice'
 import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
 import { setSelectedChatroomInfo } from '@/redux/slices/selectedChatroomInfoSlice'
 import { UserProfileMetaWithoutSecureData } from '@/values/UserProfileMeta'
+import { API_SERVER_URL } from '@/lib/api-server-url'
 
 const ChatPageComp = styled.div`
   width: 100%;
@@ -26,56 +27,21 @@ const ChatPageBody = styled.div`
   display: flex;
 `
 export default function ChatPage() {
-  const [socket, setSocket] = useState<Socket>()
+  // state
   const [chatrooms, setChatrooms] = useState<Array<Chatroom>>([])
   const [chat, setChat] = useState<Array<Chat>>([])
   const [isLoading, setLoading] = useState(true)
+  const [socket, setSocket] = useState<Socket | null>(null)
+  // URL
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  // Redux
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const selectedChatroomInfo = useAppSelector(
     (state) => state.selectedChatroomInfoReducer.selectedChatroomInfo,
   )
-  const router = useRouter()
   const dispatch = useDispatch()
-  const connectToServer = () => {
-    // TODO 設定別モジュール化
-    const serverURL =
-      process.env.NEXT_PUBLIC_APP_MODE === 'dev'
-        ? 'http://localhost:3000'
-        : 'https://api.thrink.net'
-    const socketInstance = io(serverURL)
-    socketInstance
-      .on('connect', () => {
-        // サーバーに接続成功時のイベント
-        if (userProfileMeta === null) {
-          return
-        }
-        // 個別の接続を作るようにイベントを発火する
-        socketInstance.emit('join', { msg: { uid: userProfileMeta.uid } })
-      })
-      .on('success-join', () => {
-        // サーバーとの個別接続が確立したのを検知するイベント
-        Log.v('success join room')
-        if (userProfileMeta === null) {
-          return
-        }
-        // chatroomの一覧を取得する
-        socketInstance.emit('get-chatrooms', { msg: { uid: userProfileMeta.uid } })
-      })
-      .on('update-chatrooms', (data) => {
-        // サーバーから取得したchatroomsの取得を検知するイベント
-        Log.v('update-chatrooms')
-        Log.v(data)
-        setChatrooms(data.chatrooms)
-        setLoading(false)
-      })
-      .on('update-chat', (data) => {
-        // サーバーから取得したchatの内容の取得を検知するイベント
-        Log.v('update-chat')
-        Log.v(data)
-        setChat(data.chat)
-      })
-    setSocket(socketInstance)
-  }
+
   const sendMessage = (
     chatroomId: number,
     u1Uid: number,
@@ -83,7 +49,7 @@ export default function ChatPage() {
     messageBody: string,
     messageType: string,
   ) => {
-    if (socket === undefined || userProfileMeta === null) {
+    if (socket === null || userProfileMeta === null) {
       return
     }
     if (messageBody.length === 0 || messageType.length === 0) {
@@ -112,7 +78,8 @@ export default function ChatPage() {
   }
   const selectChatroom = (chatroomInfo: ChatInfo) => {
     Log.v(`get chat chatroomId: ${chatroomInfo.chatroomId}`)
-    if (socket === undefined || userProfileMeta === null) {
+    console.log(`socketInstance ${socket}`)
+    if (socket === null || userProfileMeta === null) {
       return
     }
     if (
@@ -120,6 +87,8 @@ export default function ChatPage() {
       selectedChatroomInfo.chatroomId === chatroomInfo.chatroomId
     ) {
       dispatch(setSelectedChatroomInfo(null))
+      setChat([])
+      router.push('/chat')
       return
     }
     dispatch(setSelectedChatroomInfo(chatroomInfo))
@@ -128,22 +97,82 @@ export default function ChatPage() {
       uid: userProfileMeta.uid,
       chatroomId: chatroomInfo.chatroomId,
     })
+    router.push(`/chat?cid=${chatroomInfo.chatroomId}`)
   }
+
+  const setupChatPage = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
+    const chatroomId = searchParams.get('cid')
+    const socketInstance = io(API_SERVER_URL)
+    setSocket(socketInstance)
+    // setup socket event handler
+    // FIXME イベントが複数回呼ばれる不具合の修正(特にupdate-chatrooms)
+    socketInstance
+      .on('connect', () => {
+        // サーバーに接続成功時のイベント
+        console.log('connected')
+        if (userProfileMeta === null) {
+          return
+        }
+        // 個別の接続を作るようにイベントを発火する
+        socketInstance.emit('join', { msg: { uid: userProfileMeta.uid } })
+      })
+      .on('success-join', () => {
+        // サーバーとの個別接続が確立したのを検知するイベント
+        Log.v('success join room')
+        if (userProfileMeta === null) {
+          return
+        }
+        // chatroomの一覧を取得する
+        socketInstance.emit('get-chatrooms', { msg: { uid: userProfileMeta.uid } })
+      })
+      .on('update-chatrooms', (data) => {
+        // サーバーから取得したchatroomsの取得を検知するイベント
+        Log.v('update-chatrooms')
+        Log.v(data)
+        setChatrooms(data.chatrooms)
+        setLoading(false)
+      })
+      .on('update-chat', (data) => {
+        // サーバーから取得したchatの内容の取得を検知するイベント
+        Log.v('update-chat')
+        Log.v(data)
+        setChat(data.chat)
+      })
+
+    if (chatroomId === null) {
+      // chatroomId未指定の場合はconnectのみ
+      return
+    }
+    socketInstance.emit('get-chat', {
+      uid: userProfileMeta.uid,
+      chatroomId: chatroomId,
+    })
+  }
+
+  let hasSetupPrepared = false
+
   useEffect(() => {
-    Log.v(userProfileMeta)
     const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
       dispatch(signin())
       dispatch(saveUserProfileMeta(userProfileMeta))
-      connectToServer()
+      setupChatPage(userProfileMeta)
     }
     const onErrorCheckSession = () => {
       router.push(`/signin?redirect=chat`)
     }
-    if (userProfileMeta !== null) {
-      connectToServer()
+    if (userProfileMeta !== null && !hasSetupPrepared) {
+      console.log(hasSetupPrepared)
+      setupChatPage(userProfileMeta)
+      hasSetupPrepared = true
       return
     }
     checkUserSession(onSuccessCheckSession, onErrorCheckSession)
+    return () => {
+      if (socket !== null) {
+        socket.removeAllListeners()
+        socket.disconnect()
+      }
+    }
   }, [userProfileMeta]) // eslint-disable-line
   return (
     <div>
