@@ -1,11 +1,9 @@
-import { AiFillMessage } from 'react-icons/ai'
-import { IoIosNotifications } from 'react-icons/io'
+import { BiMessageAltDetail } from 'react-icons/bi'
 import { IconContext } from 'react-icons'
 import { Image, NavDropdown } from 'react-bootstrap'
 import { styled } from 'styled-components'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import apiClient from '@/lib/http-common'
 
 const DivWrapper = styled.div`
   display: flex;
@@ -21,10 +19,16 @@ const NavDropdownStyle = styled(NavDropdown)`
   width: 30px;
   > a {
     padding: 0;
+    &::after {
+      display: none;
+    }
   }
   > .dropdown-menu {
     left: -95px;
   }
+`
+const BiMessageStyle = styled(BiMessageAltDetail)`
+  fill: #ffffff;
 `
 
 type Props = {
@@ -43,10 +47,7 @@ export default function NavbarSignedin(props: Props) {
     <DivWrapper>
       <IconContext.Provider value={{ size: '25px' }}>
         <IconWrapper onClick={() => redirect('/chat')}>
-          <AiFillMessage />
-        </IconWrapper>
-        <IconWrapper onClick={() => redirect('/notification')}>
-          <IoIosNotifications />
+          <BiMessageStyle color='#ff0000'/>
         </IconWrapper>
         <NavDropdownStyle
           title={
