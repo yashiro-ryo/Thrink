@@ -1,7 +1,7 @@
 'use client'
 import Footer from '@/components/ui-parts/Footer/Footer'
 import NavbarComp from '@/components/ui-parts/Navbar/Navbar'
-import { Container, Button, Modal, Form } from 'react-bootstrap'
+import { Container, Button, Modal, Form, Card, ListGroup, ListGroupItem } from 'react-bootstrap'
 import { useState, useEffect } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import apiClient from '@/lib/http-common'
@@ -16,6 +16,21 @@ import { useDispatch } from 'react-redux'
 import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
 import { signin } from '@/redux/slices/signedinStateSlice'
 import { UserProfileMetaWithoutSecureData } from '@/values/UserProfileMeta'
+import { styled } from 'styled-components'
+
+const ContentBody = styled.div`
+  margin: 30px 0;
+`
+const PageTitle = styled.h4`
+  font-weight: bold;
+  margin-left: 15px;
+`
+const StyledCard = styled(Card)`
+  margin-top: 20px;
+`
+const ListLabel = styled.h5`
+  font-weight: bold;
+`
 
 export default function JobManagePage() {
   const [isCreateaJobModalVisible, setCreateJobModalVisible] = useState(false)
@@ -49,11 +64,13 @@ export default function JobManagePage() {
 
   const CreatedJobList = () => {
     return (
-      <div>
+      <ListGroup>
         {createdJobs.map((createdJob: Job, index: number) => {
           return (
-            <div key={`created-joblist-${index}`}>
+            <ListGroupItem key={`created-joblist-${index}`}>
+              <ListLabel>求人ID</ListLabel>
               <p>{createdJob.jobId}</p>
+              <ListLabel>求人内容</ListLabel>
               <p>{createdJob.detail}</p>
               <Button
                 variant='primary'
@@ -75,23 +92,39 @@ export default function JobManagePage() {
               >
                 求人を削除する
               </Button>
-            </div>
+            </ListGroupItem>
           )
         })}
-      </div>
+      </ListGroup>
     )
   }
   return (
     <>
       <NavbarComp />
       <Container>
-        <h4>求人管理</h4>
-        <h5>求人作成</h5>
-        <Button variant='primary' onClick={() => setCreateJobModalVisible(true)}>
-          求人作成
-        </Button>
-        <h5>作成した求人</h5>
-        <div>{createdJobs.length > 0 ? <CreatedJobList /> : '作成された求人はありません。'}</div>
+        <ContentBody>
+          <PageTitle>求人管理</PageTitle>
+          <StyledCard>
+            <Card.Header>
+              <h5>求人作成</h5>
+            </Card.Header>
+            <Card.Body>
+              <Button variant='primary' onClick={() => setCreateJobModalVisible(true)}>
+                求人作成
+              </Button>
+            </Card.Body>
+          </StyledCard>
+          <StyledCard>
+            <Card.Header>
+              <h5>作成した求人 ({createdJobs.length}件)</h5>
+            </Card.Header>
+            <Card.Body>
+              <div>
+                {createdJobs.length > 0 ? <CreatedJobList /> : '作成された求人はありません。'}
+              </div>
+            </Card.Body>
+          </StyledCard>
+        </ContentBody>
       </Container>
       <Footer />
       <CreateJobModal
