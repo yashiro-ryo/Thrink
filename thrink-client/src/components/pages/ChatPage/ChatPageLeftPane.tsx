@@ -10,7 +10,7 @@ const LeftPane = styled.div`
   }
   @media (min-width: 701px) {
     // for desktop
-    max-width: 300px;
+    min-width: 300px;
     border-right: 1px solid #636363;
   }
   height: calc(100vh - 56px);
