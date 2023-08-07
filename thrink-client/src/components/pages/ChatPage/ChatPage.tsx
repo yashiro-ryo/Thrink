@@ -174,6 +174,23 @@ export default function ChatPage() {
       }
     }
   }, [userProfileMeta]) // eslint-disable-line
+
+  useEffect(() => {
+    // any滅ぼす
+    const onResize = (e: any) => {
+      console.log('on resize')
+      console.log(`width: ${window.innerWidth}, height: ${window.innerHeight}`)
+      if (window.innerWidth <= 700) {
+        console.log('mobile mode')
+      } else {
+        console.log('desktop mode')
+      }
+    }
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('resize', onResize)
+    }
+  }, [])
   return (
     <div>
       <NavbarComp />
