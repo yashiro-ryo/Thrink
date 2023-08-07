@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import styled from 'styled-components'
 import TimelineBody from './TimelineBody'
@@ -52,6 +52,7 @@ type Props = {
 
 export default function ChatPageTimeline(props: Props) {
   const [inputText, setInputText] = useState<string>('')
+  const scrollContainer = useRef<HTMLDivElement>(null)
   const selectedChatroomInfo = useAppSelector(
     (state) => state.selectedChatroomInfoReducer.selectedChatroomInfo,
   )
@@ -63,6 +64,18 @@ export default function ChatPageTimeline(props: Props) {
       return selectedChatroomInfo.displayName
     }
   }
+  useEffect(() => {
+    if (scrollContainer === null) {
+      return
+    }
+    const scrollHeight = scrollContainer.current?.scrollHeight
+    if (props.chat.length > 0) {
+      scrollContainer.current?.scrollTo({
+        top: scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [props.chat])
   return (
     <Timeline>
       <TimelineHeader>
@@ -75,7 +88,7 @@ export default function ChatPageTimeline(props: Props) {
         )}
         <p>{ChatroomName()}</p>
       </TimelineHeader>
-      <TimelineBody chat={props.chat} myUid={props.myUid} />
+      <TimelineBody chat={props.chat} myUid={props.myUid} scrollContainer={scrollContainer} />
       <TimelineFooter>
         <Form.Control
           type='text'

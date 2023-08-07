@@ -1,4 +1,5 @@
 import { Chat } from '@/values/Chat'
+import { RefObject } from 'react'
 import styled from 'styled-components'
 const StyledTimelineBody = styled.div`
   width: 100%;
@@ -39,6 +40,7 @@ const YourMsgWrapper = styled.div`
 type Props = {
   chat: Array<Chat>
   myUid: number
+  scrollContainer: RefObject<HTMLDivElement>
 }
 const MsgWrapper = (contentBody: string, contentType: string) => {
   return (
@@ -60,7 +62,7 @@ const jobApplyText = (content: string) => {
 
 export default function TimelineBody(props: Props) {
   return (
-    <StyledTimelineBody>
+    <StyledTimelineBody ref={props.scrollContainer}>
       {props.chat.map((c, i) => {
         if (c.senderUid === props.myUid) {
           return (
