@@ -39,17 +39,6 @@ export default function NavbarSignedin(props: Props) {
   const redirect = (to: string) => {
     router.push(`${to}`)
   }
-  const signout = () => {
-    apiClient.get('/auth/signout').then((res) => {
-      console.log(res.data)
-      if (res.data.status === 'done') {
-        window.location.href =
-          process.env.NEXT_PUBLIC_APP_MODE === 'dev'
-            ? 'http://localhost:3001'
-            : 'https://thrink.net'
-      }
-    })
-  }
   return (
     <DivWrapper>
       <IconContext.Provider value={{ size: '25px' }}>
@@ -80,11 +69,10 @@ export default function NavbarSignedin(props: Props) {
           ) : (
             ''
           )}
-          <NavDropdown.Item as={Link} href='/settings'>
-            設定
-          </NavDropdown.Item>
           <NavDropdown.Divider />
-          <NavDropdown.Item onClick={() => signout()}>ログアウト</NavDropdown.Item>
+          <NavDropdown.Item as={Link} href='/signout'>
+            ログアウト
+          </NavDropdown.Item>
         </NavDropdownStyle>
       </IconContext.Provider>
     </DivWrapper>
