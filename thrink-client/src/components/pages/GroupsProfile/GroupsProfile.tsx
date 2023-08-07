@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Container, Image, Button, Card } from 'react-bootstrap'
+import { Container, Image, Button, Card, Placeholder } from 'react-bootstrap'
 import apiClient from '@/lib/http-common'
 import { GroupProfile } from '@/values/Groups'
 import { Job } from '@/values/Jobs'
@@ -39,6 +39,19 @@ const StyledGroupProfileLabel = styled.h5`
 const StyledGroupJobInfoLabel = styled.h6`
   font-weight: bold;
 `
+const ProfileTop = styled.div`
+  @media (max-width: 700px) {
+    display: block;
+    margin-bottom: 30px;
+  }
+  @media (min-width: 701px) {
+    display: flex;
+    justify-content: space-between;
+  }
+  > button {
+    height: 38px;
+  }
+`
 const StyledGroupDisplayName = styled.h3`
   margin-top: 20px;
   margin-bottom: 30px;
@@ -46,6 +59,11 @@ const StyledGroupDisplayName = styled.h3`
 const JobCard = styled(Card)`
   padding: 10px;
   margin-bottom: 20px;
+`
+const UserDisplayNamePlaceHolderWrapper = styled.div`
+  width: 200px;
+  height: 82px;
+  padding-bottom: 30px;
 `
 
 export default function GroupsProfile(props: { gidStr: string }) {
@@ -64,10 +82,12 @@ export default function GroupsProfile(props: { gidStr: string }) {
     headerImgUrl: '',
   })
   const [jobs, setJobs] = useState<Array<Job>>([])
+  const [isLoading, setLoading] = useState(true)
   const getGroupProfile = (gid: number) => {
     apiClient.get(`/v1/groups/${gid}`).then((res: any) => {
       Log.v(res.data)
       setProfile(res.data.groupProfile)
+      setLoading(false)
     })
   }
   const getGroupJob = (gid: number) => {
@@ -93,10 +113,17 @@ export default function GroupsProfile(props: { gidStr: string }) {
     )
   }
   const GroupListItem = (props: { titleText: string; bodyText: string | null }) => {
+    console.log(`is Loading : ${isLoading}`)
     return (
       <>
         <StyledGroupProfileLabel>{props.titleText}</StyledGroupProfileLabel>
-        <p>{nullCheck(props.bodyText)}</p>
+        {isLoading ? (
+          <Placeholder as='p' animation='glow'>
+            <Placeholder xs={6} />
+          </Placeholder>
+        ) : (
+          <p>{nullCheck(props.bodyText)}</p>
+        )}
       </>
     )
   }
@@ -166,10 +193,20 @@ export default function GroupsProfile(props: { gidStr: string }) {
             <UserProfileNull />
           ) : (
             <div>
-              <StyledGroupDisplayName>{profile.displayName}</StyledGroupDisplayName>
+              <ProfileTop>
+                {isLoading ? (
+                  <UserDisplayNamePlaceHolderWrapper>
+                    <Placeholder as='h3' animation='glow'>
+                      <Placeholder xs={12} />
+                    </Placeholder>
+                  </UserDisplayNamePlaceHolderWrapper>
+                ) : (
+                  <StyledGroupDisplayName>{profile.displayName}</StyledGroupDisplayName>
+                )}
                 <Button variant='secondary' onClick={() => createChatroom()}>
                   メッセージを送る
                 </Button>
+              </ProfileTop>
               <GroupListItem titleText='活動詳細' bodyText={profile.activityDetail} />
               <GroupListItem titleText='活動日' bodyText={profile.activityDay} />
               <GroupListItem titleText='活動時間' bodyText={profile.activityTime} />
