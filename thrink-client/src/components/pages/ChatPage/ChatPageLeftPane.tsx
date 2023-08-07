@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { ChatInfo, Chatroom } from '@/values/Chat'
 import { nullCheck } from '@/lib/stringHelper'
 import { useAppSelector } from '@/redux/hooks'
+import { Image } from 'react-bootstrap'
 
 const LeftPane = styled.div`
   @media (max-width: 700px) {
@@ -32,6 +33,9 @@ const ListItem = styled.button`
   &:hover {
     background-color: #dadada;
   }
+  display: flex;
+  justify-content: start;
+  padding: 10px 5px;
   @media (max-width: 700px) {
     border-radius: 0px;
     border-bottom: 1px solid #939393;
@@ -45,6 +49,9 @@ const SelectedListItem = styled.button`
   margin: 0 5px;
   background-color: #dcdcdc;
   border: 1.5px solid #939393;
+  display: flex;
+  justify-content: start;
+  padding: 10px 5px;
 `
 const PageName = styled.div`
   width: 100%;
@@ -75,6 +82,13 @@ export default function ChatPageLeftPane(props: Props) {
       return false
     }
   }
+  const filterUserIconUrl = (url: string | null) => {
+    if (url === null || url.length === 0) {
+      return '/user-blank.webp'
+    } else {
+      return url
+    }
+  }
   return (
     <LeftPane>
       <PageName>
@@ -99,16 +113,30 @@ export default function ChatPageLeftPane(props: Props) {
                     })
                   }
                 >
-                  <p>
-                    {chatroom.u1Uid === props.myUid
-                      ? chatroom.u2DisplayName
-                      : chatroom.u1DisplayName}
-                  </p>
-                  <span>
-                    {chatroom.u1Uid === props.myUid
-                      ? nullCheck(chatroom.u2IconImgUrl)
-                      : nullCheck(chatroom.u1IconImgUrl)}
-                  </span>
+                  <div>
+                    {chatroom.u1Uid === props.myUid ? (
+                      <Image
+                        src={filterUserIconUrl(chatroom.u2IconImgUrl)}
+                        rounded
+                        width={40}
+                        height={40}
+                      />
+                    ) : (
+                      <Image
+                        src={filterUserIconUrl(chatroom.u1IconImgUrl)}
+                        rounded
+                        width={40}
+                        height={40}
+                      />
+                    )}
+                  </div>
+                  <div>
+                    <p>
+                      {chatroom.u1Uid === props.myUid
+                        ? chatroom.u2DisplayName
+                        : chatroom.u1DisplayName}
+                    </p>
+                  </div>
                 </SelectedListItem>
               ) : (
                 <ListItem
@@ -125,16 +153,30 @@ export default function ChatPageLeftPane(props: Props) {
                     })
                   }
                 >
-                  <p>
-                    {chatroom.u1Uid === props.myUid
-                      ? chatroom.u2DisplayName
-                      : chatroom.u1DisplayName}
-                  </p>
-                  <span>
-                    {chatroom.u1Uid === props.myUid
-                      ? nullCheck(chatroom.u2IconImgUrl)
-                      : nullCheck(chatroom.u1IconImgUrl)}
-                  </span>
+                  <div>
+                    {chatroom.u1Uid === props.myUid ? (
+                      <Image
+                        src={filterUserIconUrl(chatroom.u2IconImgUrl)}
+                        rounded
+                        width={40}
+                        height={40}
+                      />
+                    ) : (
+                      <Image
+                        src={filterUserIconUrl(chatroom.u1IconImgUrl)}
+                        rounded
+                        width={40}
+                        height={40}
+                      />
+                    )}
+                  </div>
+                  <div>
+                    <p>
+                      {chatroom.u1Uid === props.myUid
+                        ? chatroom.u2DisplayName
+                        : chatroom.u1DisplayName}
+                    </p>
+                  </div>
                 </ListItem>
               )}
             </>
