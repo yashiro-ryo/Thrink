@@ -22,6 +22,9 @@ const ContainerStyle = styled(Container)`
 const ListItemLabel = styled.h5`
   font-weight: bold;
 `
+const EditButton = styled(Button)`
+  margin-bottom: 20px;
+`
 
 export default function UserProfile() {
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
@@ -136,9 +139,9 @@ export default function UserProfile() {
         <Card>
           <Card.Header>プロフィール</Card.Header>
           <Card.Body>
-            <Button variant='primary' onClick={() => router.push('/profile/edit')}>
+            <EditButton variant='primary' onClick={() => router.push('/profile/edit')}>
               編集する
-            </Button>
+            </EditButton>
             {ProfileList()}
           </Card.Body>
         </Card>
