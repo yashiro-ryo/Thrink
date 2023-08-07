@@ -6,6 +6,8 @@ import apiClient from '@/lib/http-common'
 import { nullCheck } from '@/lib/stringHelper'
 import { filterIconImgUrl, filterHeaderImgUrl } from '@/lib/imgUrlHelper'
 import Log from '@/lib/logger'
+import { useAppSelector } from '@/redux/hooks'
+import { useRouter } from 'next/navigation'
 
 const HeaderImagePart = styled.div`
   width: 100%;
@@ -35,6 +37,7 @@ const UserProfileTop = styled.div`
 `
 
 export default function StudentProfile(props: { uidStr: string }) {
+  // state
   const [visibleTabInfo, setVisibleTab] = useState<'experience' | 'awards' | 'comment' | 'links'>(
     'experience',
   )
@@ -48,6 +51,11 @@ export default function StudentProfile(props: { uidStr: string }) {
     comment: '',
     links: '',
   })
+  // Redux
+  const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
+  // URL
+  const router = useRouter()
+
   const getStudentProfile = (uid: number) => {
     apiClient.get(`/v1/students/${uid}`).then((res: any) => {
       Log.v(res.data)
@@ -57,6 +65,26 @@ export default function StudentProfile(props: { uidStr: string }) {
   useEffect(() => {
     getStudentProfile(Number(props.uidStr))
   }, [props.uidStr])
+
+  const createChatroom = () => {
+    if (userProfileMeta === null) {
+      router.push(`/signin?redirect=group-${props.uidStr}`)
+      return
+    }
+    apiClient
+      .post(`/v1/chat/create`, {
+        u1Uid: userProfileMeta.uid,
+        u2Uid: props.uidStr,
+      })
+      .then((res) => {
+        // chatroom取得
+        console.log(res.data)
+        router.push(`/chat?rid=${res.data.chatroomId}`)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
 
   const UserProfileNull = () => {
     return (
@@ -93,7 +121,9 @@ export default function StudentProfile(props: { uidStr: string }) {
             <>
               <UserProfileTop>
                 <h3>{profile.displayName}</h3>
-                <Button variant='secondary'>メッセージを送る</Button>
+                <Button variant='secondary' onClick={() => createChatroom()}>
+                  メッセージを送る
+                </Button>
               </UserProfileTop>
               <h4>経験</h4>
               <p>{nullCheck(profile.experience)}</p>

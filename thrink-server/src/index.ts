@@ -13,6 +13,7 @@ import http from "http";
 import { Server, Socket } from "socket.io";
 import { setupChatSocketRouter } from "./controllers/chatSokcetController";
 import * as bodyParser from "body-parser";
+import { chatRouter } from "./controllers/chatController";
 
 require("dotenv").config();
 console.log(`APP MODE : ${process.env.APP_MODE}`);
@@ -43,6 +44,7 @@ app.use("/v1/digests/student", stduentsDigestRouter);
 app.use("/v1/digests/group", groupDigestsRouter);
 app.use("/v1/", jobRouter);
 app.use("/v1/job", applyJobRouter);
+app.use("/v1/chat", chatRouter);
 app.use("/user-content", express.static(__dirname + "/userContent"));
 
 app.get("/", async (_req: Request, res: Response) => {

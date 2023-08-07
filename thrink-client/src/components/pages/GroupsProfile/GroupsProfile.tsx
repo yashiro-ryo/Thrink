@@ -125,6 +125,24 @@ export default function GroupsProfile(props: { gidStr: string }) {
       router.push('/chat')
     })
   }
+
+  const createChatroom = () => {
+    if (userProfileMeta === null) {
+      router.push(`/signin?redirect=group-${props.gidStr}`)
+      return
+    }
+    if (userProfileMeta.uid === Number(props.gidStr)) {
+      alert('同じユーザーにメッセージを送ることはできません')
+      return
+    }
+    apiClient
+      .post(`/v1/chat/create`, { u1Uid: userProfileMeta.uid, u2Uid: props.gidStr })
+      .then((res) => {
+        console.log(res.data)
+        router.push(`/chat?cid=${res.data.chatroomId}`)
+      })
+  }
+
   return (
     <div>
       <HeaderImagePart>
@@ -149,6 +167,9 @@ export default function GroupsProfile(props: { gidStr: string }) {
           ) : (
             <div>
               <StyledGroupDisplayName>{profile.displayName}</StyledGroupDisplayName>
+                <Button variant='secondary' onClick={() => createChatroom()}>
+                  メッセージを送る
+                </Button>
               <GroupListItem titleText='活動詳細' bodyText={profile.activityDetail} />
               <GroupListItem titleText='活動日' bodyText={profile.activityDay} />
               <GroupListItem titleText='活動時間' bodyText={profile.activityTime} />
