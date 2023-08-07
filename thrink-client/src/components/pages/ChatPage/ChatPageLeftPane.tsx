@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { ChatInfo, Chatroom } from '@/values/Chat'
 import { nullCheck } from '@/lib/stringHelper'
+import { useAppSelector } from '@/redux/hooks'
 
 const LeftPane = styled.div`
   @media (max-width: 700px) {
@@ -16,17 +17,34 @@ const LeftPane = styled.div`
 `
 const Lists = styled.div`
   width: 100%;
+  height: calc(100vh - 56px - 50px);
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
+  padding-top: 5px;
 `
 const ListItem = styled.button`
   border: none;
-  border-bottom: 1px solid #636363;
-  border-right: 1px solid #636363;
   height: 60px;
+  border-radius: 5px;
+  margin: 0 5px;
+  background-color: #fff;
   &:hover {
-    background-color: #d6d6d6;
+    background-color: #dadada;
   }
+  @media (max-width: 700px) {
+    border-radius: 0px;
+    border-bottom: 1px solid #939393;
+    margin: 0;
+  }
+`
+const SelectedListItem = styled.button`
+  border: none;
+  height: 60px;
+  border-radius: 5px;
+  margin: 0 5px;
+  background-color: #dcdcdc;
+  border: 1.5px solid #939393;
 `
 const PageName = styled.div`
   width: 100%;
@@ -45,6 +63,19 @@ type Props = {
 }
 
 export default function ChatPageLeftPane(props: Props) {
+  const selectedChatroomInfo = useAppSelector(
+    (state) => state.selectedChatroomInfoReducer.selectedChatroomInfo,
+  )
+  const isSelected = (chatroomId: number): boolean => {
+    if (selectedChatroomInfo === null) {
+      return false
+    }
+    if (selectedChatroomInfo.chatroomId === chatroomId) {
+      return true
+    } else {
+      return false
+    }
+  }
   return (
     <LeftPane>
       <PageName>
@@ -53,29 +84,61 @@ export default function ChatPageLeftPane(props: Props) {
       <Lists>
         {props.chatrooms.map((chatroom, i) => {
           return (
-            <ListItem
-              key={`chatroom-label-${i}`}
-              onClick={() =>
-                props.selectChatroom({
-                  chatroomId: chatroom.chatroomId,
-                  u1Uid: chatroom.u1Uid,
-                  u2Uid: chatroom.u2Uid,
-                  displayName:
-                    props.myUid === chatroom.u1Uid
+            <>
+              {isSelected(chatroom.chatroomId) ? (
+                <SelectedListItem
+                  key={`chatroom-label-${i}`}
+                  onClick={() =>
+                    props.selectChatroom({
+                      chatroomId: chatroom.chatroomId,
+                      u1Uid: chatroom.u1Uid,
+                      u2Uid: chatroom.u2Uid,
+                      displayName:
+                        props.myUid === chatroom.u1Uid
+                          ? chatroom.u2DisplayName
+                          : chatroom.u1DisplayName,
+                    })
+                  }
+                >
+                  <p>
+                    {chatroom.u1Uid === props.myUid
                       ? chatroom.u2DisplayName
-                      : chatroom.u1DisplayName,
-                })
-              }
-            >
-              <p>
-                {chatroom.u1Uid === props.myUid ? chatroom.u2DisplayName : chatroom.u1DisplayName}
-              </p>
-              <span>
-                {chatroom.u1Uid === props.myUid
-                  ? nullCheck(chatroom.u2IconImgUrl)
-                  : nullCheck(chatroom.u1IconImgUrl)}
-              </span>
-            </ListItem>
+                      : chatroom.u1DisplayName}
+                  </p>
+                  <span>
+                    {chatroom.u1Uid === props.myUid
+                      ? nullCheck(chatroom.u2IconImgUrl)
+                      : nullCheck(chatroom.u1IconImgUrl)}
+                  </span>
+                </SelectedListItem>
+              ) : (
+                <ListItem
+                  key={`chatroom-label-${i}`}
+                  onClick={() =>
+                    props.selectChatroom({
+                      chatroomId: chatroom.chatroomId,
+                      u1Uid: chatroom.u1Uid,
+                      u2Uid: chatroom.u2Uid,
+                      displayName:
+                        props.myUid === chatroom.u1Uid
+                          ? chatroom.u2DisplayName
+                          : chatroom.u1DisplayName,
+                    })
+                  }
+                >
+                  <p>
+                    {chatroom.u1Uid === props.myUid
+                      ? chatroom.u2DisplayName
+                      : chatroom.u1DisplayName}
+                  </p>
+                  <span>
+                    {chatroom.u1Uid === props.myUid
+                      ? nullCheck(chatroom.u2IconImgUrl)
+                      : nullCheck(chatroom.u1IconImgUrl)}
+                  </span>
+                </ListItem>
+              )}
+            </>
           )
         })}
       </Lists>
