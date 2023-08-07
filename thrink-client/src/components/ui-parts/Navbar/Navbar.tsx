@@ -4,14 +4,8 @@ import NavbarNotSignedIn from './NavbarNotSignedIn'
 import { Navbar, Nav, Container } from 'react-bootstrap'
 import styled from 'styled-components'
 import { useAppSelector } from '@/redux/hooks'
-import { useEffect } from 'react'
 import NavbarSignedin from './NavbarSignedin'
-import apiClient from '@/lib/http-common'
-import { useDispatch } from 'react-redux'
-import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
-import { signin } from '@/redux/slices/signedinStateSlice'
 import { UserProfileMetaWithoutSecureData } from '@/values/UserProfileMeta'
-import Log from '@/lib/logger'
 
 const NavbarStyle = styled(Navbar)`
   background-color: #46ccd7;
