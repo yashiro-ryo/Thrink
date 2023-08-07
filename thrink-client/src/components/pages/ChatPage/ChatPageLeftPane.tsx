@@ -50,7 +50,6 @@ const PageName = styled.div`
   width: 100%;
   height: 50px;
   border-bottom: 1px solid #636363;
-  border-right: 1px solid #636363;
   line-height: 50px;
   padding-left: 10px;
 `
