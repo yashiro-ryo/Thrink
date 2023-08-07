@@ -19,10 +19,15 @@ const ContainerStyle = styled(Container)`
   margin-top: 50px;
   margin-bottom: 50px;
 `
+const ListItemLabel = styled.h5`
+  font-weight: bold;
+`
 
 export default function UserProfile() {
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const router = useRouter()
+  // state group student
+  const [displayName, setDisplayName] = useState('')
   // state student
   const [experience, setExperience] = useState('')
   const [awards, setAwards] = useState('')
@@ -43,11 +48,13 @@ export default function UserProfile() {
     apiClient.get(`/v1/${getEndPointTarget(userType)}/${uid}`).then((res) => {
       Log.v(res)
       if (userType === 0) {
+        setDisplayName(res.data.studentProfile.displayName)
         setExperience(res.data.studentProfile.experience)
         setAwards(res.data.studentProfile.awards)
         setComment(res.data.studentProfile.comment)
         setLinks(res.data.studentProfile.links)
       } else if (userType === 1) {
+        setDisplayName(res.data.groupProfile.displayName)
         setActivityDetail(res.data.groupProfile.activityDetail)
         setActivityDay(res.data.groupProfile.activityDay)
         setActivityTime(res.data.groupProfile.activityTime)
@@ -80,30 +87,34 @@ export default function UserProfile() {
   const StudentProfileList = () => {
     return (
       <>
-        <Card.Title>経験</Card.Title>
-        <Card.Text>{nullCheck(experience)}</Card.Text>
-        <Card.Title>受賞歴</Card.Title>
-        <Card.Text>{nullCheck(awards)}</Card.Text>
-        <Card.Title>コメント</Card.Title>
-        <Card.Text>{nullCheck(comment)}</Card.Text>
-        <Card.Title>リンク</Card.Title>
-        <Card.Text>{nullCheck(links)}</Card.Text>
+        <ListItem titleText='氏名' bodyText={nullCheck(displayName)} />
+        <ListItem titleText='経験' bodyText={experience === null ? '未登録' : experience} />
+        <ListItem titleText='受賞歴' bodyText={awards === null ? '未登録' : awards} />
+        <ListItem titleText='コメント' bodyText={comment === null ? '未登録' : comment} />
+        <ListItem titleText='リンク' bodyText={links === null ? '未登録' : links} />
       </>
     )
   }
   const GroupProfileList = () => {
     return (
       <>
-        <Card.Title>場所</Card.Title>
-        <Card.Text>{nullCheck(location)}</Card.Text>
-        <Card.Title>活動詳細</Card.Title>
-        <Card.Text>{nullCheck(activityDetail)}</Card.Text>
-        <Card.Title>活動日</Card.Title>
-        <Card.Text>{nullCheck(activityDay)}</Card.Text>
-        <Card.Title>活動時間</Card.Title>
-        <Card.Text>{nullCheck(activityTime)}</Card.Text>
-        <Card.Title>受賞歴</Card.Title>
-        <Card.Text>{nullCheck(groupAwards)}</Card.Text>
+        <ListItem titleText='団体名' bodyText={nullCheck(displayName)} />
+        <ListItem titleText='場所' bodyText={location === null ? '未登録' : location} />
+        <ListItem
+          titleText='活動詳細'
+          bodyText={activityDetail === null ? '未登録' : activityDetail}
+        />
+        <ListItem titleText='活動日' bodyText={activityDay === null ? '未登録' : activityDay} />
+        <ListItem titleText='活動時間' bodyText={activityTime === null ? '未登録' : activityTime} />
+        <ListItem titleText='受賞歴' bodyText={groupAwards === null ? '未登録' : groupAwards} />
+      </>
+    )
+  }
+  const ListItem = (props: { titleText: string; bodyText: string }) => {
+    return (
+      <>
+        <ListItemLabel>{props.titleText}</ListItemLabel>
+        <p>{props.bodyText}</p>
       </>
     )
   }
