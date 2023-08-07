@@ -7,8 +7,7 @@ import { useAppSelector } from '@/redux/hooks'
 
 const Timeline = styled.div`
   width: 100%;
-  display: flex;
-  flex-direction: column;
+  height: calc(100vh - 56px);
 `
 const TimelineFooter = styled.div`
   height: 80px;
@@ -19,6 +18,22 @@ const TimelineFooter = styled.div`
 const SendBtn = styled(Button)`
   width: 90px;
   margin-left: 10px;
+`
+const TimelineHeader = styled.div`
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px solid #636363;
+  padding-left: 10px;
+  display: flex;
+  > button {
+    width: 35px;
+    height: 35px;
+    margin: auto 0;
+  }
+  > p {
+    margin-left: 10px;
+  }
 `
 
 type Props = {
@@ -31,6 +46,8 @@ type Props = {
     messageBody: string,
     messageType: string,
   ) => void
+  userDevice: 'mobile' | 'desktop'
+  hideTimeline: () => void
 }
 
 export default function ChatPageTimeline(props: Props) {
@@ -38,8 +55,26 @@ export default function ChatPageTimeline(props: Props) {
   const selectedChatroomInfo = useAppSelector(
     (state) => state.selectedChatroomInfoReducer.selectedChatroomInfo,
   )
+  const ChatroomName = () => {
+    // 初期値
+    if (selectedChatroomInfo === null) {
+      return 'チャットルーム名'
+    } else {
+      return selectedChatroomInfo.displayName
+    }
+  }
   return (
     <Timeline>
+      <TimelineHeader>
+        {props.userDevice === 'mobile' ? (
+          <Button variant='white' onClick={() => props.hideTimeline()}>
+            &lt;
+          </Button>
+        ) : (
+          ''
+        )}
+        <p>{ChatroomName()}</p>
+      </TimelineHeader>
       <TimelineBody chat={props.chat} myUid={props.myUid} />
       <TimelineFooter>
         <Form.Control

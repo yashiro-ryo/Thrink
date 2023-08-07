@@ -1,13 +1,21 @@
 import styled from 'styled-components'
 import { ChatInfo, Chatroom } from '@/values/Chat'
 import { nullCheck } from '@/lib/stringHelper'
+
 const LeftPane = styled.div`
-  width: 300px;
-  height: calc(100vh - 56px - 50px);
-  border-right: 1px solid #636363;
+  @media (max-width: 700px) {
+    // for mobile
+    width: 100%;
+  }
+  @media (min-width: 701px) {
+    // for desktop
+    max-width: 300px;
+    border-right: 1px solid #636363;
+  }
+  height: calc(100vh - 56px);
 `
 const Lists = styled.div`
-  width: 300px;
+  width: 100%;
   display: flex;
   flex-direction: column;
 `
@@ -20,16 +28,28 @@ const ListItem = styled.button`
     background-color: #d6d6d6;
   }
 `
+const PageName = styled.div`
+  width: 100%;
+  height: 50px;
+  border-bottom: 1px solid #636363;
+  border-right: 1px solid #636363;
+  line-height: 50px;
+  padding-left: 10px;
+`
 
 type Props = {
   chatrooms: Array<Chatroom>
   myUid: number
   selectChatroom: (chatroomInfo: ChatInfo) => void
+  userDevice: 'mobile' | 'desktop'
 }
 
 export default function ChatPageLeftPane(props: Props) {
   return (
     <LeftPane>
+      <PageName>
+        <p>メッセージ一覧</p>
+      </PageName>
       <Lists>
         {props.chatrooms.map((chatroom, i) => {
           return (

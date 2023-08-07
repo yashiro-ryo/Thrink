@@ -1,7 +1,6 @@
 import NavbarComp from '@/components/ui-parts/Navbar/Navbar'
 import styled from 'styled-components'
 import ChatPageLeftPane from './ChatPageLeftPane'
-import ChatPageHeader from './ChatPageHeader'
 import ChatPageTimeline from './ChatPageTimeline'
 import { Socket, io } from 'socket.io-client'
 import { useEffect, useState } from 'react'
@@ -17,6 +16,7 @@ import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
 import { setSelectedChatroomInfo } from '@/redux/slices/selectedChatroomInfoSlice'
 import { UserProfileMetaWithoutSecureData } from '@/values/UserProfileMeta'
 import { API_SERVER_URL } from '@/lib/api-server-url'
+import { checkUserDevice } from './userDevice'
 
 const ChatPageComp = styled.div`
   width: 100%;
@@ -24,7 +24,12 @@ const ChatPageComp = styled.div`
   background-color: #f5f5f5;
 `
 const ChatPageBody = styled.div`
-  display: flex;
+  @media (max-width: 700px) {
+    display: block;
+  }
+  @media (min-width: 701px) {
+    display: flex;
+  }
 `
 export default function ChatPage() {
   // state
@@ -32,6 +37,9 @@ export default function ChatPage() {
   const [chat, setChat] = useState<Array<Chat>>([])
   const [isLoading, setLoading] = useState(true)
   const [socket, setSocket] = useState<Socket | null>(null)
+  const [userDevice, setUserDevice] = useState<'mobile' | 'desktop'>('desktop')
+  const [leftPaneVisible, setLeftPaneVisible] = useState(true)
+  const [timelineVisible, setTimelineVisible] = useState(true)
   // URL
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -78,6 +86,7 @@ export default function ChatPage() {
   }
   const selectChatroom = (chatroomInfo: ChatInfo) => {
     Log.v(`get chat chatroomId: ${chatroomInfo.chatroomId}`)
+    Log.v(`user device ${userDevice}`)
     console.log(`socketInstance ${socket}`)
     if (socket === null || userProfileMeta === null) {
       return
@@ -98,6 +107,10 @@ export default function ChatPage() {
       chatroomId: chatroomInfo.chatroomId,
     })
     router.push(`/chat?cid=${chatroomInfo.chatroomId}`)
+    if (userDevice === 'mobile') {
+      setLeftPaneVisible(false)
+      setTimelineVisible(true)
+    }
   }
 
   const setupChatPage = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
@@ -147,9 +160,11 @@ export default function ChatPage() {
       uid: userProfileMeta.uid,
       chatroomId: chatroomId,
     })
+    if (userDevice === 'mobile') {
+      setLeftPaneVisible(false)
+      setTimelineVisible(true)
+    }
   }
-
-  let hasSetupPrepared = false
 
   useEffect(() => {
     const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
@@ -160,10 +175,8 @@ export default function ChatPage() {
     const onErrorCheckSession = () => {
       router.push(`/signin?redirect=chat`)
     }
-    if (userProfileMeta !== null && !hasSetupPrepared) {
-      console.log(hasSetupPrepared)
+    if (userProfileMeta !== null) {
       setupChatPage(userProfileMeta)
-      hasSetupPrepared = true
       return
     }
     checkUserSession(onSuccessCheckSession, onErrorCheckSession)
@@ -176,16 +189,23 @@ export default function ChatPage() {
   }, [userProfileMeta]) // eslint-disable-line
 
   useEffect(() => {
+    const showMobilePage = () => {
+      setUserDevice('mobile')
+      setLeftPaneVisible(true)
+      setTimelineVisible(false)
+    }
+    const showDesktopPage = () => {
+      setUserDevice('desktop')
+      setLeftPaneVisible(true)
+      setTimelineVisible(true)
+    }
     // any滅ぼす
     const onResize = (e: any) => {
       console.log('on resize')
       console.log(`width: ${window.innerWidth}, height: ${window.innerHeight}`)
-      if (window.innerWidth <= 700) {
-        console.log('mobile mode')
-      } else {
-        console.log('desktop mode')
-      }
+      checkUserDevice(showMobilePage, showDesktopPage)
     }
+    checkUserDevice(showMobilePage, showDesktopPage)
     window.addEventListener('resize', onResize)
     return () => {
       window.removeEventListener('resize', onResize)
@@ -198,18 +218,34 @@ export default function ChatPage() {
         <ChatLoadingPage />
       ) : (
         <ChatPageComp>
-          <ChatPageHeader myUid={userProfileMeta === null ? 0 : userProfileMeta.uid} />
           <ChatPageBody>
-            <ChatPageLeftPane
-              chatrooms={chatrooms}
-              myUid={userProfileMeta === null ? 0 : userProfileMeta.uid}
-              selectChatroom={selectChatroom}
-            />
-            <ChatPageTimeline
-              chat={chat}
-              myUid={userProfileMeta ? userProfileMeta?.uid : 0}
-              sendMessage={sendMessage}
-            />
+            {leftPaneVisible ? (
+              <ChatPageLeftPane
+                chatrooms={chatrooms}
+                myUid={userProfileMeta === null ? 0 : userProfileMeta.uid}
+                selectChatroom={selectChatroom}
+                userDevice={userDevice}
+              />
+            ) : (
+              ''
+            )}
+            {timelineVisible ? (
+              <ChatPageTimeline
+                chat={chat}
+                myUid={userProfileMeta ? userProfileMeta?.uid : 0}
+                sendMessage={sendMessage}
+                userDevice={userDevice}
+                hideTimeline={() => {
+                  setTimelineVisible(false)
+                  setLeftPaneVisible(true)
+                  dispatch(setSelectedChatroomInfo(null))
+                  setChat([])
+                  router.push('/chat')
+                }}
+              />
+            ) : (
+              ''
+            )}
           </ChatPageBody>
         </ChatPageComp>
       )}
