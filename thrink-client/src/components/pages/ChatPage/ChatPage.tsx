@@ -21,7 +21,6 @@ import { checkUserDevice } from './userDevice'
 const ChatPageComp = styled.div`
   width: 100%;
   height: calc(100vh - 56px);
-  background-color: #f5f5f5;
 `
 const ChatPageBody = styled.div`
   @media (max-width: 700px) {
