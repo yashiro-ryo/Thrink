@@ -9,6 +9,7 @@ import { filterIconImgUrl, filterHeaderImgUrl } from '@/lib/imgUrlHelper'
 import Log from '@/lib/logger'
 import { useSelector } from '@/redux/store'
 import { useRouter } from 'next/navigation'
+import RadarChartWrapper from './RadarChartWrapper'
 
 const HeaderImagePart = styled.div`
   width: 100%;
@@ -207,6 +208,7 @@ export default function GroupsProfile(props: { gidStr: string }) {
                   メッセージを送る
                 </Button>
               </ProfileTop>
+              <RadarChartWrapper />
               <GroupListItem titleText='活動詳細' bodyText={profile.activityDetail} />
               <GroupListItem titleText='活動日' bodyText={profile.activityDay} />
               <GroupListItem titleText='活動時間' bodyText={profile.activityTime} />
