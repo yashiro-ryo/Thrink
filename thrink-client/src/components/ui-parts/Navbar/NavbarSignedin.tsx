@@ -2,13 +2,12 @@ import { BiMessageAltDetail } from 'react-icons/bi'
 import { IconContext } from 'react-icons'
 import { Image, NavDropdown } from 'react-bootstrap'
 import { styled } from 'styled-components'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 const DivWrapper = styled.div`
   display: flex;
 `
-const IconWrapper = styled.div`
+const IconWrapper = styled(Link)`
   width: 30px;
   margin-right: 10px;
   &:hover {
@@ -37,17 +36,11 @@ type Props = {
 }
 
 export default function NavbarSignedin(props: Props) {
-  // FIXME next/linkのLinkを使用するように修正する
-  // FIXME iconの配置が微妙
-  const router = useRouter()
-  const redirect = (to: string) => {
-    router.push(`${to}`)
-  }
   return (
     <DivWrapper>
       <IconContext.Provider value={{ size: '25px' }}>
-        <IconWrapper onClick={() => redirect('/chat')}>
-          <BiMessageStyle color='#ff0000'/>
+        <IconWrapper href='/chat'>
+          <BiMessageStyle />
         </IconWrapper>
         <NavDropdownStyle
           title={
