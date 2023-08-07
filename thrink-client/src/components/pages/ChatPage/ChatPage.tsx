@@ -64,25 +64,15 @@ export default function ChatPage() {
       return
     }
     Log.v(`send messaage msgBody: ${messageBody}, msgType: ${messageType}`)
-    if (userProfileMeta.uid === u1Uid) {
-      socket.emit('send-message', {
-        uid: userProfileMeta.uid,
-        chatroomId,
-        senderUid: u1Uid,
-        receiverUid: u2Uid,
-        contentBody: messageBody,
-        contentType: messageType,
-      })
-    } else {
-      socket.emit('send-message', {
-        uid: userProfileMeta.uid,
-        chatroomId,
-        senderUid: u2Uid,
-        receiverUid: u1Uid,
-        contentBody: messageBody,
-        contentType: messageType,
-      })
-    }
+
+    socket.emit('send-message', {
+      uid: userProfileMeta.uid,
+      chatroomId,
+      senderUid: userProfileMeta.uid === u1Uid ? u1Uid : u2Uid,
+      receiverUid: userProfileMeta.uid === u1Uid ? u2Uid : u1Uid,
+      contentBody: messageBody,
+      contentType: messageType,
+    })
   }
   const selectChatroom = (chatroomInfo: ChatInfo) => {
     Log.v(`get chat chatroomId: ${chatroomInfo.chatroomId}`)
