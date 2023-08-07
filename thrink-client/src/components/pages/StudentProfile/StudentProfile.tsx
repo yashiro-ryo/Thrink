@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Container, Image, Button } from 'react-bootstrap'
+import { Container, Image, Button, Placeholder } from 'react-bootstrap'
 import { StudentProfile } from '@/values/Students'
 import apiClient from '@/lib/http-common'
 import { nullCheck } from '@/lib/stringHelper'
@@ -31,9 +31,29 @@ const UserProfileBody = styled.div`
   top: -60px;
 `
 const UserProfileTop = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: 20px 0;
+  @media (max-width: 700px) {
+    display: block;
+    margin-bottom: 30px;
+  }
+  @media (min-width: 701px) {
+    display: flex;
+    justify-content: space-between;
+  }
+  > button {
+    height: 38px;
+  }
+`
+const StyledStudentDisplayName = styled.h3`
+  margin-top: 20px;
+  margin-bottom: 30px;
+`
+const StyledStudentProfileLabel = styled.h5`
+  font-weight: bold;
+`
+const UserDisplayNamePlaceHolderWrapper = styled.div`
+  width: 200px;
+  height: 82px;
+  padding-bottom: 30px;
 `
 
 export default function StudentProfile(props: { uidStr: string }) {
@@ -51,6 +71,7 @@ export default function StudentProfile(props: { uidStr: string }) {
     comment: '',
     links: '',
   })
+  const [isLoading, setLoading] = useState(true)
   // Redux
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   // URL
@@ -60,6 +81,7 @@ export default function StudentProfile(props: { uidStr: string }) {
     apiClient.get(`/v1/students/${uid}`).then((res: any) => {
       Log.v(res.data)
       setProfile(res.data.studentProfile)
+      setLoading(false)
     })
   }
   useEffect(() => {
@@ -96,6 +118,23 @@ export default function StudentProfile(props: { uidStr: string }) {
       </div>
     )
   }
+
+  const StudentListItem = (props: { titleText: string; bodyText: string | null }) => {
+    console.log(`is Loading : ${isLoading}`)
+    return (
+      <>
+        <StyledStudentProfileLabel>{props.titleText}</StyledStudentProfileLabel>
+        {isLoading ? (
+          <Placeholder as='p' animation='glow'>
+            <Placeholder xs={6} />
+          </Placeholder>
+        ) : (
+          <p>{nullCheck(props.bodyText)}</p>
+        )}
+      </>
+    )
+  }
+
   return (
     <div>
       <HeaderImagePart>
@@ -120,19 +159,23 @@ export default function StudentProfile(props: { uidStr: string }) {
           ) : (
             <>
               <UserProfileTop>
-                <h3>{profile.displayName}</h3>
+                {isLoading ? (
+                  <UserDisplayNamePlaceHolderWrapper>
+                    <Placeholder as='h3' animation='glow'>
+                      <Placeholder xs={12} />
+                    </Placeholder>
+                  </UserDisplayNamePlaceHolderWrapper>
+                ) : (
+                  <StyledStudentDisplayName>{profile.displayName}</StyledStudentDisplayName>
+                )}
                 <Button variant='secondary' onClick={() => createChatroom()}>
                   メッセージを送る
                 </Button>
               </UserProfileTop>
-              <h4>経験</h4>
-              <p>{nullCheck(profile.experience)}</p>
-              <h4>受賞歴</h4>
-              <p>{nullCheck(profile.awards)}</p>
-              <h4>コメント</h4>
-              <p>{nullCheck(profile.comment)}</p>
-              <h4>リンク</h4>
-              <p>{nullCheck(profile.links)}</p>
+              <StudentListItem titleText='経験' bodyText={profile.experience} />
+              <StudentListItem titleText='受賞歴' bodyText={profile.awards} />
+              <StudentListItem titleText='コメント' bodyText={profile.comment} />
+              <StudentListItem titleText='リンク' bodyText={profile.links} />
             </>
           )}
         </UserProfileBody>
