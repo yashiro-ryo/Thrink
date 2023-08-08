@@ -15,7 +15,7 @@ export const userAuthRouter = Router();
 userAuthRouter.get("/signin", (req: Request, res: Response) => {
   console.log(`res.session.uid : ${req.session.uid}`);
   if (req.session.uid === undefined) {
-    res.status(400).json({ msg: "not signed in" });
+    res.status(200).json({ userProfileMeta: null });
     return;
   } else {
     db.query(`select * from user_profile_meta where uid = ${req.session.uid}`)
