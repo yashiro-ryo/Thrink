@@ -90,7 +90,11 @@ export default function StudentProfile(props: { uidStr: string }) {
 
   const createChatroom = () => {
     if (userProfileMeta === null) {
-      router.push(`/signin?redirect=group-${props.uidStr}`)
+      router.push(`/signin?redirect=student-${props.uidStr}`)
+      return
+    }
+    if (userProfileMeta.uid === Number(props.uidStr)) {
+      alert('同じユーザーにメッセージを送ることはできません')
       return
     }
     apiClient
