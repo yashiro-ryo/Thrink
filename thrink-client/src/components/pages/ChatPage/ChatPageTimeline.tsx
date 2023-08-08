@@ -72,7 +72,6 @@ export default function ChatPageTimeline(props: Props) {
     if (props.chat.length > 0) {
       scrollContainer.current?.scrollTo({
         top: scrollHeight,
-        behavior: 'smooth',
       })
     }
   }, [props.chat])
