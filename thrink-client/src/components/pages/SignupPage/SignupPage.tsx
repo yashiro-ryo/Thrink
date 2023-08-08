@@ -7,6 +7,9 @@ import { useState } from 'react'
 import apiClient from '@/lib/http-common'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import Log from '@/lib/logger'
+import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
+import { useRouter } from 'next/navigation'
+import { FRONTEND_URL } from '@/lib/api-server-url'
 
 const CardContainer = styled(Container)`
   display: flex;
@@ -46,6 +49,8 @@ export default function SignupPage() {
   const [inputPasswordConfirm, setInputPasswordConfirm] = useState('')
   const [isTermsChecked, setTermsCheckState] = useState(false)
   const [errorText, setErrorText] = useState<Array<string>>([])
+
+  const router = useRouter()
   const onChangeInputName = (e: any) => {
     setInputName(e.target.value)
   }
@@ -109,12 +114,27 @@ export default function SignupPage() {
       .then((res) => {
         Log.v(res)
         // save user info
-        //dispatch(saveUserProfile(migrateDbParamToClientParam(res.data.msg)))
+        if (!('userProfileMeta' in res.data)) {
+          return
+        }
+        dispatch(saveUserProfileMeta(res.data.userProfileMeta))
         // redirect
-        //Log.v(userProfile)
+        window.location.href = FRONTEND_URL
       })
       .catch((error) => {
-        setErrorText([error])
+        switch (error.response.data.msg) {
+          case 'server-error':
+            setErrorText(['サーバーエラー', '繰り返し続く場合は管理者に問い合わせてください。'])
+            break
+          case 'user-already-exists':
+            setErrorText(['このユーザーはアカウントがあります。', 'ログインしてください。'])
+            break
+          default:
+            setErrorText([
+              '予期しないエラーが発生しました。',
+              '繰り返し続く場合は管理者に問い合わせてください。',
+            ])
+        }
       })
   }
   return (

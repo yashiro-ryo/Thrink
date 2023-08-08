@@ -87,7 +87,7 @@ userAuthRouter.post("/signup", async (req: Request, res: Response) => {
       "userType" in req.body
     )
   ) {
-    res.status(500).json({ msg: "internal server error" });
+    res.status(500).json({ msg: "server-error" });
     return;
   }
   // ユーザーの存在確認
@@ -99,7 +99,7 @@ userAuthRouter.post("/signup", async (req: Request, res: Response) => {
       console.log(`user check result : ${queryRes[0].user_check}`);
       if (queryRes[0].user_check === 1) {
         // ユーザー存在した
-        return Promise.reject("user already exists");
+        return Promise.reject("user-already-exists");
       } else {
         // ユーザー存在しなかった(アカウント作成に移行)
         return Promise.resolve();
@@ -131,7 +131,7 @@ userAuthRouter.post("/signup", async (req: Request, res: Response) => {
       } else if (queryRes[0].user_type === 1) {
         // 団体管理者向け
         await db.query(
-          `insert into group_profile values (${queryRes[0].uid}, '${queryRes[0].display_name}', NULL, NULL, NULL, NULL, NULL, NULL)`
+          `insert into group_profile values (${queryRes[0].uid}, '${queryRes[0].display_name}', NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 0)`
         );
         await groupProfileModel.updateGroupProfileCache();
       } else {
@@ -140,13 +140,18 @@ userAuthRouter.post("/signup", async (req: Request, res: Response) => {
           `insert into student_parent_profile values (${queryRes[0].uid}, '${queryRes[0].display_name}', 0, NULL, 0, NULL, 0, NULL, 0, NULL)`
         );
       }
-      res
-        .status(200)
-        .json({ msg: "successful create user", userProfileMeta: queryRes[0] });
+      req.session.uid = queryRes[0].uid;
+      req.session.save();
+      res.status(200).json({
+        msg: "ok",
+        userProfileMeta: removeSecureData(
+          migrateVariableNameForFrontend(queryRes[0])
+        ),
+      });
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ msg: `server error : ${err}` });
+      res.status(500).json({ msg: err });
     });
 });
 
