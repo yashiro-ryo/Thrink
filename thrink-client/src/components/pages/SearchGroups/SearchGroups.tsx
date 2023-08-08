@@ -6,6 +6,8 @@ import styled from 'styled-components'
 import apiClient from '@/lib/http-common'
 import { GroupDigest } from '@/values/Groups'
 import Log from '@/lib/logger'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { getPageIndex } from '@/lib/pagination'
 
 const HeaderLabel = styled.div`
   margin-top: 20px;
@@ -20,12 +22,17 @@ export default function SearchGroups() {
   const [pageLenght, setPageLength] = useState(1)
   const [nowPageIndex, setNowPageIndex] = useState(1)
   const [isPagingMode, setPagingMode] = useState(true)
+
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const getGroupsDigests = (pageIndex: number) => {
     console.log(`/v1/digests/group?pageIndex=${pageIndex}`)
     apiClient.get(`/v1/digests/group?pageIndex=${pageIndex}`).then((res: any) => {
       console.log(res)
       setGroupsDigests(res.data.groupDigests)
       setPageLength(res.data.pageLength)
+      setNowPageIndex(getPageIndex(pageIndex, res.data.pageLength))
     })
   }
   const searchGroup = (query: string) => {
@@ -47,7 +54,9 @@ export default function SearchGroups() {
       })
   }
   useEffect(() => {
-    getGroupsDigests(1)
+    const pageIndex = searchParams.get('pageIndex')
+    const pageIndexNum = pageIndex === null || pageIndex.length === 0 ? 1 : Number(pageIndex)
+    getGroupsDigests(pageIndexNum)
   }, [])
 
   let items = []
@@ -57,8 +66,8 @@ export default function SearchGroups() {
         key={number}
         active={number === nowPageIndex}
         onClick={() => {
-          setNowPageIndex(number)
           getGroupsDigests(number)
+          router.push(`/groups?pageIndex=${number}`)
         }}
       >
         {number}

@@ -6,6 +6,7 @@ import apiClient from '@/lib/http-common'
 import { StudentDigest } from '@/values/Students'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Log from '@/lib/logger'
+import { getPageIndex } from '@/lib/pagination'
 
 const HeaderLabel = styled.div`
   margin-top: 20px;
@@ -30,12 +31,12 @@ export default function SearchStudents() {
       }
       setStudentDigests(res.data.studentDigests)
       setPageLength(res.data.pageLength)
+      setNowPageIndex(getPageIndex(pageIndex, res.data.pageLength))
     })
   }
   useEffect(() => {
     const pageIndex = searchParams.get('pageIndex')
     const pageIndexNumber = pageIndex === null || pageIndex.length === 0 ? 1 : Number(pageIndex)
-    setNowPageIndex(pageIndexNumber)
     getAllStudents(pageIndexNumber)
   }, [])
 
@@ -46,7 +47,6 @@ export default function SearchStudents() {
         key={number}
         active={number === nowPageIndex}
         onClick={() => {
-          setNowPageIndex(number)
           getAllStudents(number)
           router.push(`/students?pageIndex=${number}`)
         }}
