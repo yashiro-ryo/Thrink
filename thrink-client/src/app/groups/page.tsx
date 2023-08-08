@@ -25,13 +25,10 @@ export default function SearchGroupsPage() {
       dispatch(signin())
       dispatch(saveUserProfileMeta(userProfileMeta))
     }
-    const onErrorCheckSession = () => {
-      // do nothing
-    }
     if (userProfileMeta !== null) {
       return
     } else {
-      checkUserSession(onSuccessCheckSession, onErrorCheckSession)
+      checkUserSession(onSuccessCheckSession)
     }
   }, [userProfileMeta]) // eslint-disable-line
   return (

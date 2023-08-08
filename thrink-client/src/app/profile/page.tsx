@@ -72,15 +72,18 @@ export default function UserProfile() {
     }
   }
   useEffect(() => {
-    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
+    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData | null) => {
+      if (userProfileMeta === null) {
+        router.push('/signin?redirect=profile')
+        return
+      }
       dispatch(signin())
       dispatch(saveUserProfileMeta(userProfileMeta))
     }
-    const onErrorCheckSession = () => router.push('/signin?redirect=profile')
     if (userProfileMeta !== null) {
       getProfile(userProfileMeta.uid, userProfileMeta.userType)
     } else {
-      checkUserSession(onSuccessCheckSession, onErrorCheckSession)
+      checkUserSession(onSuccessCheckSession)
     }
   }, [userProfileMeta]) // eslint-disable-line
   const StudentProfileList = () => {

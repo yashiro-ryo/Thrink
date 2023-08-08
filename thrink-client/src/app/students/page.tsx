@@ -21,17 +21,17 @@ export default function SearchStudentsPage() {
   const dispatch = useDispatch()
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   useEffect(() => {
-    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
+    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData | null) => {
+      if (userProfileMeta === null) {
+        return
+      }
       dispatch(signin())
       dispatch(saveUserProfileMeta(userProfileMeta))
-    }
-    const onErrorCheckSession = () => {
-      // do nothing
     }
     if (userProfileMeta !== null) {
       return
     } else {
-      checkUserSession(onSuccessCheckSession, onErrorCheckSession)
+      checkUserSession(onSuccessCheckSession)
     }
   }, [userProfileMeta]) // eslint-disable-line
   return (

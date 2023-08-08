@@ -78,19 +78,19 @@ export default function Signin() {
       })
   }
   useEffect(() => {
-    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
+    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData | null) => {
+      if (userProfileMeta === null) {
+        return
+      }
       dispatch(signin())
       dispatch(saveUserProfileMeta(userProfileMeta))
-    }
-    const onErrorCheckSession = () => {
-      // do nothing
     }
     // ログイン済みかどうか
     if (userProfileMeta !== null) {
       // ログイン済み
       router.push(getUrlQuery(searchParam.get('redirect')))
     } else {
-      checkUserSession(onSuccessCheckSession, onErrorCheckSession)
+      checkUserSession(onSuccessCheckSession)
     }
   }, [userProfileMeta]) // eslint-disable-line
   return (

@@ -48,15 +48,18 @@ export default function JobManagePage() {
     })
   }
   useEffect(() => {
-    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
+    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData | null) => {
+      if (userProfileMeta === null) {
+        router.push('/signin?redirect=manage-job')
+        return
+      }
       dispatch(signin())
       dispatch(saveUserProfileMeta(userProfileMeta))
     }
-    const onErrorCheckSession = () => router.push('/signin?redirect=manage-job')
     if (userProfileMeta !== null) {
       getCreatedJobs(userProfileMeta.uid)
     } else {
-      checkUserSession(onSuccessCheckSession, onErrorCheckSession)
+      checkUserSession(onSuccessCheckSession)
     }
   }, [userProfileMeta]) // eslint-disable-line
 

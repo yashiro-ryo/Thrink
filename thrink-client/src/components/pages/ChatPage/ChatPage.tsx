@@ -144,19 +144,20 @@ export default function ChatPage() {
   }
 
   useEffect(() => {
-    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
+    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData | null) => {
+      if (userProfileMeta === null) {
+        router.push(`/signin?redirect=chat`)
+        return
+      }
       dispatch(signin())
       dispatch(saveUserProfileMeta(userProfileMeta))
       setupChatPage(userProfileMeta)
-    }
-    const onErrorCheckSession = () => {
-      router.push(`/signin?redirect=chat`)
     }
     if (userProfileMeta !== null) {
       setupChatPage(userProfileMeta)
       return
     }
-    checkUserSession(onSuccessCheckSession, onErrorCheckSession)
+    checkUserSession(onSuccessCheckSession)
     return () => {
       if (socket !== null) {
         socket.removeAllListeners()

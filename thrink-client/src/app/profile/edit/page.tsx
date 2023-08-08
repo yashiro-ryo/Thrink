@@ -196,17 +196,20 @@ export default function EditProfile() {
     }
   }
   useEffect(() => {
-    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData) => {
+    const onSuccessCheckSession = (userProfileMeta: UserProfileMetaWithoutSecureData | null) => {
+      if (userProfileMeta === null) {
+        router.push('/signin?redirect=profile-edit')
+        return
+      }
       dispatch(signin())
       dispatch(saveUserProfileMeta(userProfileMeta))
     }
-    const onErrorCheckSession = () => router.push('/signin?redirect=profile-edit')
     if (userProfileMeta !== null) {
       getProfile(userProfileMeta.uid, userProfileMeta.userType)
       setHeaderImageUrl(filterHeaderImgUrl(userProfileMeta))
       setIconUrl(filterIconImgUrl(userProfileMeta))
     } else {
-      checkUserSession(onSuccessCheckSession, onErrorCheckSession)
+      checkUserSession(onSuccessCheckSession)
     }
   }, [userProfileMeta]) // eslint-disable-line
   const StudentProfileEditor = () => {
