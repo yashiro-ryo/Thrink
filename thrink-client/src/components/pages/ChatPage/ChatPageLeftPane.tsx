@@ -24,6 +24,7 @@ const Lists = styled.div`
   padding-top: 5px;
 `
 const ListItem = styled.button`
+  width: calc(100% - 10px);
   border: none;
   height: 60px;
   border-radius: 5px;
@@ -42,6 +43,7 @@ const ListItem = styled.button`
   }
 `
 const SelectedListItem = styled.button`
+  width: calc(100% - 10px);
   border: none;
   height: 60px;
   border-radius: 5px;
@@ -96,10 +98,9 @@ export default function ChatPageLeftPane(props: Props) {
       <Lists>
         {props.chatrooms.map((chatroom, i) => {
           return (
-            <>
+            <div key={`chatroom-label-${i}`}>
               {isSelected(chatroom.chatroomId) ? (
                 <SelectedListItem
-                  key={`chatroom-label-${i}`}
                   onClick={() =>
                     props.selectChatroom({
                       chatroomId: chatroom.chatroomId,
@@ -139,7 +140,6 @@ export default function ChatPageLeftPane(props: Props) {
                 </SelectedListItem>
               ) : (
                 <ListItem
-                  key={`chatroom-label-${i}`}
                   onClick={() =>
                     props.selectChatroom({
                       chatroomId: chatroom.chatroomId,
@@ -178,7 +178,7 @@ export default function ChatPageLeftPane(props: Props) {
                   </div>
                 </ListItem>
               )}
-            </>
+            </div>
           )
         })}
       </Lists>
