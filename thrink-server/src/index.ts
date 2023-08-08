@@ -57,9 +57,10 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: [
-      process.env.APP_MODE === "development"
-        ? "http://localhost:3001"
-        : "https://thrink.net",
+      "http://localhost:3001",
+      "https://www.thrink.net",
+      "https://thrink.net",
+      "httsp://api.thrink.net",
     ],
     credentials: true,
   },
