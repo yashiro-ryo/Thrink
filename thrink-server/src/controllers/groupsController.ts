@@ -1,12 +1,11 @@
 import { Router, Request, Response } from "express";
 import { GroupsRepository } from "./groupsRepository";
-import { GroupProfileModel } from "../models/groupProfileModel";
+import groupProfileModel from "../models/groupProfileModel";
 import { convertBase64ToPngFile } from "../lib/file";
 import { UserProfileMetaModel } from "../models/userProfileMetaModel";
 
 export const groupsRouter = Router();
 const groupsRepo = new GroupsRepository();
-const groupProfileModel = new GroupProfileModel();
 const userProfileMetaModel = new UserProfileMetaModel();
 
 // GET /v1/groups

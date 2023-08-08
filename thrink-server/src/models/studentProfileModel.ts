@@ -24,7 +24,7 @@ type StudentProfile = {
   headerImgUrl: string;
 };
 
-export class StudentProfileModel {
+class StudentProfileModel {
   studentProfileCache: Array<Array<StudentProfile>> = [];
   lastUpdatedTime = 0;
   // 5分後にDBからキャッシュを更新する
@@ -143,3 +143,6 @@ export class StudentProfileModel {
     );
   }
 }
+
+const studentProfileModel = new StudentProfileModel();
+export default studentProfileModel;

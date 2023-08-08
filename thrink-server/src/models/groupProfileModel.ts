@@ -27,7 +27,7 @@ type GroupProfile = {
   headerImgUrl: string;
 };
 
-export class GroupProfileModel {
+class GroupProfileModel {
   groupProfileCache: Array<Array<GroupProfile>> = [];
   lastUpdatedTime = 0;
   // 5分後にDBからキャッシュを更新する
@@ -152,3 +152,6 @@ export class GroupProfileModel {
     );
   }
 }
+
+const groupProfileModel = new GroupProfileModel();
+export default groupProfileModel;

@@ -6,6 +6,8 @@ import {
   migrateVariableNameForFrontend,
   removeSecureData,
 } from "../models/UserProfileMeta";
+import groupProfileModel from "../models/groupProfileModel";
+import studentProfileModel from "../models/studentProfileModel";
 
 export const userAuthRouter = Router();
 
@@ -116,23 +118,25 @@ userAuthRouter.post("/signup", async (req: Request, res: Response) => {
         `select * from user_profile_meta where email = '${req.body.email}' and password_hash = '${hashedPassword}'`
       );
     })
-    .then((queryRes: Array<UserProfileMetaDB>) => {
+    .then(async (queryRes: Array<UserProfileMetaDB>) => {
       console.log(`target uid: ${queryRes[0].uid}`);
       console.log(`target user type: ${queryRes[0].user_type}`);
       // ユーザー種別ごとにテーブルにデータを挿入する
       if (queryRes[0].user_type === 0) {
         // 大学生むけ
-        db.query(
+        await db.query(
           `insert into student_profile values (${queryRes[0].uid}, '${queryRes[0].display_name}', 0, NULL, 0, NULL, 0, NULL, 0, NULL)`
         );
+        await studentProfileModel.updateStudentProfileCache();
       } else if (queryRes[0].user_type === 1) {
         // 団体管理者向け
-        db.query(
+        await db.query(
           `insert into group_profile values (${queryRes[0].uid}, '${queryRes[0].display_name}', NULL, NULL, NULL, NULL, NULL, NULL)`
         );
+        await groupProfileModel.updateGroupProfileCache();
       } else {
         // 生徒、保護者向け
-        db.query(
+        await db.query(
           `insert into student_parent_profile values (${queryRes[0].uid}, '${queryRes[0].display_name}', 0, NULL, 0, NULL, 0, NULL, 0, NULL)`
         );
       }

@@ -1,10 +1,9 @@
 import { Request, Response, Router } from "express";
-import { StudentProfileModel } from "../models/studentProfileModel";
+import studentProfileModel from "../models/studentProfileModel";
 import { UserProfileMetaModel } from "../models/userProfileMetaModel";
 import { convertBase64ToPngFile } from "../lib/file";
 
 export const studentsRouter = Router();
-const studentProfileModel = new StudentProfileModel();
 const userProfileMetaModel = new UserProfileMetaModel();
 
 // GET /v1/students
