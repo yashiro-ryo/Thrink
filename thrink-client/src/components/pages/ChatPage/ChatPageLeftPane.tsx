@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { ChatInfo, Chatroom } from '@/values/Chat'
-import { nullCheck } from '@/lib/stringHelper'
 import { useAppSelector } from '@/redux/hooks'
 import { Image } from 'react-bootstrap'
 

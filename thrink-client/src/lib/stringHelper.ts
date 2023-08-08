@@ -15,5 +15,5 @@ export const cutOverStr = (s: string, n: number): string => {
  * @param maybeStr null or string の処理対象
  */
 export const nullCheck = (maybeStr: string | null): string => {
-  return maybeStr === null ? '' : maybeStr
+  return maybeStr === null ? '未登録' : maybeStr
 }
