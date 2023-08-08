@@ -28,7 +28,7 @@ userAuthRouter.get("/signin", (req: Request, res: Response) => {
       })
       .catch((err) => {
         console.error(err);
-        res.status(500).json({ msg: "internal error" });
+        res.status(200).json({ userProfileMeta: null });
       });
   }
 });
