@@ -5,7 +5,7 @@
  * @param index 指定のページ数
  */
 export const getTargetPage = (array: Array<Array<any>>, index: number) => {
-  if (array.length < index) {
+  if (array.length < index || index <= 0) {
     return array[0];
   }
   return array[index - 1];
@@ -36,7 +36,7 @@ export const splitPage = (
       results.push(result);
     }
   });
-  console.log('split page result')
-  console.log(results)
+  console.log("split page result");
+  console.log(results);
   return results;
 };
