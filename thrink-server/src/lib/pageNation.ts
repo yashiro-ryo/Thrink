@@ -28,7 +28,7 @@ export const splitPage = (
   array.forEach((v, i) => {
     result.push(v);
     num++;
-    if (num > pageContentsNum) {
+    if (num >= pageContentsNum) {
       num = 0;
       results.push(result);
       result = [];
@@ -36,5 +36,7 @@ export const splitPage = (
       results.push(result);
     }
   });
+  console.log('split page result')
+  console.log(results)
   return results;
 };

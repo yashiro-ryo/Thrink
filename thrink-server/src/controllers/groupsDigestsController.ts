@@ -10,11 +10,14 @@ const groupDigestsModel = new GroupDigestsModel();
 groupDigestsRouter.get("/", (req: Request, res: Response) => {
   console.log("get group digets");
   console.log(`page index : ${req.query.pageIndex}`);
-  res.status(200).json({
-    groupDigests: groupDigestsModel.getGroupDigests(
-      Number(req.query.pageIndex)
-    ),
-  });
+  groupDigestsModel
+    .getGroupDigests(Number(req.query.pageIndex))
+    .then((groupDigests) => {
+      res.status(200).json({
+        groupDigests,
+        pageLength: groupDigestsModel.getPageLength(),
+      });
+    });
 });
 
 // GET /v1/digests/group/:uid

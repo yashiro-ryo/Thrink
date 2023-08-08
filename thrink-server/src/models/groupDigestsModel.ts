@@ -20,33 +20,38 @@ export class GroupDigestsModel {
   // 5分後にDBからキャッシュを更新する
   UPDATE_MINUTES = 5 * 60 * 1000;
   groupDigestsCache: Array<Array<GroupDigest>> = [];
+  pageLength = 0;
   constructor() {
     this.lastUpdatedTime = new Date().getTime();
     this.updateGroupProfileCache();
   }
 
-  getGroupDigests(pageIndex: number): Array<GroupDigest> {
+  getPageLength() {
+    return this.pageLength;
+  }
+
+  async getGroupDigests(pageIndex: number): Promise<Array<GroupDigest>> {
     // 最後にDBからデータをとってきてから5分経過後の場合は更新する
     if (this.isOverAnyMinutes(new Date().getTime())) {
       console.log("Update group digets cache. Because five minutes over");
       // DBからキャッシュを更新する
-      this.updateGroupProfileCache();
+      await this.updateGroupProfileCache();
     }
     console.log(this.groupDigestsCache);
     // キャッシュを返す
-    return getTargetPage(this.groupDigestsCache, pageIndex);
+    return Promise.resolve(getTargetPage(this.groupDigestsCache, pageIndex));
   }
 
-  getGroupDigestByUid(uid: number): GroupDigest | null {
+  async getGroupDigestByUid(uid: number): Promise<GroupDigest | null> {
     // 最後にDBからデータをとってきてから5分経過後の場合は更新する
     if (this.isOverAnyMinutes(new Date().getTime())) {
       console.log("Update group digets cache. Because five minutes over");
       // DBからキャッシュを更新する
-      this.updateGroupProfileCache();
+      await this.updateGroupProfileCache();
     }
     console.log(this.groupDigestsCache);
     // キャッシュからuidを指定して取得する
-    return this.getTargetGroupDigest(uid);
+    return Promise.resolve(this.getTargetGroupDigest(uid));
   }
 
   getTargetGroupDigest(uid: number): GroupDigest | null {
@@ -66,18 +71,21 @@ export class GroupDigestsModel {
    * 団体のプロフィールをキャッシュとして保持しておくための関数
    * キャッシュに保存後配列を返す
    */
-  updateGroupProfileCache() {
-    this.lastUpdatedTime = new Date().getTime();
+  async updateGroupProfileCache() {
+    // DBからキャッシュを更新する
+    this.lastUpdatedTime = await new Date().getTime();
     // 団体のuser_typeは1
-    db.query(
-      `select user_profile_meta.uid, user_profile_meta.display_name, user_profile_meta.icon_img_url, group_profile.activity_detail from user_profile_meta inner join group_profile on user_profile_meta.uid = group_profile.uid`
-    )
+    await db
+      .query(
+        `select user_profile_meta.uid, user_profile_meta.display_name, user_profile_meta.icon_img_url, group_profile.activity_detail from user_profile_meta inner join group_profile on user_profile_meta.uid = group_profile.uid`
+      )
       .then((queryRes) => {
         console.log(queryRes);
         this.groupDigestsCache = splitPage(
           this.migrateSnakeCaseToCamelCase(queryRes),
           10
         );
+        this.pageLength = this.groupDigestsCache.length;
       })
       .catch((err) => {
         console.error(err);
