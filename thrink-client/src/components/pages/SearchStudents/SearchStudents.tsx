@@ -5,7 +5,6 @@ import styled from 'styled-components'
 import apiClient from '@/lib/http-common'
 import { StudentDigest } from '@/values/Students'
 import { useRouter, useSearchParams } from 'next/navigation'
-import Log from '@/lib/logger'
 import { getPageIndex } from '@/lib/pagination'
 
 const HeaderLabel = styled.div`
@@ -24,7 +23,6 @@ export default function SearchStudents() {
   const router = useRouter()
   const getAllStudents = (pageIndex: number) => {
     apiClient.get(`/v1/digests/student?pageIndex=${pageIndex}`).then((res: any) => {
-      Log.v(res.data)
       if (!('studentDigests' in res.data)) {
         setStudentDigests([])
         return

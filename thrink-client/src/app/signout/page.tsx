@@ -2,7 +2,6 @@
 import Footer from '@/components/ui-parts/Footer/Footer'
 import styled from 'styled-components'
 import { Navbar, Container } from 'react-bootstrap'
-import Link from 'next/link'
 import { useEffect } from 'react'
 import { useAppSelector } from '@/redux/hooks'
 import apiClient from '@/lib/http-common'
@@ -21,9 +20,7 @@ export default function Signout() {
     if (userProfileMeta === null) {
       return
     }
-    apiClient.get('/auth/signout').then((res) => {
-      console.log(res.data)
-    })
+    apiClient.get('/auth/signout')
   }, [userProfileMeta])
   return (
     <div>

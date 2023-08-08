@@ -11,7 +11,6 @@ import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getUrlQuery } from '@/lib/urlQueryHelper'
 import apiClient from '@/lib/http-common'
-import Log from '@/lib/logger'
 import { checkUserSession } from '@/lib/auth'
 import { UserProfileMetaWithoutSecureData } from '@/values/UserProfileMeta'
 
@@ -69,16 +68,12 @@ export default function Signin() {
       })
       .then((res: any) => {
         // ログイン成功
-        Log.v('successful signin')
-        Log.v(res.data.userProfileMeta)
         dispatch(saveUserProfileMeta(res.data.userProfileMeta))
         dispatch(signin())
         router.push(redirectTo)
       })
       .catch((errRes) => {
         // ログイン失敗
-        Log.v('failed signin˝')
-        console.error(errRes)
         setFormErrorText('ログインできませんでした。emailとpasswordを再度確認してください。')
       })
   }

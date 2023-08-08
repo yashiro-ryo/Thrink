@@ -15,7 +15,6 @@ export const getProfileMetaData = (
 ): { displayName: string; location: string } | null => {
   let res: any = []
   dummyStudentData.forEach((student) => {
-    console.log(student)
     if (student.uid == uid) {
       res.push({ displayName: student.displayName, location: student.affiliation })
     }

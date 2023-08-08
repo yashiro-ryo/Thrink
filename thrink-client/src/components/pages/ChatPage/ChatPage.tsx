@@ -8,7 +8,6 @@ import { useAppSelector } from '@/redux/hooks'
 import { Chatroom, Chat, ChatInfo } from '@/values/Chat'
 import { useRouter, useSearchParams } from 'next/navigation'
 import ChatLoadingPage from './ChatLoadingPage'
-import Log from '@/lib/logger'
 import { checkUserSession } from '@/lib/auth'
 import { useDispatch } from 'react-redux'
 import { signin } from '@/redux/slices/signedinStateSlice'
@@ -62,7 +61,6 @@ export default function ChatPage() {
     if (messageBody.length === 0 || messageType.length === 0) {
       return
     }
-    Log.v(`send messaage msgBody: ${messageBody}, msgType: ${messageType}`)
 
     socket.emit('send-message', {
       uid: userProfileMeta.uid,
@@ -74,9 +72,6 @@ export default function ChatPage() {
     })
   }
   const selectChatroom = (chatroomInfo: ChatInfo) => {
-    Log.v(`get chat chatroomId: ${chatroomInfo.chatroomId}`)
-    Log.v(`user device ${userDevice}`)
-    console.log(`socketInstance ${socket}`)
     if (socket === null || userProfileMeta === null) {
       return
     }
@@ -90,7 +85,6 @@ export default function ChatPage() {
       return
     }
     dispatch(setSelectedChatroomInfo(chatroomInfo))
-    Log.v('get chat')
     socket.emit('get-chat', {
       uid: userProfileMeta.uid,
       chatroomId: chatroomInfo.chatroomId,
@@ -111,7 +105,6 @@ export default function ChatPage() {
     socketInstance
       .on('connect', () => {
         // サーバーに接続成功時のイベント
-        console.log('connected')
         if (userProfileMeta === null) {
           return
         }
@@ -120,7 +113,6 @@ export default function ChatPage() {
       })
       .on('success-join', () => {
         // サーバーとの個別接続が確立したのを検知するイベント
-        Log.v('success join room')
         if (userProfileMeta === null) {
           return
         }
@@ -129,15 +121,11 @@ export default function ChatPage() {
       })
       .on('update-chatrooms', (data) => {
         // サーバーから取得したchatroomsの取得を検知するイベント
-        Log.v('update-chatrooms')
-        Log.v(data)
         setChatrooms(data.chatrooms)
         setLoading(false)
       })
       .on('update-chat', (data) => {
         // サーバーから取得したchatの内容の取得を検知するイベント
-        Log.v('update-chat')
-        Log.v(data)
         setChat(data.chat)
       })
 
@@ -190,8 +178,6 @@ export default function ChatPage() {
     }
     // any滅ぼす
     const onResize = (e: any) => {
-      console.log('on resize')
-      console.log(`width: ${window.innerWidth}, height: ${window.innerHeight}`)
       checkUserDevice(showMobilePage, showDesktopPage)
     }
     checkUserDevice(showMobilePage, showDesktopPage)

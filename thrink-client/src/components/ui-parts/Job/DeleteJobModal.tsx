@@ -2,7 +2,6 @@ import apiClient from '@/lib/http-common'
 import { Modal, Button } from 'react-bootstrap'
 import { Job } from '@/values/Jobs'
 import { useAppSelector } from '@/redux/hooks'
-import Log from '@/lib/logger'
 
 type Props = {
   isVisible: boolean
@@ -14,13 +13,10 @@ type Props = {
 export default function DeleteJobModal(props: Props) {
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const deleteJob = () => {
-    Log.v('delete job')
-    Log.v(`job id : ${props.jobId}`)
     if (props.jobId !== null && userProfileMeta !== null) {
       apiClient
         .post('/v1/manage/delete', { uid: userProfileMeta.uid, jobId: props.jobId })
         .then((res) => {
-          Log.v(res)
           props.setCreatedJobs(res.data.jobs)
         })
     }

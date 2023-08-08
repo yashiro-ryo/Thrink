@@ -10,7 +10,6 @@ import CreateJobModal from '@/components/ui-parts/Job/CreateJobModal'
 import UpdateJobModal from '@/components/ui-parts/Job/UpdateJobEditor'
 import DeleteJobModal from '@/components/ui-parts/Job/DeleteJobModal'
 import { useRouter } from 'next/navigation'
-import Log from '@/lib/logger'
 import { checkUserSession } from '@/lib/auth'
 import { useDispatch } from 'react-redux'
 import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
@@ -45,7 +44,6 @@ export default function JobManagePage() {
   const userProfileMeta = useAppSelector((state) => state.userProfileMetaReducer.profileMeta)
   const getCreatedJobs = (uid: number) => {
     apiClient.get(`/v1/manage/jobs/${uid}`).then((res) => {
-      Log.v(res.data.jobs)
       setCreatedJobs(res.data.jobs)
     })
   }
@@ -77,7 +75,6 @@ export default function JobManagePage() {
                 onClick={() => {
                   setUpdateJobModalVisible(true)
                   setUpdateTargetJob(createdJob)
-                  Log.v(createdJob)
                 }}
               >
                 求人内容を更新する
@@ -87,7 +84,6 @@ export default function JobManagePage() {
                 onClick={() => {
                   setDeleteModalVisible(true)
                   setDeleteTargetJobId(createdJob.jobId)
-                  Log.v(createdJob)
                 }}
               >
                 求人を削除する

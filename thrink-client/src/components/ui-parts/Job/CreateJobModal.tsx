@@ -3,7 +3,6 @@ import { useAppSelector } from '@/redux/hooks'
 import { useState } from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
 import { Job } from '@/values/Jobs'
-import Log from '@/lib/logger'
 
 type Props = {
   isVisible: boolean
@@ -47,7 +46,6 @@ export default function CreateJobModal(props: Props) {
         workingTime: inputTime,
       })
       .then((res) => {
-        Log.v(res.data.jobs)
         props.setCreatedJobs(res.data.jobs)
       })
     handleClose()

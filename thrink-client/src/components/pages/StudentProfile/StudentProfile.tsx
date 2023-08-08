@@ -5,7 +5,6 @@ import { StudentProfile } from '@/values/Students'
 import apiClient from '@/lib/http-common'
 import { nullCheck } from '@/lib/stringHelper'
 import { filterIconImgUrl, filterHeaderImgUrl } from '@/lib/imgUrlHelper'
-import Log from '@/lib/logger'
 import { useAppSelector } from '@/redux/hooks'
 import { useRouter } from 'next/navigation'
 
@@ -79,7 +78,6 @@ export default function StudentProfile(props: { uidStr: string }) {
 
   const getStudentProfile = (uid: number) => {
     apiClient.get(`/v1/students/${uid}`).then((res: any) => {
-      Log.v(res.data)
       setProfile(res.data.studentProfile)
       setLoading(false)
     })
@@ -104,11 +102,7 @@ export default function StudentProfile(props: { uidStr: string }) {
       })
       .then((res) => {
         // chatroom取得
-        console.log(res.data)
         router.push(`/chat?rid=${res.data.chatroomId}`)
-      })
-      .catch((error) => {
-        console.error(error)
       })
   }
 
@@ -124,7 +118,6 @@ export default function StudentProfile(props: { uidStr: string }) {
   }
 
   const StudentListItem = (props: { titleText: string; bodyText: string | null }) => {
-    console.log(`is Loading : ${isLoading}`)
     return (
       <>
         <StyledStudentProfileLabel>{props.titleText}</StyledStudentProfileLabel>

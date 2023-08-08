@@ -8,7 +8,6 @@ import apiClient from '@/lib/http-common'
 import { useAppSelector } from '@/redux/hooks'
 import { useRouter } from 'next/navigation'
 import { filterHeaderImgUrl, filterIconImgUrl } from '@/lib/imgUrlHelper'
-import Log from '@/lib/logger'
 import { checkUserSession } from '@/lib/auth'
 import { useDispatch } from 'react-redux'
 import { signin } from '@/redux/slices/signedinStateSlice'
@@ -65,15 +64,12 @@ export default function EditProfile() {
   // anyなおす
   const onChangeIconInput = (e: any) => {
     const file = e.target.files[0]
-    Log.v(file)
     if (file === undefined) {
-      Log.v('cannnot load file info')
       return
     }
     setIconUrl(URL.createObjectURL(file))
     const fr = new FileReader()
     fr.onload = (e) => {
-      Log.v(`blob: ${e.target?.result}`)
       setIconImgBase64(String(e.target?.result))
     }
     fr.readAsDataURL(file)
@@ -82,15 +78,12 @@ export default function EditProfile() {
   // anyなおす
   const onChangeHeaderImageInput = (e: any) => {
     const file = e.target.files[0]
-    Log.v(file)
     if (file === undefined) {
-      Log.v('cannnot load file info')
       return
     }
     setHeaderImageUrl(URL.createObjectURL(file))
     const fr = new FileReader()
     fr.onload = (e) => {
-      Log.v(`blob: ${e.target?.result}`)
       setHeaderImgBase64(String(e.target?.result))
     }
     fr.readAsDataURL(file)
@@ -132,12 +125,6 @@ export default function EditProfile() {
     setInputMembersNum(e.target.value)
   }
   const save = () => {
-    Log.v(inputExperience)
-    Log.v(inputAwards)
-    Log.v(inputComment)
-    Log.v(inputLinks)
-    Log.v(headerImgBase64)
-    Log.v(iconImgBase64)
     if (userProfileMeta === null) {
       // プロフィールがそもそも存在しない場合はreturn
       return
@@ -153,11 +140,7 @@ export default function EditProfile() {
           links: inputLinks,
         })
         .then((res) => {
-          Log.v(res)
           router.push('/profile')
-        })
-        .catch((err) => {
-          console.error(err)
         })
     } else if (userProfileMeta.userType === 1) {
       apiClient
@@ -175,19 +158,12 @@ export default function EditProfile() {
           radar3,
         })
         .then((res) => {
-          Log.v(res)
           router.push('/profile')
-        })
-        .catch((err) => {
-          console.error(err)
         })
     }
   }
   const getProfile = (uid: number, userType: 0 | 1 | 2) => {
-    Log.v(uid)
-    Log.v(userType)
     apiClient.get(`/v1/${getEndPointTarget(userType)}/${uid}`).then((res) => {
-      Log.v(res)
       if (userType === 0) {
         // TODO null対策
         setInputExperience(nullCheck(res.data.studentProfile.experience))

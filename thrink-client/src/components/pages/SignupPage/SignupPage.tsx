@@ -5,8 +5,7 @@ import styled from 'styled-components'
 import Link from 'next/link'
 import { useState } from 'react'
 import apiClient from '@/lib/http-common'
-import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import Log from '@/lib/logger'
+import { useAppDispatch } from '@/redux/hooks'
 import { saveUserProfileMeta } from '@/redux/slices/userProfileMetaSlice'
 import { useRouter } from 'next/navigation'
 import { FRONTEND_URL } from '@/lib/api-server-url'
@@ -55,7 +54,6 @@ export default function SignupPage() {
     setInputName(e.target.value)
   }
   const onChangeInputUserType = (e: number) => {
-    Log.v(e)
     setInputUserType(e)
   }
   const onChangeInputEmail = (e: any) => {
@@ -72,13 +70,7 @@ export default function SignupPage() {
   }
   // redux
   const dispatch = useAppDispatch()
-  const userProfile = useAppSelector((state) => state.userProfileReducer)
   const submit = () => {
-    Log.v('submit')
-    Log.v(inputEmail)
-    Log.v(inputPassword)
-    Log.v(inputPasswordConfirm)
-    Log.v(isTermsChecked)
     let errorText: Array<string> = []
     let hasError = false
     if (
@@ -112,7 +104,6 @@ export default function SignupPage() {
         userType: inputUserType,
       })
       .then((res) => {
-        Log.v(res)
         // save user info
         if (!('userProfileMeta' in res.data)) {
           return

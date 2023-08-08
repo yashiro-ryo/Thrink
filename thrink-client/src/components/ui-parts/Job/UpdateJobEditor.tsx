@@ -3,7 +3,6 @@ import { Job } from '@/values/Jobs'
 import { useEffect, useState } from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
 import { useAppSelector } from '@/redux/hooks'
-import Log from '@/lib/logger'
 
 type Props = {
   isVisible: boolean
@@ -50,7 +49,6 @@ export default function UpdateJobModal(props: Props) {
           place: inputPlace,
         })
         .then((res) => {
-          Log.v(res.data.jobs)
           props.setCreatedJobs(res.data.jobs)
         })
     }
@@ -65,7 +63,6 @@ export default function UpdateJobModal(props: Props) {
     setInputTime('')
   }
   useEffect(() => {
-    Log.v(props.updateTargetJob)
     if (props.updateTargetJob !== undefined && props.updateTargetJob !== null) {
       setInputDetail(props.updateTargetJob.detail)
       setInputCondition(props.updateTargetJob.applicationRequirements)

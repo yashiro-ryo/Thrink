@@ -5,7 +5,6 @@ import GroupsList from '@/components/ui-parts/GroupsList/GroupsList'
 import styled from 'styled-components'
 import apiClient from '@/lib/http-common'
 import { GroupDigest } from '@/values/Groups'
-import Log from '@/lib/logger'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getPageIndex } from '@/lib/pagination'
 
@@ -27,16 +26,13 @@ export default function SearchGroups() {
   const searchParams = useSearchParams()
 
   const getGroupsDigests = (pageIndex: number) => {
-    console.log(`/v1/digests/group?pageIndex=${pageIndex}`)
     apiClient.get(`/v1/digests/group?pageIndex=${pageIndex}`).then((res: any) => {
-      console.log(res)
       setGroupsDigests(res.data.groupDigests)
       setPageLength(res.data.pageLength)
       setNowPageIndex(getPageIndex(pageIndex, res.data.pageLength))
     })
   }
   const searchGroup = (query: string) => {
-    Log.v(query)
     if (query.length === 0) {
       setPagingMode(true)
       setNowPageIndex(1)
@@ -49,7 +45,6 @@ export default function SearchGroups() {
         query,
       })
       .then((res) => {
-        Log.v(res.data)
         setGroupsDigests(res.data.groupDigests)
       })
   }

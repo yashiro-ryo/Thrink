@@ -6,7 +6,6 @@ import { GroupProfile } from '@/values/Groups'
 import { Job } from '@/values/Jobs'
 import { nullCheck } from '@/lib/stringHelper'
 import { filterIconImgUrl, filterHeaderImgUrl } from '@/lib/imgUrlHelper'
-import Log from '@/lib/logger'
 import { useSelector } from '@/redux/store'
 import { useRouter } from 'next/navigation'
 import RadarChartWrapper from './RadarChartWrapper'
@@ -89,19 +88,16 @@ export default function GroupsProfile(props: { gidStr: string }) {
   const [isLoading, setLoading] = useState(true)
   const getGroupProfile = (gid: number) => {
     apiClient.get(`/v1/groups/${gid}`).then((res: any) => {
-      Log.v(res.data)
       setProfile(res.data.groupProfile)
       setLoading(false)
     })
   }
   const getGroupJob = (gid: number) => {
     apiClient.get(`/v1/manage/jobs/${gid}`).then((res) => {
-      Log.v(res)
       setJobs(res.data.jobs)
     })
   }
   useEffect(() => {
-    Log.v(`gid: ${props.gidStr}`)
     getGroupProfile(Number(props.gidStr))
     getGroupJob(Number(props.gidStr))
   }, [props.gidStr])
@@ -117,7 +113,6 @@ export default function GroupsProfile(props: { gidStr: string }) {
     )
   }
   const GroupListItem = (props: { titleText: string; bodyText: string | null }) => {
-    console.log(`is Loading : ${isLoading}`)
     return (
       <>
         <StyledGroupProfileLabel>{props.titleText}</StyledGroupProfileLabel>
@@ -147,11 +142,7 @@ export default function GroupsProfile(props: { gidStr: string }) {
       alert('求人作成者は求人に応募できません.')
       return
     }
-    Log.v(
-      `求人応募, 求人ID: ${jobId}, ユーザーID: ${userProfileMeta.uid}, 求人ユーザーID: ${jobUid}`,
-    )
     apiClient.post('/v1/job/apply', { jobId, uid: userProfileMeta.uid, jobUid }).then((res) => {
-      Log.v(res)
       // chatページへ移動
       router.push('/chat')
     })
@@ -169,7 +160,6 @@ export default function GroupsProfile(props: { gidStr: string }) {
     apiClient
       .post(`/v1/chat/create`, { u1Uid: userProfileMeta.uid, u2Uid: props.gidStr })
       .then((res) => {
-        console.log(res.data)
         router.push(`/chat?cid=${res.data.chatroomId}`)
       })
   }

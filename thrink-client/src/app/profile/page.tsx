@@ -8,7 +8,6 @@ import { useAppSelector } from '@/redux/hooks'
 import { useRouter } from 'next/navigation'
 import { nullCheck } from '@/lib/stringHelper'
 import apiClient from '@/lib/http-common'
-import Log from '@/lib/logger'
 import { checkUserSession } from '@/lib/auth'
 import { useDispatch } from 'react-redux'
 import { signin } from '@/redux/slices/signedinStateSlice'
@@ -46,10 +45,7 @@ export default function UserProfile() {
   const dispatch = useDispatch()
   // method
   const getProfile = (uid: number, userType: 0 | 1 | 2) => {
-    Log.v(uid)
-    Log.v(userType)
     apiClient.get(`/v1/${getEndPointTarget(userType)}/${uid}`).then((res) => {
-      Log.v(res)
       if (userType === 0) {
         setDisplayName(res.data.studentProfile.displayName)
         setExperience(res.data.studentProfile.experience)
