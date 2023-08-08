@@ -16,4 +16,7 @@ export type GroupProfile = {
   awards: string
   iconImgUrl: string
   headerImgUrl: string
+  radar1: number
+  radar2: number
+  radar3: number
 }

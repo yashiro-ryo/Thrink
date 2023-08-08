@@ -12,6 +12,9 @@ type GroupProfileDB = {
   awards: string;
   icon_img_url: string;
   header_img_url: string;
+  radar1: number;
+  radar2: number;
+  radar3: number;
 };
 
 type GroupProfile = {
@@ -25,6 +28,9 @@ type GroupProfile = {
   awards: string;
   iconImgUrl: string;
   headerImgUrl: string;
+  radar1: number;
+  radar2: number;
+  radar3: number;
 };
 
 class GroupProfileModel {
@@ -88,7 +94,7 @@ class GroupProfileModel {
     this.lastUpdatedTime = await new Date().getTime();
     await db
       .query(
-        `select group_profile.uid, group_profile.display_name, group_profile.activity_detail, group_profile.activity_day, group_profile.activity_time, group_profile.members_num, group_profile.location, group_profile.awards, user_profile_meta.icon_img_url, user_profile_meta.header_img_url from group_profile inner join user_profile_meta on group_profile.uid = user_profile_meta.uid;`
+        `select group_profile.uid, group_profile.display_name, group_profile.activity_detail, group_profile.activity_day, group_profile.activity_time, group_profile.members_num, group_profile.location, group_profile.awards, group_profile.radar1, group_profile.radar2, group_profile.radar3, user_profile_meta.icon_img_url, user_profile_meta.header_img_url from group_profile inner join user_profile_meta on group_profile.uid = user_profile_meta.uid;`
       )
       .then((queryRes) => {
         console.log(queryRes);
@@ -126,6 +132,9 @@ class GroupProfileModel {
         awards: profileFromDB.awards,
         iconImgUrl: profileFromDB.icon_img_url,
         headerImgUrl: profileFromDB.header_img_url,
+        radar1: profileFromDB.radar1,
+        radar2: profileFromDB.radar2,
+        radar3: profileFromDB.radar3,
       };
     });
   }
@@ -138,7 +147,10 @@ class GroupProfileModel {
     activityDay: string,
     activityTime: string,
     memberNum: number,
-    awards: string
+    awards: string,
+    radar1: number,
+    radar2: number,
+    radar3: number
   ) {
     console.log(uid);
     console.log(location);
@@ -147,8 +159,9 @@ class GroupProfileModel {
     console.log(activityTime);
     console.log(memberNum);
     console.log(awards);
+    console.log(radar1, radar2, radar3);
     await db.query(
-      `update group_profile set location = '${location}', activity_detail = '${activityDetail}', activity_day = '${activityDay}', activity_time = '${activityTime}', members_num = ${memberNum}, awards = '${awards}' where uid = ${uid};`
+      `update group_profile set location = '${location}', activity_detail = '${activityDetail}', activity_day = '${activityDay}', activity_time = '${activityTime}', members_num = ${memberNum}, awards = '${awards}' , radar1 = ${radar1}, radar2 = ${radar2}, radar3 = ${radar3} where uid = ${uid};`
     );
   }
 }

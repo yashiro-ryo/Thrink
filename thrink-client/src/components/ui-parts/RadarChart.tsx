@@ -8,16 +8,20 @@ import {
   Legend,
 } from 'chart.js'
 import { Radar } from 'react-chartjs-2'
-import { styled } from 'styled-components'
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend)
 
-export function RadarChart() {
+type Props = {
+  radar1: number
+  radar2: number
+  radar3: number
+}
+export function RadarChart(props: Props) {
   const data = {
-    labels: ['本気度', '人数', '雰囲気'],
+    labels: ['本気度', '雰囲気', '目標感'],
     datasets: [
       {
-        data: [7, 9, 8],
+        data: [props.radar1, props.radar2, props.radar3],
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         borderColor: 'rgba(255, 99, 132, 1)',
         borderWidth: 1,

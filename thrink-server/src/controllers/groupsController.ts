@@ -41,7 +41,10 @@ groupsRouter.post("/profile/:uid", async (req: Request, res: Response) => {
       "activityTime" in req.body &&
       "location" in req.body &&
       "membersNum" in req.body &&
-      "awards" in req.body
+      "awards" in req.body &&
+      "radar1" in req.body &&
+      "radar2" in req.body &&
+      "radar3" in req.body
     )
   ) {
     res.status(500).json({ msg: "internal server error" });
@@ -69,7 +72,10 @@ groupsRouter.post("/profile/:uid", async (req: Request, res: Response) => {
     req.body.activityDay,
     req.body.activityTime,
     req.body.membersNum,
-    req.body.awards
+    req.body.awards,
+    Number(req.body.radar1),
+    Number(req.body.radar2),
+    Number(req.body.radar3)
   );
   await userProfileMetaModel.updateUserProfileIconImgHeaderImg(
     Number(req.params.uid),

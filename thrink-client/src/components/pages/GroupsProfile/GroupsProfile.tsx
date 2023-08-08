@@ -81,6 +81,9 @@ export default function GroupsProfile(props: { gidStr: string }) {
     awards: '',
     iconImgUrl: '',
     headerImgUrl: '',
+    radar1: 0,
+    radar2: 0,
+    radar3: 0,
   })
   const [jobs, setJobs] = useState<Array<Job>>([])
   const [isLoading, setLoading] = useState(true)
@@ -208,7 +211,11 @@ export default function GroupsProfile(props: { gidStr: string }) {
                   メッセージを送る
                 </Button>
               </ProfileTop>
-              <RadarChartWrapper />
+              <RadarChartWrapper
+                radar1={profile.radar1}
+                radar2={profile.radar2}
+                radar3={profile.radar3}
+              />
               <GroupListItem titleText='活動詳細' bodyText={profile.activityDetail} />
               <GroupListItem titleText='活動日' bodyText={profile.activityDay} />
               <GroupListItem titleText='活動時間' bodyText={profile.activityTime} />

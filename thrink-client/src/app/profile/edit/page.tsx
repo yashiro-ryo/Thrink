@@ -54,6 +54,9 @@ export default function EditProfile() {
   const [inputLocation, setInputLocation] = useState('')
   const [inputGroupAwards, setInputGroupAwards] = useState('')
   const [inputMembersNum, setInputMembersNum] = useState('')
+  const [radar1, setRadar1] = useState(0)
+  const [radar2, setRadar2] = useState(0)
+  const [radar3, setRadar3] = useState(0)
   // file object
   const [headerImgBase64, setHeaderImgBase64] = useState('')
   const [iconImgBase64, setIconImgBase64] = useState('')
@@ -167,6 +170,9 @@ export default function EditProfile() {
           location: inputLocation,
           awards: inputGroupAwards,
           membersNum: inputMembersNum,
+          radar1,
+          radar2,
+          radar3,
         })
         .then((res) => {
           Log.v(res)
@@ -195,6 +201,9 @@ export default function EditProfile() {
         setInputGroupAwards(nullCheck(res.data.groupProfile.awards))
         setInputLocation(nullCheck(res.data.groupProfile.location))
         setInputMembersNum(nullCheck(res.data.groupProfile.membersNum))
+        setRadar1(res.data.groupProfile.radar1)
+        setRadar2(res.data.groupProfile.radar2)
+        setRadar3(res.data.groupProfile.radar3)
       }
     })
   }
@@ -259,6 +268,31 @@ export default function EditProfile() {
   const GroupProfileEditor = () => {
     return (
       <>
+        <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
+          <Form.Label>チームバロメータ</Form.Label>
+          <br></br>
+          <Form.Label>本気度 ゆるくやる - ガチでやる</Form.Label>
+          <Form.Range
+            value={radar1}
+            onChange={(e) => setRadar1(Number(e.target.value))}
+            min={0}
+            max={10}
+          />
+          <Form.Label>雰囲気 怖い - 明るい</Form.Label>
+          <Form.Range
+            value={radar2}
+            onChange={(e) => setRadar2(Number(e.target.value))}
+            min={0}
+            max={10}
+          />
+          <Form.Label>目標感 楽しく - 全国大会優勝</Form.Label>
+          <Form.Range
+            value={radar3}
+            onChange={(e) => setRadar3(Number(e.target.value))}
+            min={0}
+            max={10}
+          />
+        </Form.Group>
         <Form.Group className='mb-3' controlId='exampleForm.ControlTextarea1'>
           <Form.Label>場所</Form.Label>
           <Form.Control
