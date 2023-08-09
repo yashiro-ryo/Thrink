@@ -26,7 +26,7 @@ const MyMsgWrapper = styled.div`
   }
 `
 const YourMsgWrapper = styled.div`
-  background-color: #ffffff;
+  background-color: #eeeeee;
   width: fit-content;
   float: left;
   padding: 10px;
