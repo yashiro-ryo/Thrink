@@ -16,6 +16,7 @@ const StyledMyMsg = styled.div`
 `
 const MyMsgWrapper = styled.div`
   width: fit-content;
+  max-width: 350px;
   background-color: #00f7ff;
   float: right;
   padding: 10px;
@@ -28,6 +29,7 @@ const MyMsgWrapper = styled.div`
 const YourMsgWrapper = styled.div`
   background-color: #eeeeee;
   width: fit-content;
+  max-width: 350px;
   float: left;
   padding: 10px;
   margin: 0 0 10px 10px;
