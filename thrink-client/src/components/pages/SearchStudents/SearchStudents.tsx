@@ -7,6 +7,10 @@ import { StudentDigest } from '@/values/Students'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getPageIndex } from '@/lib/pagination'
 
+const StyledContainer = styled(Container)`
+  min-height: calc(100vh - 56px - 216px - 60px);
+`
+
 const HeaderLabel = styled.div`
   margin-top: 20px;
   border-bottom: 1px solid #636363;
@@ -54,7 +58,7 @@ export default function SearchStudents() {
     )
   }
   return (
-    <Container>
+    <StyledContainer>
       {/* カード一覧 */}
       <HeaderLabel>
         <h5>
@@ -63,6 +67,6 @@ export default function SearchStudents() {
       </HeaderLabel>
       <StudentsList studentDigests={studentDigests} />
       <PaginationWrapper>{items}</PaginationWrapper>
-    </Container>
+    </StyledContainer>
   )
 }
