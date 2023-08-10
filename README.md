@@ -60,8 +60,11 @@ Thrinkによって、上記の課題を解消させるとともに、くすぶ�
 2. チャットページを含む全ページをレスポンシブ対応しました
 3. 配信する画像の容量削減やスケルトンPlaceholderの使用によるwebパフォーマンスチューニングを行いました
 
-### 技術的に大変だった点
+## 技術的に大変だった点
 1. DBからデータを取得する際の非同期処理の実装 → async await の勉強になった
 2. チャットページの状態管理 → Reduxを使用して管理した
+
+## 今後の展望
+![今後の展望のスライド](https://github.com/yashiro-ryo/Thrink/blob/develop/thrink-client/docs/images/feature.png)
 
 
