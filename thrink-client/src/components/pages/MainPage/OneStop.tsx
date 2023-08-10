@@ -42,7 +42,7 @@ export default function OneStop() {
     <OneStopWrapper>
       <OneStopTop>
         <Image src={'/text_decorator.webp'} alt='' width={'100px'} height={'70px'} />
-        <p>全てがワンストップで</p>
+        <p>全てがThrink上で完結</p>
       </OneStopTop>
       <UIImages>
         <ImageCard>
