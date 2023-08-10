@@ -4,6 +4,8 @@
 ## 概要
 Thrinkは部活動の地域移行に関する課題を解決するために制作されたWebアプリケーションです。
 
+リンク: [Thrink](https://www.thrink.net)
+
 ## 制作背景
 
 ### 部活動地域移行の始まり
@@ -44,10 +46,22 @@ Thrinkによって、上記の課題を解消させるとともに、くすぶ�
 ### 求人の登録、編集機能
 ![求人ページの画像](https://github.com/yashiro-ryo/Thrink/blob/develop/thrink-client/docs/images/job.png)
 ### プロフィールから気になった人にメッセージを送ることが可能
+
+![メッセージを送るスライドの写真](https://github.com/yashiro-ryo/Thrink/blob/develop/thrink-client/docs/images/profile-to-message.png)
 ## 使用技術
 
 ### アプリケーション
 ![アプリケーション使用技術の写真](https://github.com/yashiro-ryo/Thrink/blob/develop/thrink-client/docs/images/tech.png)
 ### インフラストラクチャ
 ![インフラ構成図の写真](https://github.com/yashiro-ryo/Thrink/blob/develop/thrink-client/docs/images/infrastructure.png)
+
+## 技術的に工夫した点
+1. DBに保存されているユーザーのダイジェストをサーバー内にキャッシュしておくことでターンアラウンドタイムが短縮しました
+2. チャットページを含む全ページをレスポンシブ対応しました
+3. 配信する画像の容量削減やスケルトンPlaceholderの使用によるwebパフォーマンスチューニングを行いました
+
+### 技術的に大変だった点
+1. DBからデータを取得する際の非同期処理の実装 → async await の勉強になった
+2. チャットページの状態管理 → Reduxを使用して管理した
+
 
