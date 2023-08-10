@@ -27,7 +27,7 @@ export default function TopLogo() {
   return (
     <StyledTopLogo>
       <SubTitleWrapper>
-        <p>部活動 地域移行による課題解決への大きな一歩を</p>
+        <p>部活動の地域移行による課題解決への大きな一歩を</p>
       </SubTitleWrapper>
       <LogoWrapper>
         <StyledLogo src={'/thrink_logo.webp'} alt='Thrinkのロゴ' width={'100%'} height={'100%'} />
